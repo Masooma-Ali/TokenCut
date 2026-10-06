@@ -9,5 +9,6 @@ rank-bm25==0.2.2
 fastapi==0.142.2
 uvicorn==0.53.0
 unidiff==1.0.1
+httpx2==2.13.1  # needed by fastapi.testclient in the API tests
 pytest==9.1.1
 ruff==0.16.10
