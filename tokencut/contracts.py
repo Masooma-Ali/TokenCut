@@ -14,7 +14,6 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-
 # ---------- Shared settings (DECISIONS.md #4, #12) ----------
 
 EVAL_FULL_CONTEXT_CAP_TOKENS = 32_000   # "full" context size in evaluation (tunable)
