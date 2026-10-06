@@ -18,6 +18,46 @@ repo ──► ingestion.parse_repo() ──► list[Chunk]
 
 All shared data formats live in `tokencut/contracts.py`. Changing that file needs a PR approved by both other members.
 
+## Usage
+
+```python
+from tokencut.ingestion.parser import parse_repo
+from tokencut.graph.builder import build_graph
+from tokencut.trimming.variants import generate_variants
+
+chunks = parse_repo("fixtures/sample_repo")
+graph = build_graph(chunks)
+for v in generate_variants(chunks, graph, "Cart.total applies the discount wrong"):
+    print(v.tier.value, v.token_count, "/", v.budget_tokens)
+```
+
+API: `uvicorn api.main:app --reload`, then `POST /context/variants` with
+`{"repo_path": "...", "query": "...", "include_text": true}`.
+
+Evaluation on SWE-bench Lite (clones repos into `swebench_repos/`, caches in `cache/`):
+
+```
+python -m eval.run_eval --limit 3       # smoke run
+python -m eval.run_eval                 # all tasks in eval/tasks_iter1.json
+```
+
+Results go to `eval/results/iter1_results.csv` and `eval/results/iter1_summary.md`.
+
+## Code map
+
+| Module | What it does |
+|---|---|
+| `ingestion/walker.py` | file list (`git ls-files`, skip rules from DECISIONS #12) |
+| `ingestion/python_parser.py` | tree-sitter chunker (module / class / function / method) |
+| `graph/modules.py` | module names, import parsing, relative imports, `src/` layout |
+| `graph/builder.py` | contains / imports / inherits / calls edges (DECISIONS #7) |
+| `graph/queries.py` | `GraphIndex`: dependency closure, BFS distances |
+| `trimming/query.py` | file / symbol / traceback mentions in the query |
+| `trimming/scoring.py` | BM25 + graph-distance score |
+| `trimming/packing.py` | full pool, tier budgets, nested greedy packing, skeletons |
+| `trimming/render.py` | text sent to the model |
+| `eval/loader.py`, `eval/metrics.py`, `eval/run_eval.py` | SWE-bench Lite subset, gold chunks, recall metrics |
+
 ## Ownership
 
 | Folder | Owner |

@@ -1,0 +1,2 @@
+# Keep fixture files byte-identical on Windows and Linux (file_hash in expected_chunks.json).
+fixtures/** -text

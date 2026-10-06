@@ -1,0 +1,180 @@
+{
+  "chunk_ids": [
+    "shop/__init__.py::<module>",
+    "shop/cart.py::<module>",
+    "shop/cart.py::validate",
+    "shop/cart.py::Cart",
+    "shop/cart.py::Cart.__init__",
+    "shop/cart.py::Cart.add_item",
+    "shop/cart.py::Cart.subtotal",
+    "shop/cart.py::Cart.total",
+    "shop/models.py::<module>",
+    "shop/models.py::Product",
+    "shop/models.py::Product.__init__",
+    "shop/models.py::Customer",
+    "shop/models.py::Customer.__init__",
+    "shop/models.py::Customer.discount_rate",
+    "shop/models.py::PremiumCustomer",
+    "shop/models.py::PremiumCustomer.discount_rate",
+    "shop/payments/__init__.py::<module>",
+    "shop/payments/gateway.py::<module>",
+    "shop/payments/gateway.py::validate",
+    "shop/payments/gateway.py::process_payment",
+    "shop/payments/refunds.py::<module>",
+    "shop/payments/refunds.py::log_failure",
+    "shop/payments/refunds.py::refund",
+    "shop/utils/__init__.py::<module>",
+    "shop/utils/broken.py::<module>",
+    "shop/utils/broken.py::fine_function",
+    "shop/utils/broken.py::another_fine_function",
+    "shop/utils/pricing.py::<module>",
+    "shop/utils/pricing.py::apply_discount",
+    "shop/utils/pricing.py::add_tax"
+  ],
+  "edges": [
+    {
+      "source": "shop/cart.py::<module>",
+      "target": "shop/models.py::<module>",
+      "kind": "imports",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::<module>",
+      "target": "shop/utils/pricing.py::<module>",
+      "kind": "imports",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart",
+      "target": "shop/cart.py::Cart.__init__",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart",
+      "target": "shop/cart.py::Cart.add_item",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart",
+      "target": "shop/cart.py::Cart.subtotal",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart",
+      "target": "shop/cart.py::Cart.total",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart.add_item",
+      "target": "shop/cart.py::validate",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart.total",
+      "target": "shop/cart.py::Cart.subtotal",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart.total",
+      "target": "shop/utils/pricing.py::add_tax",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/cart.py::Cart.total",
+      "target": "shop/utils/pricing.py::apply_discount",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/models.py::Customer",
+      "target": "shop/models.py::Customer.__init__",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/models.py::Customer",
+      "target": "shop/models.py::Customer.discount_rate",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/models.py::PremiumCustomer",
+      "target": "shop/models.py::Customer",
+      "kind": "inherits",
+      "resolved": true
+    },
+    {
+      "source": "shop/models.py::PremiumCustomer",
+      "target": "shop/models.py::PremiumCustomer.discount_rate",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/models.py::Product",
+      "target": "shop/models.py::Product.__init__",
+      "kind": "contains",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/gateway.py::<module>",
+      "target": "shop/cart.py::<module>",
+      "kind": "imports",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/gateway.py::<module>",
+      "target": "shop/payments/refunds.py::<module>",
+      "kind": "imports",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/gateway.py::process_payment",
+      "target": "shop/cart.py::Cart.total",
+      "kind": "calls",
+      "resolved": false
+    },
+    {
+      "source": "shop/payments/gateway.py::process_payment",
+      "target": "shop/payments/gateway.py::validate",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/gateway.py::process_payment",
+      "target": "shop/payments/refunds.py::log_failure",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/refunds.py::<module>",
+      "target": "shop/payments/gateway.py::<module>",
+      "kind": "imports",
+      "resolved": true
+    },
+    {
+      "source": "shop/payments/refunds.py::refund",
+      "target": "shop/cart.py::Cart.total",
+      "kind": "calls",
+      "resolved": false
+    },
+    {
+      "source": "shop/payments/refunds.py::refund",
+      "target": "shop/payments/gateway.py::validate",
+      "kind": "calls",
+      "resolved": true
+    },
+    {
+      "source": "shop/utils/broken.py::another_fine_function",
+      "target": "shop/utils/broken.py::fine_function",
+      "kind": "calls",
+      "resolved": true
+    }
+  ]
+}
