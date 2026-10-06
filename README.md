@@ -22,9 +22,9 @@ All shared data formats live in `tokencut/contracts.py`. Changing that file need
 
 | Folder | Owner |
 |---|---|
-| `tokencut/ingestion/`, `eval/` (SWE-bench loader) | Member A — _name_ |
-| `tokencut/graph/`, `api/` | Member B — _name_ |
-| `tokencut/trimming/`, `eval/` (metrics) | Member C — _name_ |
+| `tokencut/ingestion/`, `eval/` (SWE-bench loader) | Member A — Masooma Ali |
+| `tokencut/graph/`, `api/` | Member B — Huma Taj |
+| `tokencut/trimming/`, `eval/` (metrics) | Member C — Fatima Shakir |
 
 ## Setup (Windows PowerShell)
 
