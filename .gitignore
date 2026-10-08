@@ -23,3 +23,6 @@ data/
 swebench_repos/
 *.parquet
 cache/
+
+# Gateway logs and captured requests (contain prompts and code)
+logs/
