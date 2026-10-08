@@ -107,6 +107,7 @@ def test_anthropic_request_forwarded_unchanged_and_measured(setup):
     assert str(sent.url) == "https://api.anthropic.com/v1/messages"
     assert sent.headers["x-api-key"] == "sk-test"
     assert sent.headers["anthropic-version"] == "2023-06-01"
+    assert sent.headers["accept-encoding"] == "identity"  # else usage can't be read
 
     record = app.state.request_log.recent[-1]
     assert record["status"] == 200 and record["provider"] == "anthropic"
@@ -148,6 +149,7 @@ def test_other_paths_are_forwarded_but_not_analysed(setup):
     client, _fake, app, _ = setup
     r = client.get("/anthropic/v1/models")
     assert r.status_code == 200
+    assert client.head("/anthropic/v1/models").status_code == 200  # Claude Code's startup check
     record = app.state.request_log.recent[-1]
     assert record["analysis"] is None and "analysis_error" not in record
 

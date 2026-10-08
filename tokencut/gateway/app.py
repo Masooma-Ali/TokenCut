@@ -55,7 +55,7 @@ _DROP_REQUEST_HEADERS = {
     "accept-encoding",
 }
 _DROP_RESPONSE_HEADERS = {"content-length", "connection", "keep-alive", "transfer-encoding"}
-_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+_METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]
 
 
 @dataclass
@@ -125,6 +125,8 @@ def create_app(
         headers = {
             k: v for k, v in request.headers.items() if k.lower() not in _DROP_REQUEST_HEADERS
         }
+        # Ask for an uncompressed reply, or usage can't be read (the client's default is gzip).
+        headers["accept-encoding"] = "identity"
         client: httpx2.AsyncClient = app.state.client
         try:
             upstream = await client.send(
