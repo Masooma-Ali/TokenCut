@@ -43,12 +43,13 @@ python -m eval.run_eval                 # all tasks in eval/tasks_iter1.json
 
 Results go to `eval/results/iter1_results.csv` and `eval/results/iter1_summary.md`.
 
-## Gateway (Iteration 2, shadow mode)
+## Gateway (Iteration 2)
 
-The gateway sits between your coding agent and the provider. In shadow mode it forwards
-every request **unchanged**, streams the reply back, and records what each request contained
-(tokens per kind: system prompt, tools, chat, file reads, command output…) plus the tokens the
-provider actually billed, including cached tokens. Nothing is trimmed yet.
+The gateway sits between your coding agent and the provider. It streams the reply back and
+records what each request contained (tokens per kind: system prompt, tools, chat, file
+reads, command output…) plus the tokens the provider actually billed, including cached
+tokens. In shadow mode (default) requests are forwarded unchanged and the stats show what
+trimming *would* save; in trim mode the trimmed request is sent.
 
 ```
 python -m tokencut.gateway          # listens on 127.0.0.1:8787
@@ -72,6 +73,17 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | where numbers are logged (empty = off) |
 | `TOKENCUT_CAPTURE` | off | `1` = also save full request bodies locally, for parser test fixtures (contain your prompts and code) |
 | `TOKENCUT_HOST` / `TOKENCUT_PORT` | `127.0.0.1` / `8787` | listen address |
+| `TOKENCUT_MODE` | `shadow` | `shadow` = forward unchanged, report possible savings; `trim` = send the trimmed request |
+| `TOKENCUT_TIER` | `moderate` | `aggressive` / `moderate` / `conservative` |
+| `TOKENCUT_MIN_TRIM_TOKENS` | `2000` | tool results smaller than this are never trimmed |
+
+**Trimming (phase 3).** Only large tool results are shortened: Python file contents
+(through the Iteration 1 engine; kept lines stay verbatim, gaps become
+`[TokenCut: lines 40-95 of x.py omitted …]` markers so the model can re-read them),
+command output (failures, errors and the summary are kept) and search results.
+System prompt, tools, chat text and tool calls are never touched; files the user named or
+the agent already edited stay whole. A result's trim depends only on earlier conversation,
+so it is identical on every later turn and the provider's prompt cache keeps working.
 
 ## Code map
 
@@ -90,6 +102,7 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `gateway/app.py` | proxy server: forward, stream back, measure (shadow mode) |
 | `gateway/adapters/` | Anthropic / OpenAI / Gemini request JSON → `Segment` list |
 | `gateway/classify.py`, `gateway/usage.py`, `gateway/records.py` | tool-result kinds, billed usage from responses, request log |
+| `gateway/trimmer.py`, `gateway/codeview.py`, `gateway/textcut.py` | cache-safe trimming of tool results: code, command output, search |
 
 ## Ownership
 
