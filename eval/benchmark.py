@@ -233,6 +233,7 @@ METHODS: dict[str, Callable[[Context, list[Chunk], list[int]], list[Selection]]]
     "head": method_head,
     "bm25_files": method_bm25_files,
 }
+NEEDS_EMBEDDINGS = {"embed", "tokencut_embed", "tokencut_hybrid"}
 TRIM_ONLY = {"head"}  # meaningless over a whole repo
 RETRIEVE_ONLY = {"bm25_files"}  # in the trim setting the pool already is BM25 files
 
@@ -404,7 +405,7 @@ def main(argv: list[str] | None = None) -> None:
 
     methods = args.methods.split(",")
     embedder = None
-    if any("embed" in m for m in methods):
+    if set(methods) & NEEDS_EMBEDDINGS:
         from eval.embeddings import Embedder  # optional dependency (fastembed)
 
         embedder = Embedder()
