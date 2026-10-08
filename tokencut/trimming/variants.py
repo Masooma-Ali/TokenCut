@@ -40,7 +40,8 @@ def generate_variants(
     mentions = analyse_query(query, chunks)
     scores = scoring.score_chunks(chunks, graph, query, mentions=mentions, index=index)
 
-    pool = build_pool(chunks, scores, full_cap_tokens)
+    file_text = scoring.file_text_scores(chunks, query) if full_cap_tokens is not None else None
+    pool = build_pool(chunks, scores, full_cap_tokens, file_text)
     full_tokens = count_tokens(render_variant(pool, {c.id for c in pool}, set()))
     budgets = tier_budgets(full_tokens, aggressive_min_tokens)
 

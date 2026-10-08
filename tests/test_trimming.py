@@ -2,15 +2,15 @@
 
 import pytest
 
-from tokencut.contracts import Chunk, ChunkKind, CodeGraph, Tier
+from tokencut.contracts import Chunk, ChunkKind, CodeGraph, ScoredChunk, Tier
 from tokencut.graph.builder import build_graph
 from tokencut.ingestion.parser import parse_repo
 from tokencut.ingestion.python_parser import PythonParser
 from tokencut.tokens import count_tokens
-from tokencut.trimming.packing import build_pool, tier_budgets
+from tokencut.trimming.packing import build_pool, rank_files, tier_budgets
 from tokencut.trimming.query import FILE_WEIGHT, SYMBOL_WEIGHT, analyse_query
 from tokencut.trimming.render import render_variant, skeleton_text
-from tokencut.trimming.scoring import split_identifier, text_scores
+from tokencut.trimming.scoring import file_text_scores, split_identifier, text_scores
 from tokencut.trimming.variants import generate_variants, score_chunks
 
 QUERY = "Cart.total applies the discount wrong"
@@ -326,3 +326,56 @@ def test_chunks_without_graph_entries_are_handled():
     variants = generate_variants([chunk], CodeGraph(chunk_ids=[], edges=[]), "f")
     check_variants(variants, [chunk])
     assert variants[0].kept_chunk_ids == ["a.py::f"]
+
+
+# ---------- pool file ranking ----------
+
+
+def _scored(values: dict[str, float]):
+    return [ScoredChunk(chunk_id=cid, score=v) for cid, v in values.items()]
+
+
+def _chunk(cid: str, line: int = 1):
+    path, name = cid.split("::")
+    return Chunk(
+        id=cid,
+        file_path=path,
+        qualified_name=name,
+        kind=ChunkKind.FUNCTION,
+        start_line=line,
+        end_line=line,
+        code=f"def {name}(): pass",
+        token_count=5,
+        file_hash="x",
+    )
+
+
+def test_rank_files_uses_top_three_chunks():
+    # a.py has one great chunk; b.py has three good ones -> b.py ranks first
+    chunks = [
+        _chunk("a.py::f"),
+        _chunk("a.py::g", 2),
+        _chunk("b.py::f"),
+        _chunk("b.py::g", 2),
+        _chunk("b.py::h", 3),
+    ]
+    scores = _scored(
+        {"a.py::f": 1.0, "a.py::g": 0.0, "b.py::f": 0.6, "b.py::g": 0.6, "b.py::h": 0.6}
+    )
+    assert rank_files(chunks, scores) == ["b.py", "a.py"]
+
+
+def test_rank_files_blends_whole_file_text():
+    chunks = [_chunk("a.py::f"), _chunk("b.py::f")]
+    scores = _scored({"a.py::f": 0.5, "b.py::f": 0.45})
+    assert rank_files(chunks, scores) == ["a.py", "b.py"]
+    assert rank_files(chunks, scores, {"a.py": 0.0, "b.py": 1.0}) == ["b.py", "a.py"]
+
+
+def test_file_text_scores(sample):
+    chunks, _ = sample
+    scores = file_text_scores(chunks, "refund the card after a payment failure")
+    assert set(scores) == {c.file_path for c in chunks}
+    assert max(scores, key=scores.get) in {"shop/payments/refunds.py", "shop/payments/gateway.py"}
+    assert all(0.0 <= v <= 1.0 for v in scores.values())
+    assert set(file_text_scores(chunks, "").values()) == {0.0}

@@ -25,6 +25,9 @@ from tokencut.trimming.render import file_header, render_variant, skeleton_text
 TIER_ORDER = [Tier.AGGRESSIVE, Tier.MODERATE, Tier.CONSERVATIVE, Tier.FULL]
 SEPARATOR_TOKENS = 1  # the blank line between two rendered chunks, roughly one token
 _SKELETON_KINDS = (ChunkKind.CLASS, ChunkKind.FUNCTION, ChunkKind.METHOD)
+# Pool file ranking (tunable; chosen on the 40 eval tasks, checked on held-out django tasks).
+FILE_TOP_K = 3  # a file's chunk score = mean of its 3 best chunk scores
+FILE_TEXT_WEIGHT = 0.25  # weight of the whole-file BM25 score
 
 
 @dataclass
@@ -37,22 +40,41 @@ class PackedTier:
     token_count: int
 
 
-def _rank_files(chunks: list[Chunk], scores: list[ScoredChunk]) -> list[str]:
-    best: dict[str, float] = {}
+def rank_files(
+    chunks: list[Chunk], scores: list[ScoredChunk], file_text: dict[str, float] | None = None
+) -> list[str]:
+    """Files by relevance: mean of the file's top FILE_TOP_K chunk scores (normalised), blended
+    with the whole-file BM25 score (weight FILE_TEXT_WEIGHT). Ties broken by path."""
     score_by_id = {s.chunk_id: s.score for s in scores}
+    per_file: dict[str, list[float]] = {}
     for c in chunks:
-        best[c.file_path] = max(best.get(c.file_path, float("-inf")), score_by_id.get(c.id, 0.0))
-    return sorted(best, key=lambda f: (-best[f], f))
+        per_file.setdefault(c.file_path, []).append(score_by_id.get(c.id, 0.0))
+    top: dict[str, float] = {}
+    for file_path, values in per_file.items():
+        best = sorted(values, reverse=True)[:FILE_TOP_K]
+        top[file_path] = sum(best) / FILE_TOP_K
+    highest = max(top.values(), default=0.0)
+    file_text = file_text or {}
+    value: dict[str, float] = {}
+    for file_path in per_file:
+        chunk_part = top[file_path] / highest if highest > 0 else 0.0
+        value[file_path] = (1 - FILE_TEXT_WEIGHT) * chunk_part + FILE_TEXT_WEIGHT * file_text.get(
+            file_path, 0.0
+        )
+    return sorted(value, key=lambda f: (-value[f], f))
 
 
 def build_pool(
-    chunks: list[Chunk], scores: list[ScoredChunk], full_cap_tokens: int | None
+    chunks: list[Chunk],
+    scores: list[ScoredChunk],
+    full_cap_tokens: int | None,
+    file_text: dict[str, float] | None = None,
 ) -> list[Chunk]:
     """The 'full' context (DECISIONS #4).
 
     full_cap_tokens=None (gateway mode): every chunk. Otherwise (evaluation): whole files in
-    order of their best chunk score while the total fits the cap; a file that does not fit is
-    skipped and smaller ones are still tried.
+    rank_files() order while the total fits the cap; a file that does not fit is skipped and
+    smaller ones are still tried.
     """
     if full_cap_tokens is None:
         return list(chunks)
@@ -62,7 +84,7 @@ def build_pool(
         file_cost[c.file_path] += c.token_count + SEPARATOR_TOKENS
     selected: set[str] = set()
     total = 0
-    for file_path in _rank_files(chunks, scores):
+    for file_path in rank_files(chunks, scores, file_text):
         if total + file_cost[file_path] <= full_cap_tokens:
             selected.add(file_path)
             total += file_cost[file_path]

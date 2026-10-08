@@ -37,18 +37,36 @@ def tokenize(text: str) -> list[str]:
     return words
 
 
-def text_scores(chunks: list[Chunk], query: str) -> list[float]:
-    """BM25 score of each chunk, divided by the max (all zeros if nothing matches)."""
+def _bm25_normalised(documents: list[list[str]], query: str) -> list[float]:
+    """BM25 score of each document, divided by the max (all zeros if nothing matches)."""
     query_words = tokenize(query)
-    documents = [tokenize(f"{c.file_path} {c.qualified_name} {c.code}") for c in chunks]
     if not query_words or not any(documents):
-        return [0.0] * len(chunks)
+        return [0.0] * len(documents)
     raw = BM25Okapi(documents).get_scores(query_words)
     clipped = [max(0.0, float(s)) for s in raw]
     best = max(clipped, default=0.0)
     if best <= 0:
-        return [0.0] * len(chunks)
+        return [0.0] * len(documents)
     return [s / best for s in clipped]
+
+
+def text_scores(chunks: list[Chunk], query: str) -> list[float]:
+    """BM25 score of each chunk, normalised to [0, 1]."""
+    documents = [tokenize(f"{c.file_path} {c.qualified_name} {c.code}") for c in chunks]
+    return _bm25_normalised(documents, query)
+
+
+def file_text_scores(chunks: list[Chunk], query: str) -> dict[str, float]:
+    """BM25 score of each whole file (path + all its code), normalised to [0, 1].
+
+    Used to rank files for the evaluation pool: a file whose words match the issue as a
+    whole can matter even when no single chunk scores high.
+    """
+    files = sorted({c.file_path for c in chunks})
+    words: dict[str, list[str]] = {f: tokenize(f) for f in files}
+    for c in chunks:
+        words[c.file_path].extend(tokenize(c.code))
+    return dict(zip(files, _bm25_normalised([words[f] for f in files], query)))
 
 
 def structural_scores(index: GraphIndex, weights: dict[str, float]) -> dict[str, float]:
