@@ -80,3 +80,16 @@ class SegmentBuilder:
             tool_call_id,
             classify_tool_result(tool_name, text),
         )
+
+
+def lookup(body: Any, path: JsonPath) -> Any:
+    value = body
+    for key in path:
+        value = value[key]
+    return value
+
+
+def set_text(body: Any, path: JsonPath, text: str) -> None:
+    """Replace the string at `path` (the location a Segment points to)."""
+    parent = lookup(body, path[:-1])
+    parent[path[-1]] = text

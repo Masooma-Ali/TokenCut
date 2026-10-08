@@ -1,9 +1,10 @@
-"""TokenCut gateway — shadow mode (Iteration 2, phase 2).
+"""TokenCut gateway (Iteration 2).
 
-Sits between a coding agent and its model provider. Every request is forwarded
-byte-for-byte unchanged and the response is streamed straight back; on the side, the
-request is split into segments and measured, and the provider's billed usage is read
-from the response. Nothing is trimmed yet.
+Sits between a coding agent and its model provider. Each request is split into
+segments and measured, forwarded, and the response is streamed straight back while the
+provider's billed usage is read from it. Two modes (TOKENCUT_MODE):
+    shadow (default)  forward unchanged; report what trimming would save
+    trim              send the cache-safe trimmed request (see trimmer.py); fail open
 
 Point an agent at it:
     Claude Code:  ANTHROPIC_BASE_URL=http://127.0.0.1:8787/anthropic
@@ -24,7 +25,9 @@ import httpx2
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse, StreamingResponse
 
+from tokencut.contracts import Tier
 from tokencut.gateway.records import RequestLog, analyse, now_iso
+from tokencut.gateway.trimmer import TrimConfig
 from tokencut.gateway.usage import UsageSniffer
 
 log = logging.getLogger("tokencut.gateway")
@@ -63,6 +66,8 @@ class GatewayConfig:
     upstreams: dict[str, str] = field(default_factory=lambda: dict(DEFAULT_UPSTREAMS))
     log_dir: Path | None = Path("logs/gateway")
     capture: bool = False  # save full request bodies (local only) for test fixtures
+    mode: str = "shadow"  # "shadow": forward unchanged, report possible savings; "trim": apply
+    trim: TrimConfig = field(default_factory=TrimConfig)
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -71,10 +76,19 @@ class GatewayConfig:
             for name, url in DEFAULT_UPSTREAMS.items()
         }
         log_dir = os.environ.get("TOKENCUT_LOG_DIR", "logs/gateway")
+        mode = os.environ.get("TOKENCUT_MODE", "shadow")
+        if mode not in ("shadow", "trim"):
+            raise ValueError(f"TOKENCUT_MODE must be 'shadow' or 'trim', not {mode!r}")
+        trim = TrimConfig(
+            tier=Tier(os.environ.get("TOKENCUT_TIER", TrimConfig.tier.value)),
+            min_tokens=int(os.environ.get("TOKENCUT_MIN_TRIM_TOKENS", TrimConfig.min_tokens)),
+        )
         return cls(
             upstreams=upstreams,
             log_dir=Path(log_dir) if log_dir else None,
             capture=os.environ.get("TOKENCUT_CAPTURE", "") == "1",
+            mode=mode,
+            trim=trim,
         )
 
 
@@ -96,7 +110,7 @@ def create_app(
 
     @app.get("/tokencut/health")
     async def health() -> dict:
-        return {"status": "ok", "mode": "shadow"}
+        return {"status": "ok", "mode": config.mode, "tier": config.trim.tier.value}
 
     @app.get("/tokencut/stats")
     async def stats() -> dict:
@@ -113,11 +127,29 @@ def create_app(
             "analysis": None,
         }
 
-        # Measure in a worker thread while the request is already on its way (no added latency).
         analysis_task = None
+        send_body = body
         if request.method == "POST" and _INFERENCE_PATHS[provider].search(path):
-            analysis_task = asyncio.create_task(asyncio.to_thread(analyse, provider, path, body))
             request_log.save_capture(provider, body)
+            if config.mode == "trim":
+                # Trim before sending. Any failure: send the original request (fail open).
+                try:
+                    analysis, trimmed = await asyncio.to_thread(
+                        analyse, provider, path, body, config.trim
+                    )
+                    record["analysis"] = analysis
+                    if trimmed is not None:
+                        send_body = trimmed
+                        record["trim_applied"] = True
+                except Exception as exc:
+                    log.warning("trimming failed; forwarding original", exc_info=True)
+                    record["analysis_error"] = f"{type(exc).__name__}: {exc}"[:300]
+            else:
+                # Shadow: measure (and work out the possible trim) in a worker thread while the
+                # unchanged request is already on its way, so no latency is added.
+                analysis_task = asyncio.create_task(
+                    asyncio.to_thread(analyse, provider, path, body, config.trim)
+                )
 
         url = f"{config.upstreams[provider]}/{path}"
         if request.url.query:
@@ -130,7 +162,7 @@ def create_app(
         client: httpx2.AsyncClient = app.state.client
         try:
             upstream = await client.send(
-                client.build_request(request.method, url, headers=headers, content=body),
+                client.build_request(request.method, url, headers=headers, content=send_body),
                 stream=True,
             )
         except httpx2.RequestError as exc:
@@ -192,7 +224,7 @@ async def _finish(
         record["latency_ms"] = round((time.perf_counter() - started) * 1000, 1)
         if analysis_task is not None:
             try:
-                record["analysis"] = await analysis_task
+                record["analysis"], _ = await analysis_task
             except Exception as exc:  # bad JSON, unexpected shape: forwarded anyway
                 log.warning("could not analyse %s request", record["provider"], exc_info=True)
                 record["analysis_error"] = f"{type(exc).__name__}: {exc}"[:300]

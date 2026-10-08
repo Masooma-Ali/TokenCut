@@ -1,4 +1,4 @@
-"""Shadow-mode measurements: what each request contains, and what the provider billed.
+"""Gateway measurements: what each request contains, and what the provider billed.
 
 Only numbers are logged (token counts per segment kind, usage), never prompt text or
 headers, so the log is safe to keep. Full request bodies are saved only when capture is
@@ -13,24 +13,41 @@ from pathlib import Path
 
 from tokencut.contracts import Segment, SegmentKind, ToolResultKind
 from tokencut.gateway.adapters import anthropic, gemini, openai
+from tokencut.gateway.trimmer import TrimConfig, trim_request
 
 ADAPTERS = {"anthropic": anthropic, "openai": openai, "gemini": gemini}
 RECENT_RECORDS = 1000
 
 
-def analyse(provider: str, path: str, body: bytes) -> dict:
-    """Split a request into segments and count tokens per kind. Raises on bad input."""
+def analyse(
+    provider: str, path: str, body: bytes, trim_config: TrimConfig | None = None
+) -> tuple[dict, bytes | None]:
+    """Split a request into segments and count tokens per kind; with a TrimConfig, also
+    work out the cache-safe trim. Returns (analysis, trimmed body bytes or None).
+    Raises on bad input (the caller then forwards the original body)."""
     start = time.perf_counter()
     data = json.loads(body)
     adapter = ADAPTERS[provider]
     segments = adapter.parse(data)
-    return {
+    analysis = {
         "model": adapter.model_of(data, path),
         "stream": bool(data.get("stream")) or "streamGenerateContent" in path,
         "segments": len(segments),
         **token_breakdown(segments),
-        "analysis_ms": round((time.perf_counter() - start) * 1000, 1),
     }
+    new_bytes = None
+    if trim_config is not None:
+        trim_start = time.perf_counter()
+        new_body, report = trim_request(data, segments, trim_config)
+        analysis["trim"] = {
+            **report.as_dict(),
+            "tier": trim_config.tier.value,
+            "trim_ms": round((time.perf_counter() - trim_start) * 1000, 1),
+        }
+        if new_body is not None:
+            new_bytes = json.dumps(new_body, ensure_ascii=False, separators=(",", ":")).encode()
+    analysis["analysis_ms"] = round((time.perf_counter() - start) * 1000, 1)
+    return analysis, new_bytes
 
 
 def token_breakdown(segments: list[Segment]) -> dict:
@@ -93,7 +110,14 @@ class RequestLog:
             for kind, n in r["analysis"]["tool_result_tokens"].items():
                 by_result[kind] += n
         total = sum(by_kind.values())
+        trims = [r["analysis"]["trim"] for r in analysed if r["analysis"].get("trim")]
+        applied = [r for r in analysed if r.get("trim_applied")]
         return {
+            "trimming": {
+                "requests_with_trims": sum(1 for t in trims if t["segments_trimmed"]),
+                "tokens_saved_possible": sum(t["tokens_saved"] for t in trims),
+                "tokens_saved_applied": sum(r["analysis"]["trim"]["tokens_saved"] for r in applied),
+            },
             "requests": len(self.recent),
             "analysed": len(analysed),
             "analysis_errors": sum(1 for r in self.recent if r.get("analysis_error")),
