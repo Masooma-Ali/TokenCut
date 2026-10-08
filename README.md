@@ -43,6 +43,23 @@ python -m eval.run_eval                 # all tasks in eval/tasks_iter1.json
 
 Results go to `eval/results/iter1_results.csv` and `eval/results/iter1_summary.md`.
 
+## Benchmark: TokenCut vs baselines
+
+`eval/benchmark.py` compares TokenCut with BM25, dense embeddings (bge-small), naive
+truncation, random and SWE-bench file retrieval at **equal token budgets** (15 / 35 / 60 %
+of a 32k context), in two settings: pure trimming of a shared neutral 32k context, and
+selection from the whole repository. Reports gold-chunk recall with 95% bootstrap CIs and
+paired sign tests. Tasks: 40 dev (used for tuning) and 81 held-out test tasks
+(`eval/tasks_iter2.json`).
+
+```
+python -m eval.prepare --set test                    # clone + parse once
+python -m eval.benchmark --set test                  # no embeddings
+python -m eval.benchmark --set test --methods tokencut,tokencut_hybrid,bm25,embed,random,head,bm25_files
+```
+
+Results: `eval/results/benchmark_<set>.md` / `.csv`.
+
 ## Gateway (Iteration 2)
 
 The gateway sits between your coding agent and the provider. It streams the reply back and
