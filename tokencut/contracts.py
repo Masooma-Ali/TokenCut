@@ -109,3 +109,40 @@ class ContextVariant(BaseModel):
     )
     token_count: int = Field(description="Includes skeleton tokens; must be <= budget_tokens")
     rendered_text: str = Field(description="The text that would be sent to the model")
+
+# ---------- Gateway requests (Iteration 2) ----------
+# A provider request (Anthropic / OpenAI / Gemini) is split into Segments by a provider
+# adapter. Trimming and routing only ever see Segments, so they are written once for all
+# providers. `path` locates the segment's text inside the original JSON body, so an adapter
+# can write shortened text back without understanding the trimming.
+
+
+class SegmentKind(str, Enum):
+    SYSTEM = "system"  # system prompt / instructions (never trimmed)
+    TOOLS = "tools"  # tool definitions (never trimmed)
+    USER_TEXT = "user_text"
+    ASSISTANT_TEXT = "assistant_text"
+    THINKING = "thinking"  # model reasoning blocks (never trimmed)
+    TOOL_CALL = "tool_call"  # assistant asks to run a tool (never trimmed)
+    TOOL_RESULT = "tool_result"  # output of a tool: file contents, command output, ...
+    MEDIA = "media"  # images, documents, unknown block types: never trimmed
+
+
+class ToolResultKind(str, Enum):
+    FILE_READ = "file_read"
+    COMMAND_OUTPUT = "command_output"
+    SEARCH = "search"
+    OTHER = "other"
+
+
+class Segment(BaseModel):
+    id: str = Field(description="Unique within one request, e.g. 'm3.b1' (message 3, block 1)")
+    kind: SegmentKind
+    role: str = Field(description="Provider role: system / user / assistant / tool / model")
+    message_index: int = Field(ge=-1, description="Index in the message list; -1 = outside it")
+    path: list[str | int] = Field(description="JSON path to this segment's text in the body")
+    text: str = ""
+    tool_name: str = ""
+    tool_call_id: str = ""
+    result_kind: ToolResultKind | None = None
+    token_count: int = Field(ge=0)

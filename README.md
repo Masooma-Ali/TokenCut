@@ -43,6 +43,36 @@ python -m eval.run_eval                 # all tasks in eval/tasks_iter1.json
 
 Results go to `eval/results/iter1_results.csv` and `eval/results/iter1_summary.md`.
 
+## Gateway (Iteration 2, shadow mode)
+
+The gateway sits between your coding agent and the provider. In shadow mode it forwards
+every request **unchanged**, streams the reply back, and records what each request contained
+(tokens per kind: system prompt, tools, chat, file reads, command output…) plus the tokens the
+provider actually billed, including cached tokens. Nothing is trimmed yet.
+
+```
+python -m tokencut.gateway          # listens on 127.0.0.1:8787
+```
+
+Point an agent at it:
+
+| Agent / SDK | Setting |
+|---|---|
+| Claude Code (Anthropic) | `ANTHROPIC_BASE_URL=http://127.0.0.1:8787/anthropic` |
+| OpenAI SDKs, Cline, OpenRouter-style clients | base URL `http://127.0.0.1:8787/openai/v1` |
+| Gemini (google-genai / Gemini CLI) | base URL `http://127.0.0.1:8787/gemini` |
+
+Your API key travels in the request headers to the provider as usual; it is never logged.
+See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request numbers go to
+`logs/gateway/requests-<date>.jsonl` (gitignored).
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `TOKENCUT_ANTHROPIC_UPSTREAM` / `_OPENAI_` / `_GEMINI_` | official API URLs | send to another compatible endpoint (e.g. OpenRouter) |
+| `TOKENCUT_LOG_DIR` | `logs/gateway` | where numbers are logged (empty = off) |
+| `TOKENCUT_CAPTURE` | off | `1` = also save full request bodies locally, for parser test fixtures (contain your prompts and code) |
+| `TOKENCUT_HOST` / `TOKENCUT_PORT` | `127.0.0.1` / `8787` | listen address |
+
 ## Code map
 
 | Module | What it does |
@@ -57,6 +87,9 @@ Results go to `eval/results/iter1_results.csv` and `eval/results/iter1_summary.m
 | `trimming/packing.py` | full pool, tier budgets, nested greedy packing, skeletons |
 | `trimming/render.py` | text sent to the model |
 | `eval/loader.py`, `eval/metrics.py`, `eval/run_eval.py` | SWE-bench Lite subset, gold chunks, recall metrics |
+| `gateway/app.py` | proxy server: forward, stream back, measure (shadow mode) |
+| `gateway/adapters/` | Anthropic / OpenAI / Gemini request JSON → `Segment` list |
+| `gateway/classify.py`, `gateway/usage.py`, `gateway/records.py` | tool-result kinds, billed usage from responses, request log |
 
 ## Ownership
 
