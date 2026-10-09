@@ -62,9 +62,13 @@ def detect_event(state: ConversationState | None, model: str, now: float, total_
                  body: dict, config: CacheEventConfig) -> str | None:
     if state is None:
         return None  # first time we see this conversation: its cache may still be valid
-    if model and state.model and model != state.model:
-        return "model_switch"
     ttl = 3600 if _ONE_HOUR_TTL.search(json.dumps(body.get("system", ""))) else config.cache_ttl_seconds
+    if model and state.model and model != state.model:
+        # Each model has its own cache: only a model not used here within the TTL starts cold.
+        seen = dict(state.model_seen)
+        seen.setdefault(state.model, state.last_seen)
+        if model not in seen or now - seen[model] > ttl:
+            return "model_switch"
     if now - state.last_seen > ttl:
         return "cache_expired"
     if total_tokens >= config.compact_at_tokens and (
@@ -319,5 +323,7 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
 
         state.model = model or state.model
         state.last_seen = now
+        if model:
+            state.model_seen[model] = now
         store.put(key, state)
     return new_body, report, event

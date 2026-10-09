@@ -73,6 +73,20 @@ def test_detect_event():
     assert detect_event(state, "a", 101, 1600, {}, cfg) == "context_full"
 
 
+def test_switching_back_to_a_recently_used_model_is_not_an_event():
+    cfg = CacheEventConfig(cache_ttl_seconds=300)
+    state = ConversationState(model="sonnet", last_seen=100.0, model_seen={"haiku": 50.0, "sonnet": 100.0})
+    assert detect_event(state, "haiku", 120, 10, {}, cfg) is None  # haiku's cache is still warm
+    assert detect_event(state, "haiku", 400, 10, {}, cfg) == "model_switch"  # haiku cold again
+    assert detect_event(state, "opus", 120, 10, {}, cfg) == "model_switch"  # never used here
+
+    store = SessionStore()  # end to end: haiku -> sonnet (event) -> haiku within TTL (no event)
+    run(conversation(["bash"] * 6, model="haiku"), store, now=0)
+    _, _, first = run(conversation(["bash"] * 7, model="sonnet"), store, now=10)
+    _, _, back = run(conversation(["bash"] * 8, model="haiku"), store, now=20)
+    assert (first, back) == ("model_switch", None)
+
+
 def test_conversation_key_ignores_model_and_later_turns():
     a = conversation(["bash"], model="m1")
     b = conversation(["bash", "bash", "read"], model="m2")

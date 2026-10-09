@@ -45,6 +45,7 @@ class ConversationState:
     masked_paths: set[str] = field(default_factory=set)  # files whose old reads were removed
     protected_paths: set[str] = field(default_factory=set)  # re-read after removal: keep
     kept_tools: list[str] | None = None  # tool names offered since the last event
+    model_seen: dict[str, float] = field(default_factory=dict)  # model -> last request time
     last_event_tokens: int | None = None  # request size at the last event
     events: int = 0
 
