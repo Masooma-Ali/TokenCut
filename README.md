@@ -93,6 +93,10 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_MODE` | `shadow` | `shadow` = forward unchanged, report possible savings; `trim` = send the trimmed request |
 | `TOKENCUT_TIER` | `moderate` | `aggressive` / `moderate` / `conservative` |
 | `TOKENCUT_MIN_TRIM_TOKENS` | `2000` | tool results smaller than this are never trimmed |
+| `TOKENCUT_CACHE_EVENTS` | `1` | `0` = never re-trim history at cache events |
+| `TOKENCUT_CACHE_TTL` | `300` | seconds of idle after which the provider cache counts as expired |
+| `TOKENCUT_PRUNE_TOOLS` | off | `1` = at cache events, send only tools used so far + core tools |
+| `TOKENCUT_CORE_TOOLS` | Claude Code / Gemini CLI basics | comma-separated tools always kept when pruning |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become
@@ -101,6 +105,14 @@ command output (failures, errors and the summary are kept) and search results.
 System prompt, tools, chat text and tool calls are never touched; files the user named or
 the agent already edited stay whole. A result's trim depends only on earlier conversation,
 so it is identical on every later turn and the provider's prompt cache keeps working.
+
+**Cache-event trimming.** The cache is lost anyway when the model changes, after the cache
+expires, or when the context is nearly full. At those moments TokenCut also shrinks old
+history: old command/test/search output becomes a note with its error lines, older reads of
+a file that was read again or edited become a short note, and (opt-in) unused tool
+definitions are dropped. The last few turns are never touched. The decisions are remembered
+per conversation and re-sent identically until the next event; a file the agent re-reads
+after its old read was removed is protected from then on.
 
 ## Code map
 
@@ -120,6 +132,7 @@ so it is identical on every later turn and the provider's prompt cache keeps wor
 | `gateway/adapters/` | Anthropic / OpenAI / Gemini request JSON → `Segment` list |
 | `gateway/classify.py`, `gateway/usage.py`, `gateway/records.py` | tool-result kinds, billed usage from responses, request log |
 | `gateway/trimmer.py`, `gateway/codeview.py`, `gateway/textcut.py` | cache-safe trimming of tool results: code, command output, search |
+| `gateway/history.py`, `gateway/session.py` | cache-event trimming of old history and tool definitions; per-conversation memory |
 
 ## Ownership
 

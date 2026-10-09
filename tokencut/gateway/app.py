@@ -26,7 +26,9 @@ from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from tokencut.contracts import Tier
+from tokencut.gateway.history import CacheEventConfig
 from tokencut.gateway.records import RequestLog, analyse, now_iso
+from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig
 from tokencut.gateway.usage import UsageSniffer
 
@@ -68,6 +70,8 @@ class GatewayConfig:
     capture: bool = False  # save full request bodies (local only) for test fixtures
     mode: str = "shadow"  # "shadow": forward unchanged, report possible savings; "trim": apply
     trim: TrimConfig = field(default_factory=TrimConfig)
+    cache_events: bool = True  # re-trim history when the provider cache is lost anyway
+    events: CacheEventConfig = field(default_factory=CacheEventConfig)
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -83,12 +87,22 @@ class GatewayConfig:
             tier=Tier(os.environ.get("TOKENCUT_TIER", TrimConfig.tier.value)),
             min_tokens=int(os.environ.get("TOKENCUT_MIN_TRIM_TOKENS", TrimConfig.min_tokens)),
         )
+        events = CacheEventConfig(
+            cache_ttl_seconds=int(os.environ.get("TOKENCUT_CACHE_TTL",
+                                                 CacheEventConfig.cache_ttl_seconds)),
+            prune_tools=os.environ.get("TOKENCUT_PRUNE_TOOLS", "") == "1",
+        )
+        core = os.environ.get("TOKENCUT_CORE_TOOLS")
+        if core:
+            events.core_tools = tuple(t.strip() for t in core.split(",") if t.strip())
         return cls(
             upstreams=upstreams,
             log_dir=Path(log_dir) if log_dir else None,
             capture=os.environ.get("TOKENCUT_CAPTURE", "") == "1",
             mode=mode,
             trim=trim,
+            cache_events=os.environ.get("TOKENCUT_CACHE_EVENTS", "1") != "0",
+            events=events,
         )
 
 
@@ -97,6 +111,8 @@ def create_app(
 ) -> FastAPI:
     config = config or GatewayConfig.from_env()
     request_log = RequestLog(config.log_dir, config.capture)
+    # Conversation memory for cache-event trimming (in shadow mode its decisions are never sent).
+    session = (SessionStore(), config.events) if config.cache_events else None
     timeout = httpx2.Timeout(connect=10.0, read=600.0, write=60.0, pool=10.0)
 
     @asynccontextmanager
@@ -110,7 +126,13 @@ def create_app(
 
     @app.get("/tokencut/health")
     async def health() -> dict:
-        return {"status": "ok", "mode": config.mode, "tier": config.trim.tier.value}
+        return {
+            "status": "ok",
+            "mode": config.mode,
+            "tier": config.trim.tier.value,
+            "cache_events": config.cache_events,
+            "prune_tools": config.events.prune_tools,
+        }
 
     @app.get("/tokencut/stats")
     async def stats() -> dict:
@@ -135,7 +157,7 @@ def create_app(
                 # Trim before sending. Any failure: send the original request (fail open).
                 try:
                     analysis, trimmed = await asyncio.to_thread(
-                        analyse, provider, path, body, config.trim
+                        analyse, provider, path, body, config.trim, session
                     )
                     record["analysis"] = analysis
                     if trimmed is not None:
@@ -148,7 +170,7 @@ def create_app(
                 # Shadow: measure (and work out the possible trim) in a worker thread while the
                 # unchanged request is already on its way, so no latency is added.
                 analysis_task = asyncio.create_task(
-                    asyncio.to_thread(analyse, provider, path, body, config.trim)
+                    asyncio.to_thread(analyse, provider, path, body, config.trim, session)
                 )
 
         url = f"{config.upstreams[provider]}/{path}"

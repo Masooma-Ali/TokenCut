@@ -350,6 +350,7 @@ def test_trim_failure_forwards_original(tmp_path, monkeypatch):
         raise RuntimeError("boom")
 
     monkeypatch.setattr("tokencut.gateway.records.trim_request", broken)
+    monkeypatch.setattr("tokencut.gateway.records.trim_with_cache_events", broken)
     app, upstream = client_for("trim", tmp_path)
     raw = json.dumps(conversation()).encode()
     with TestClient(app) as client:
