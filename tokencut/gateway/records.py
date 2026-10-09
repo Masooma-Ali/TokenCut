@@ -13,6 +13,8 @@ from pathlib import Path
 
 from tokencut.contracts import Segment, SegmentKind, ToolResultKind
 from tokencut.gateway.adapters import anthropic, gemini, openai
+from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
+from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
 
 ADAPTERS = {"anthropic": anthropic, "openai": openai, "gemini": gemini}
@@ -20,7 +22,12 @@ RECENT_RECORDS = 1000
 
 
 def analyse(
-    provider: str, path: str, body: bytes, trim_config: TrimConfig | None = None
+    provider: str,
+    path: str,
+    body: bytes,
+    trim_config: TrimConfig | None = None,
+    session: tuple[SessionStore, CacheEventConfig] | None = None,
+    now: float | None = None,
 ) -> tuple[dict, bytes | None]:
     """Split a request into segments and count tokens per kind; with a TrimConfig, also
     work out the cache-safe trim. Returns (analysis, trimmed body bytes or None).
@@ -38,10 +45,19 @@ def analyse(
     new_bytes = None
     if trim_config is not None:
         trim_start = time.perf_counter()
-        new_body, report = trim_request(data, segments, trim_config)
+        event = None
+        if session is not None:  # cache-event trimming (remembers decisions per conversation)
+            store, events_config = session
+            new_body, report, event = trim_with_cache_events(
+                provider, analysis["model"], data, segments, trim_config, events_config, store,
+                now=now, total_tokens=analysis["tokens_total"],
+            )
+        else:
+            new_body, report = trim_request(data, segments, trim_config)
         analysis["trim"] = {
             **report.as_dict(),
             "tier": trim_config.tier.value,
+            "cache_event": event,
             "trim_ms": round((time.perf_counter() - trim_start) * 1000, 1),
         }
         if new_body is not None:
@@ -114,6 +130,10 @@ class RequestLog:
         applied = [r for r in analysed if r.get("trim_applied")]
         return {
             "trimming": {
+                "cache_events": _count(
+                    [t["cache_event"] for t in trims if t.get("cache_event")]
+                ),
+                "saved_by": _saved_by(trims),
                 "requests_with_trims": sum(1 for t in trims if t["segments_trimmed"]),
                 "tokens_saved_possible": sum(t["tokens_saved"] for t in trims),
                 "tokens_saved_applied": sum(r["analysis"]["trim"]["tokens_saved"] for r in applied),
@@ -128,6 +148,22 @@ class RequestLog:
             "tool_result_tokens": by_result,
             "billed_usage": usage_total,
         }
+
+
+def _count(values: list[str]) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for v in values:
+        out[v] = out.get(v, 0) + 1
+    return dict(sorted(out.items()))
+
+
+def _saved_by(trims: list[dict]) -> dict[str, int]:
+    """Tokens saved per trimming method, summed over requests."""
+    out: dict[str, int] = {}
+    for t in trims:
+        for d in t.get("details", []):
+            out[d["how"]] = out.get(d["how"], 0) + d["before"] - d["after"]
+    return dict(sorted(out.items()))
 
 
 def now_iso() -> str:
