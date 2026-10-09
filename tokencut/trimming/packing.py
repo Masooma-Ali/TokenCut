@@ -25,6 +25,10 @@ from tokencut.trimming.render import file_header, render_variant, skeleton_text
 TIER_ORDER = [Tier.AGGRESSIVE, Tier.MODERATE, Tier.CONSERVATIVE, Tier.FULL]
 SEPARATOR_TOKENS = 1  # the blank line between two rendered chunks, roughly one token
 _SKELETON_KINDS = (ChunkKind.CLASS, ChunkKind.FUNCTION, ChunkKind.METHOD)
+# Dependency hops pulled in with each kept chunk, per tier (tunable). In the tight aggressive
+# tier each chunk comes alone (its class header and file imports are still added), so the
+# budget goes to more relevant chunks; larger tiers also bring the functions it calls.
+CLOSURE_HOPS: dict[Tier, int] = {Tier.AGGRESSIVE: 0, Tier.MODERATE: 1, Tier.CONSERVATIVE: 1}
 # Pool file ranking (tunable; chosen on the 40 eval tasks, checked on held-out django tasks).
 FILE_TOP_K = 3  # a file's chunk score = mean of its 3 best chunk scores
 FILE_TEXT_WEIGHT = 0.25  # weight of the whole-file BM25 score
@@ -112,18 +116,30 @@ def tier_budgets(
 
 
 class TierPacker:
-    def __init__(self, pool: list[Chunk], scores: list[ScoredChunk], index: GraphIndex):
+    def __init__(self, pool: list[Chunk], scores: list[ScoredChunk], index: GraphIndex,
+                 closure_hops: int | dict[Tier, int] | None = None,
+                 tier_scores: dict[Tier, list[ScoredChunk]] | None = None):
+        """tier_scores: optional different ranking for some tiers (e.g. a blended one for the
+        larger tiers); tiers not listed use `scores`."""
         self.pool = pool
         self.by_id = {c.id: c for c in pool}
+        self.scores = scores
+        self.tier_scores = tier_scores or {}
+        self._use_ranking(scores)
+        self.index = index
+        # How many hops of dependencies come along with each kept chunk (per tier or for all).
+        self.closure_hops = CLOSURE_HOPS if closure_hops is None else closure_hops
+        self._hops = 1
+        self._skeleton_tokens: dict[str, int] = {}
+        self._header_tokens: dict[str, int] = {}
+
+    def _use_ranking(self, scores: list[ScoredChunk]) -> None:
         # Rank = position in score order (score desc, ties by id); pool chunks without a score go last.
         ordered = [s.chunk_id for s in scores if s.chunk_id in self.by_id]
         seen = set(ordered)
         ordered += sorted(cid for cid in self.by_id if cid not in seen)
         self.ranked = ordered
         self.rank = {cid: i for i, cid in enumerate(ordered)}
-        self.index = index
-        self._skeleton_tokens: dict[str, int] = {}
-        self._header_tokens: dict[str, int] = {}
 
     # ---------- cost estimates ----------
 
@@ -176,7 +192,7 @@ class TierPacker:
         for cid in self.ranked:
             if cid in kept or self.by_id[cid].token_count == 0:
                 continue  # an empty chunk (e.g. empty __init__.py) adds only a file header
-            group = (self.index.closure({cid}, max_hops=1) & self.by_id.keys()) - kept
+            group = (self.index.closure({cid}, max_hops=self._hops) & self.by_id.keys()) - kept
             group.add(cid)
             cost = self._cost_to_keep(group, skeletons, files)
             if cost > remaining:
@@ -271,6 +287,9 @@ class TierPacker:
 
         for tier in TIER_ORDER:
             budget = budgets[tier]
+            self._use_ranking(self.tier_scores.get(tier, self.scores))
+            hops = self.closure_hops
+            self._hops = hops.get(tier, 1) if isinstance(hops, dict) else hops
             if tier == Tier.FULL:
                 kept, skeletons = set(self.by_id), set()
                 text, tokens = self._render(kept, skeletons)

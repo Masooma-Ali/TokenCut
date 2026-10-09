@@ -83,6 +83,33 @@ def select_task_ids(rows: list[dict], count: int = DEFAULT_TASK_COUNT) -> list[s
     return sorted(chosen[:count])
 
 
+# Held-out test set (Iteration 2 benchmark): never used for tuning. Per-repo quotas give a
+# mix of repos and sizes; tasks are the first ones by id that are not in the dev set.
+TEST_QUOTAS = {
+    "matplotlib/matplotlib": 12, "scikit-learn/scikit-learn": 12, "sympy/sympy": 14,
+    "sphinx-doc/sphinx": 10, "astropy/astropy": 6, "pylint-dev/pylint": 6, "pydata/xarray": 5,
+    "mwaskom/seaborn": 4, "django/django": 11, "pytest-dev/pytest": 1,
+}
+# Django tasks already used once to check a change (DECISIONS.md, 2026-10-08): kept out of test.
+DJANGO_CHECKED = 30
+
+
+def select_test_ids(rows: list[dict], dev_ids: list[str]) -> list[str]:
+    """Deterministic held-out test set, disjoint from dev and from the checked django tasks."""
+    dev = set(dev_ids)
+    by_repo: dict[str, list[str]] = {}
+    for row in rows:
+        if row["instance_id"] not in dev:
+            by_repo.setdefault(row["repo"], []).append(row["instance_id"])
+    chosen = []
+    for repo, quota in sorted(TEST_QUOTAS.items()):
+        ids = sorted(by_repo.get(repo, []))
+        if repo == "django/django":
+            ids = ids[DJANGO_CHECKED:]
+        chosen.extend(ids[:quota])
+    return sorted(chosen)
+
+
 def gold_from_patch(patch: str) -> tuple[list[str], dict[str, list[int]]]:
     """Gold files and original-file line numbers touched by the reference patch.
 
@@ -114,7 +141,9 @@ def ensure_clone(repo: str, repos_dir: Path = DEFAULT_REPOS_DIR) -> Path:
     if not (path / ".git").exists():
         repos_dir.mkdir(parents=True, exist_ok=True)
         subprocess.run(
-            ["git", "clone", "--quiet", f"https://github.com/{repo}.git", str(path)], check=True
+            ["git", "clone", "--quiet", "--filter=blob:none", f"https://github.com/{repo}.git",
+             str(path)],
+            check=True,
         )
     return path
 
