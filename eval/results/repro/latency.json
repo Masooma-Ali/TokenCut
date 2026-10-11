@@ -1,0 +1,125 @@
+{
+  "first_call_ms": 49.0,
+  "sizes": [
+    {
+      "target": 10000,
+      "proxy_tokens": 12861,
+      "tool_results_trimmed": 1,
+      "saved_pct_on_arrival": 17.2,
+      "messages": 3,
+      "saved_pct_model_switch": 17.2,
+      "on_arrival": {
+        "median_ms": 38.5,
+        "p95_ms": 72.0,
+        "trim_median_ms": 30.4,
+        "n": 15
+      },
+      "steady": {
+        "median_ms": 40.9,
+        "p95_ms": 164.5,
+        "trim_median_ms": 30.0,
+        "n": 15
+      },
+      "model_switch": {
+        "median_ms": 38.4,
+        "p95_ms": 60.4,
+        "trim_median_ms": 32.7,
+        "n": 15
+      },
+      "events": [
+        "model_switch:model_switch",
+        "steady:None"
+      ]
+    },
+    {
+      "target": 50000,
+      "proxy_tokens": 48949,
+      "tool_results_trimmed": 6,
+      "saved_pct_on_arrival": 41.2,
+      "messages": 15,
+      "saved_pct_model_switch": 63.2,
+      "on_arrival": {
+        "median_ms": 278.7,
+        "p95_ms": 552.2,
+        "trim_median_ms": 249.4,
+        "n": 15
+      },
+      "steady": {
+        "median_ms": 324.6,
+        "p95_ms": 752.2,
+        "trim_median_ms": 279.1,
+        "n": 15
+      },
+      "model_switch": {
+        "median_ms": 322.1,
+        "p95_ms": 625.5,
+        "trim_median_ms": 281.8,
+        "n": 15
+      },
+      "events": [
+        "model_switch:model_switch",
+        "steady:None"
+      ]
+    },
+    {
+      "target": 100000,
+      "proxy_tokens": 91389,
+      "tool_results_trimmed": 14,
+      "saved_pct_on_arrival": 49.3,
+      "messages": 31,
+      "saved_pct_model_switch": 80.3,
+      "on_arrival": {
+        "median_ms": 783.4,
+        "p95_ms": 1067.0,
+        "trim_median_ms": 673.1,
+        "n": 10
+      },
+      "steady": {
+        "median_ms": 795.3,
+        "p95_ms": 1031.2,
+        "trim_median_ms": 696.9,
+        "n": 10
+      },
+      "model_switch": {
+        "median_ms": 825.1,
+        "p95_ms": 1274.4,
+        "trim_median_ms": 732.8,
+        "n": 10
+      },
+      "events": [
+        "model_switch:model_switch",
+        "steady:None"
+      ]
+    },
+    {
+      "target": 200000,
+      "proxy_tokens": 171551,
+      "tool_results_trimmed": 29,
+      "saved_pct_on_arrival": 53.4,
+      "messages": 61,
+      "saved_pct_model_switch": 89.5,
+      "on_arrival": {
+        "median_ms": 818.8,
+        "p95_ms": 1738.9,
+        "trim_median_ms": 733.2,
+        "n": 8
+      },
+      "steady": {
+        "median_ms": 905.6,
+        "p95_ms": 1791.8,
+        "trim_median_ms": 776.3,
+        "n": 8
+      },
+      "model_switch": {
+        "median_ms": 760.3,
+        "p95_ms": 1514.4,
+        "trim_median_ms": 681.8,
+        "n": 8
+      },
+      "events": [
+        "model_switch:model_switch",
+        "steady:context_full"
+      ]
+    }
+  ]
+}
