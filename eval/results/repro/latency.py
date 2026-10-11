@@ -20,12 +20,12 @@ from pathlib import Path
 
 sys.path.insert(0, ".")
 
-from tokencut.contracts import Tier  # noqa: E402
-from tokencut.gateway.history import CacheEventConfig  # noqa: E402
-from tokencut.gateway.records import analyse  # noqa: E402
-from tokencut.gateway.session import SessionStore  # noqa: E402
-from tokencut.gateway.trimmer import TrimConfig  # noqa: E402
-from tokencut.tokens import count_tokens  # noqa: E402
+from tokencut.contracts import Tier
+from tokencut.gateway.history import CacheEventConfig
+from tokencut.gateway.records import analyse
+from tokencut.gateway.session import SessionStore
+from tokencut.gateway.trimmer import TrimConfig
+from tokencut.tokens import count_tokens
 
 REPO = Path("swebench_repos/django__django")
 SIZES = [10_000, 50_000, 100_000, 200_000]
@@ -48,7 +48,7 @@ def source_files() -> list[tuple[str, str]]:
 
 def pytest_log(i: int, n_pass: int = 260) -> str:
     lines = ["============================= test session starts =============================",
-             "platform linux -- Python 3.11.4, pytest-7.4.0", "collected %d items" % (n_pass + 3), ""]
+             "platform linux -- Python 3.11.4, pytest-7.4.0", f"collected {n_pass + 3} items", ""]
     lines += [f"tests/queries/test_q{i}.py::QueryTests::test_case_{k} PASSED" for k in range(n_pass)]
     lines += ["", "=================================== FAILURES ===================================",
               f"__________________________ QueryTests.test_filter_{i} __________________________",
@@ -155,10 +155,10 @@ def main(out_path: str) -> None:
             trim_ms["model_switch"].append(m["trim"]["trim_ms"])
             event_seen.add(("model_switch", m["trim"]["cache_event"]))
             row["saved_pct_model_switch"] = round(100 * m["trim"]["tokens_saved"] / m["tokens_total"], 1)
-        for k in timings:
-            row[k] = {"median_ms": round(statistics.median(timings[k]), 1),
-                      "p95_ms": round(pct(timings[k], 0.95), 1),
-                      "trim_median_ms": round(statistics.median(trim_ms[k]), 1), "n": len(timings[k])}
+        for k, values in timings.items():
+            row[k] = {"median_ms": round(statistics.median(values), 1),
+                      "p95_ms": round(pct(values, 0.95), 1),
+                      "trim_median_ms": round(statistics.median(trim_ms[k]), 1), "n": len(values)}
         row["events"] = sorted(f"{a}:{b}" for a, b in event_seen)
         results["sizes"].append(row)
         print(json.dumps(row), flush=True)
