@@ -91,6 +91,9 @@ class GatewayConfig:
             cache_ttl_seconds=int(os.environ.get("TOKENCUT_CACHE_TTL",
                                                  CacheEventConfig.cache_ttl_seconds)),
             prune_tools=os.environ.get("TOKENCUT_PRUNE_TOOLS", "") == "1",
+            task_masking=os.environ.get("TOKENCUT_TASK_MASK", "") == "1",
+            task_mask_min_tokens=int(os.environ.get("TOKENCUT_TASK_MASK_TOKENS",
+                                                    CacheEventConfig.task_mask_min_tokens)),
         )
         core = os.environ.get("TOKENCUT_CORE_TOOLS")
         if core:
@@ -132,6 +135,7 @@ def create_app(
             "tier": config.trim.tier.value,
             "cache_events": config.cache_events,
             "prune_tools": config.events.prune_tools,
+            "task_masking": config.events.task_masking,
         }
 
     @app.get("/tokencut/stats")

@@ -26,6 +26,12 @@ Concretely you will (details in section 6):
 5. Write the results into `docs/RESULTS_REPORT.md` (template in section 8) and keep it up
    to date. Honest negative results are as valuable as positive ones.
 
+**Update 2026-10-12:** at a team member's request, two improvements found by this phase's
+measurements were implemented on branch `trimming/researchpapers_methodology` — **R8** (diffs
+and "full" requests never trimmed) and **R10** (opt-in task masking, `TOKENCUT_TASK_MASK=1`);
+see `docs/DECISIONS.md` and `docs/RESULTS_REPORT.md` §4.6. Other recommendations stay
+recommendations until the team decides.
+
 Small fixes are allowed **only** when a test or measurement exposes a real bug. Then: write
 a failing test first, fix, keep all tests green, log it in `docs/DECISIONS.md`, and mention
 it in the report. Anything bigger → write it down as a recommendation, do not build it.
@@ -129,7 +135,7 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `tokencut/gateway/records.py`, `app.py` | analysis, logs, stats, modes, settings |
 | `eval/loader.py`, `metrics.py`, `run_eval.py` | SWE-bench Lite loader (HF datasets-server), gold chunks, Iteration 1 eval |
 | `eval/benchmark.py`, `embeddings.py`, `prepare.py` | head-to-head benchmark vs baselines; task sets in `eval/tasks_iter2.json` |
-| `tests/` | 136 tests (all must pass) |
+| `tests/` | 145 tests (all must pass) |
 
 ### Gateway settings (environment variables)
 | Variable | Default | Meaning |
@@ -141,6 +147,8 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_CACHE_TTL` | `300` | idle seconds after which the cache counts as expired (requests marked `"ttl": "1h"` use 3600 — Claude Code appears to use this) |
 | `TOKENCUT_PRUNE_TOOLS` | off | `1` = at cache events keep only tools used so far + core tools |
 | `TOKENCUT_CORE_TOOLS` | Claude Code / Gemini CLI basics | comma-separated tools always kept when pruning |
+| `TOKENCUT_TASK_MASK` | off | `1` = at a new user task, mask earlier tasks' large outputs if the cache rewrite pays off (R10) |
+| `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest output masked at a new task |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
 | `TOKENCUT_{ANTHROPIC,OPENAI,GEMINI}_UPSTREAM` | official URLs | other compatible endpoints |
@@ -193,7 +201,7 @@ real bugs** with trimmed context — that is the biggest open evidence gap.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                 # must be 136+ passed
+pytest -q                 # must be 145+ passed
 ruff check .              # must be clean
 ```
 The machine may have no `python` command; use `python3` or the venv. The first token count

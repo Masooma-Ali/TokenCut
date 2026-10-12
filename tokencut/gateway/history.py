@@ -11,6 +11,11 @@ the whole prompt at full price anyway, so TokenCut also shrinks old history:
 The most recent turns are never touched. Decisions are remembered (session.py) and sent
 identically until the next event. A file the agent re-reads after we removed an old read
 of it is protected from then on.
+
+Task masking (R10, opt-in): when the user starts a new task, the previous tasks' large tool
+outputs become the same kind of note. The agent saw them whole while it worked on them.
+Unlike an event this breaks the cache from the first changed output on, so it is done only
+when the cache reads saved on later requests outweigh that one-time rewrite.
 """
 
 import copy
@@ -24,6 +29,7 @@ from tokencut.gateway.adapters.common import lookup, set_text
 from tokencut.gateway.session import ConversationState, SessionStore, conversation_key, fingerprint
 from tokencut.gateway.textcut import _ERROR
 from tokencut.gateway.trimmer import (
+    _REMINDER,
     TrimConfig,
     TrimReport,
     _call_path,
@@ -43,6 +49,9 @@ DEFAULT_CORE_TOOLS = (
     "list_directory", "apply_patch", "str_replace_editor", "str_replace_based_edit_tool",
 )
 _ONE_HOUR_TTL = re.compile(r'"ttl"\s*:\s*"1h"')
+# Provider prices relative to uncached input (Anthropic): a cache read ~0.1x, a write ~1.25x.
+CACHE_READ_PRICE = 0.1
+CACHE_WRITE_PRICE = 1.25
 
 
 @dataclass
@@ -53,6 +62,9 @@ class CacheEventConfig:
     history_min_tokens: int = 200  # older results smaller than this are left alone
     prune_tools: bool = False  # opt-in: fewer tool definitions at events
     core_tools: tuple[str, ...] = DEFAULT_CORE_TOOLS
+    task_masking: bool = False  # opt-in (R10): mask finished tasks' outputs at a new task
+    task_mask_min_tokens: int = 300  # (tunable) smaller outputs are left alone
+    task_min_expected_requests: int = 20  # (tunable) assume at least this many requests follow
 
 
 # ---------- event detection ----------
@@ -154,6 +166,23 @@ def _output_note(info: _ResultInfo) -> str:
     return head + ". Key lines:]\n" + "\n".join(line[:300] for line in key)
 
 
+def _note(info: _ResultInfo, later: list[_ResultInfo], edits: list[tuple[int, str]]) -> tuple[str, str]:
+    """(note, how) replacing an old tool result. `later` = results after it in the request."""
+    seg, path = info.seg, info.path
+    if not path:
+        return _output_note(info), "history_old_output"
+    removed = f"[TokenCut: earlier read of {path} removed ({seg.token_count} tokens); "
+    if any(r.path and _same_file(r.path, path) for r in later):
+        return removed + "a newer read of this file appears later in the conversation]", \
+            "history_duplicate_read"
+    if any(pos > info.position and _same_file(p, path) for pos, p in edits):
+        return removed + "the file was edited afterwards, read it again for the current version]", \
+            "history_stale_read"
+    if seg.result_kind == ToolResultKind.FILE_READ:
+        return removed + "read it again if needed]", "history_old_read"
+    return _output_note(info), "history_old_output"
+
+
 def _history_replacements(segments: list[Segment], state: ConversationState,
                           config: CacheEventConfig, keep_turns: int) -> dict[str, tuple[str, str]]:
     """fingerprint -> (replacement text, how) for old tool results, decided at an event."""
@@ -167,32 +196,70 @@ def _history_replacements(segments: list[Segment], state: ConversationState,
         fp = fingerprint(seg)
         if fp in state.pinned:
             continue  # already decided at an earlier event: keep it identical
-        path = info.path
-        if path and any(_same_file(path, p) for p in state.protected_paths):
+        if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
             continue
-        if path:
-            newer = any(r.path and _same_file(r.path, path) for r in results[i + 1:])
-            edited = any(pos > info.position and _same_file(p, path) for pos, p in edits)
-            if newer:
-                note = (f"[TokenCut: earlier read of {path} removed ({seg.token_count} tokens); "
-                        "a newer read of this file appears later in the conversation]")
-                how = "history_duplicate_read"
-            elif edited:
-                note = (f"[TokenCut: earlier read of {path} removed ({seg.token_count} tokens); "
-                        "the file was edited afterwards, read it again for the current version]")
-                how = "history_stale_read"
-            elif seg.result_kind == ToolResultKind.FILE_READ:
-                note = (f"[TokenCut: earlier read of {path} removed ({seg.token_count} tokens); "
-                        "read it again if needed]")
-                how = "history_old_read"
-            else:
-                note, how = _output_note(info), "history_old_output"
-            state.masked_paths.add(path)
-        else:
-            note, how = _output_note(info), "history_old_output"
+        note, how = _note(info, results[i + 1:], edits)
+        if info.path:
+            state.masked_paths.add(info.path)
         if count_tokens(note) < seg.token_count:
             decided[fp] = (note, how)
     return decided
+
+
+# ---------- R10: a new task masks the finished tasks' outputs ----------
+
+
+def _real_user_positions(segments: list[Segment]) -> list[int]:
+    """Positions of user messages typed by the user (not tool results, not reminders)."""
+    return [pos for pos, s in enumerate(segments)
+            if s.kind == SegmentKind.USER_TEXT and _REMINDER.sub("", s.text).strip()]
+
+
+def _task_replacements(segments: list[Segment], state: ConversationState,
+                       config: CacheEventConfig, task_start: int) -> dict[str, tuple[str, str]]:
+    """fingerprint -> (note, "task_masked") for large tool results before `task_start`.
+
+    Masking changes cached history, so the request is re-cached from the first masked
+    result to the new task (once, at the write price). It saves that many tokens of cache
+    reads on every later request. Mask only if the expected saving is the larger one.
+    """
+    results, edits = _scan(segments)
+    candidates: dict[str, tuple[str, _ResultInfo]] = {}
+    for i, info in enumerate(results):
+        seg = info.seg
+        if info.position >= task_start or seg.token_count < config.task_mask_min_tokens:
+            continue
+        fp = fingerprint(seg)
+        if fp in state.pinned:
+            continue  # decided earlier: stays identical
+        if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
+            continue
+        note, _ = _note(info, results[i + 1:], edits)
+        if count_tokens(note) < seg.token_count:
+            candidates[fp] = (note, info)
+    if not candidates:
+        return {}
+
+    removed = sum(info.seg.token_count - count_tokens(note) for note, info in candidates.values())
+    first = min(info.position for _, info in candidates.values())
+    rewrite = 0  # tokens re-cached once: from the first masked result up to the new task
+    for seg in segments[first:task_start]:
+        fp = fingerprint(seg)
+        if fp in candidates:
+            rewrite += count_tokens(candidates[fp][0])
+        elif fp in state.pinned:
+            rewrite += count_tokens(state.pinned[fp])
+        else:
+            rewrite += seg.token_count
+    # A masked result is not re-sent for the rest of the session. Its length is unknown, so a
+    # session that already lasted N requests is assumed to last about N more (with a floor).
+    expected = max(config.task_min_expected_requests, state.requests)
+    if CACHE_READ_PRICE * removed * expected < (CACHE_WRITE_PRICE - CACHE_READ_PRICE) * rewrite:
+        return {}  # the one-time cache rewrite would cost more than it saves
+    for _, info in candidates.values():
+        if info.path:
+            state.masked_paths.add(info.path)
+    return {fp: (note, "task_masked") for fp, (note, _) in candidates.items()}
 
 
 # ---------- tool definitions ----------
@@ -263,8 +330,10 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
     with store.lock:
         state = store.get(key)
         event = detect_event(state, model, now, total, body, events_config)
+        first_sight = state is None
         if state is None:
             state = ConversationState(model=model, last_seen=now)
+        user_positions = _real_user_positions(segments)
 
         # A new read of a file we removed earlier: the agent needs it, protect it from now on.
         results, _ = _scan(segments)
@@ -284,6 +353,12 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
                 state.kept_tools = sorted(set(events_config.core_tools) | used)
             state.events += 1
             state.last_event_tokens = total
+        elif (events_config.task_masking and not first_sight and user_positions
+              and len(user_positions) > state.user_turns):
+            # R10: the user started a new task; its own outputs are still to come.
+            decided = _task_replacements(segments, state, events_config, user_positions[-1])
+            for fp, (text, _) in decided.items():
+                state.pinned[fp] = text
         else:
             decided = {}
 
@@ -325,5 +400,7 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
         state.last_seen = now
         if model:
             state.model_seen[model] = now
+        state.user_turns = len(user_positions)
+        state.requests += 1
         store.put(key, state)
     return new_body, report, event

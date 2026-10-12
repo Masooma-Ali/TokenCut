@@ -448,7 +448,66 @@ or leave output whole when unsure.
 SWE-bench Verified with and without the method and report **solve rate, tokens, cost and
 rounds** — the evidence TokenCut still lacks at scale (CLAUDE.md step D).
 
-### 4.4 Citation checks
+### 4.4 Replay of the L1 session with the adoptable methods (free, offline)
+
+Before implementing anything in the gateway, the candidate methods were prototyped in
+`eval/replay_captures.py` and replayed on the **109 captured L1 requests** (Haiku, 12 tasks,
+82 distinct tool outputs; tool outputs = 22.5 % of the session's proxy tokens). Each method
+sees exactly the same session.
+
+- **current** — TokenCut's gateway trimmer, at thresholds 2,000 (default) / 1,000 / 500
+- **r8** — current, but diffs and outputs the user asked for "in full" stay whole (§4.3 row 4)
+- **lamr** — r8 + model-free line-level pruning with dependency repair (enclosing
+  def/class/hunk headers, used imports) for every output that is not a Python file read
+  (§4.3 row 3, LaMR / SWE-Pruner idea without a model)
+- **r10** — when a new user task starts, the previous task's large outputs become a ~40-token
+  note (R10)
+
+Cost unit: input-equivalent tokens (cache read × 0.1, cache write × 1.25, uncached × 1),
+converted from proxy to provider tokens with the session's measured ratio (1.67). On-arrival
+trims are cache-safe: they save the first cache write and every later cache read. R10 pays a
+one-time cache rewrite of the changed tail at each task boundary. Baseline: the session's
+**measured** billed cost, 1,483,560.
+
+| Method | Threshold | Outputs trimmed | Of which diffs | Saving (input-equivalent) | % of session cost |
+|---|---|---|---|---|---|
+| current | 2,000 | 1 | 1 | 6,828 | 0.46 % — the git diff that caused 3 re-fetches |
+| r8 / lamr | 2,000 | 0 | 0 | 0 | 0 % |
+| current | 1,000 | 7 | 1 | 98,185 | 6.62 % |
+| r8 | 1,000 | 4 | 0 | 51,914 | 3.50 % |
+| lamr | 1,000 | 4 | 0 | 50,987 | 3.44 % |
+| current | 500 | 19 | **5** | 125,320 | 8.45 % |
+| r8 | 500 | 12 | 0 | 76,089 | 5.13 % |
+| lamr | 500 | 12 | 0 | 69,073 | 4.66 % |
+| **r10** (outputs ≥ 300) | – | 26 outputs at 8 task boundaries | – | **166,317** (198,386 reads saved − 32,069 rewrites) | **11.21 %** |
+| r10 (outputs ≥ 1,000) | – | 7 outputs at 5 boundaries | – | 100,543 | 6.78 % |
+
+What it shows:
+- **At the default threshold nothing is left to trim** except the diff that backfired; R8 removes
+  exactly that trim. With Claude Code, on-arrival savings only appear at lower thresholds
+  (3.4–5.1 % of cost at 1,000–500 with R8), and lowering the threshold without R8 would have
+  trimmed **5 diffs** (the re-fetched per-file diffs included) — the harmful case multiplied.
+- **The LaMR-style prototype saves about the same as the current rules + R8** (slightly less,
+  because repair keeps headers and imports). Its benefit is *structure* (fewer fragments, less
+  re-reading), which a replay cannot measure — only a live run can. Example: for "explain how
+  the Matrix classes are organised" it kept the `col_insert` and multiplication lines but
+  dropped 28 `class …` lines the agent needed — exactly the re-read risk LaMR warns about.
+- **R10 is the largest lever: −11.2 % of the session's input cost** (outputs ≥ 300 tokens),
+  without touching the output while its task is running. Early boundaries pay off strongly
+  (task 3 boundary: rewrite 409, saving ~53k over 103 later requests); late ones do not
+  (output ≥ 1,000 at the last two boundaries: net −2.8k and −4.5k). A **break-even rule**
+  (mask only when enough requests are expected to follow) is needed.
+- Prototype time: ≤ 71 ms for the whole session (all 82 outputs).
+
+Limits: replays show *possible* savings, not the agent's reaction (re-reads after a trim are
+not modelled — the main risk for both lamr and r10); task boundaries are detected from
+user-text entries (14 detected vs 12 tasks typed — Claude Code adds a few user-text entries
+itself); one session, one model (Haiku). Live confirmation is needed before adoption.
+
+Files: `eval/replay_captures.py`, results in `eval/results/replay_L1/replay.{md,json}`
+(numbers only; the captures themselves stay local and gitignored).
+
+### 4.5 Citation checks
 - **HCP:** the arXiv page (2406.18294, June 2024) lists no venue — confirm "AAAI 2025" before
   citing. "50k → 8k tokens" and "better on all six models" are confirmed in the paper.
 - **LaMR:** the token *increase* on stronger models is reported for **SWE-Pruner** with Opus
@@ -457,6 +516,43 @@ rounds** — the evidence TokenCut still lacks at scale (CLAUDE.md step D).
   latency text says "below 100 ms" while its table shows 102 ms at 8k tokens.
 - **LongCodeZip:** "up to 5.6×" comes from one model's row; most rows are 4–5×.
 - Not checked here: PILOT, Arch-Router and Workload-Router-Pool numbers (model routing).
+
+### 4.6 R8 and R10 implemented — offline check with the real gateway code (2026-10-12)
+
+Implemented on branch `trimming/researchpapers_methodology` (tests first; 145 tests, ruff clean;
+`docs/DECISIONS.md` 2026-10-12):
+- **R8** (always on): a tool result containing a diff, or any result while the user's last
+  message asks for the full diff / file / output / code / log / listing, is never trimmed on
+  arrival. "The whole test suite" does not trigger it.
+- **R10** (opt-in, `TOKENCUT_TASK_MASK=1`): at a new user message, large results (≥ 300 tokens)
+  from earlier tasks become the cache-event notes (command output keeps its error and summary
+  lines), remembered and re-sent identically. Done only if
+  0.1 × tokens removed × expected later requests ≥ 1.15 × tokens re-cached, with expected later
+  requests = max(20, requests so far). A first version that used the average requests per task
+  skipped almost every boundary (the masked output is saved on *all* later requests of the
+  session, not just the next task) and was replaced.
+
+**Check:** the gateway code was run over the captured requests in order (real timestamps), and
+the provider cache was modelled per request (the prefix identical to the previous request =
+cache read, the rest = cache write). The model reproduces L1's measured bill within −0.5 %
+(S4 −6.0 %, S5 +2.8 %: mixed models, small sessions).
+
+| Session | Variant | Input cost vs no trimming | Tokens sent | What happened |
+|---|---|---|---|---|
+| L1 (Haiku, 109 requests) | R8 only | ±0 % | ±0 % | the git diff is no longer trimmed (the 3 re-fetches it caused would not happen live) |
+| L1 | **R8 + R10 (≥ 300)** | **−9.9 %** | −14.0 % | 26 outputs masked at task boundaries |
+| L1 | R8 + R10 (≥ 1,000) | −6.4 % | −8.9 % | 7 outputs masked |
+| S4 (Sonnet / Haiku switch, 25 requests) | R8 only / + R10 (≥ 300) | −1.3 % / −1.4 % | −1.9 % / −2.7 % | event trimming does most; R10 adds 2 masks |
+| S5 (aggressive, 23 requests) | R8 only / + R10 (≥ 300) | −1.2 % / −1.5 % | −2.6 % / −3.8 % | R10 adds 5 masks |
+
+(These variants have tool pruning off; S4/S5 savings with pruning are in §3.)
+
+What it shows: on a long session R10 cuts input cost by about a tenth, matching the prototype
+(−11.2 %); on short sessions it adds a little and never made a run more expensive. R8 changes
+no cost in the replay — its value is avoiding the re-fetch loop, which only a live run shows.
+Masking time stays small (≤ 46 ms for the largest L1 request). Not yet shown: whether the
+agent re-reads masked outputs, and whether bugs are still fixed — live run L3
+(`docs/LIVE_TEST_SCRIPT.md` Part 4).
 
 ## 5. Limitations and risks
 - **Images and PDFs are never trimmed and are not counted.** The adapters mark image /
@@ -498,6 +594,7 @@ rounds** — the evidence TokenCut still lacks at scale (CLAUDE.md step D).
   `git diff` / `git show` arriving as Bash output should be treated as code (or left whole),
   and a request like "show me the full …" should protect the next output, like files the user
   names are protected today. In L1 the only trim caused 3 extra requests and a net loss.
+  **Status: implemented 2026-10-12 (§4.6).**
 - **R9 — Re-check the context-full threshold (~110k proxy tokens) for long sessions.** A
   107-request Haiku session peaked at 95k, so the event never fired; Claude Code's own
   auto-compact may act before it does. Measure where Claude Code compacts.
@@ -508,6 +605,7 @@ rounds** — the evidence TokenCut still lacks at scale (CLAUDE.md step D).
   the expected remaining session repays the one-time cache rewrite of that task's span. The
   model sees full output while it works, which would have avoided the L1 re-fetch. Simulate
   on the L1 captures first.
+  **Status: implemented 2026-10-12 as opt-in `TOKENCUT_TASK_MASK=1` (§4.6); live check pending.**
 - **R11 — HCP-style header share and LongCodeZip-style blocks, model-free:** guaranteed budget
   share for signatures (top-k full, top-p headers) and BM25-scored blocks inside large
   functions with knapsack selection (§4.3 rows 1–2; tune on dev, confirm on fresh held-out).

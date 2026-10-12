@@ -5,6 +5,51 @@ was used for the C1 baseline. Each part uses its own fixed task list.
 
 ---
 
+# Part 4 — L3: the same long session with R8 + R10 (before / after)
+
+Goal: check live that R8 (diffs / "full" requests never trimmed) and R10 (task masking)
+save money **without** making the agent re-read or fail. "Before" = **L1** (same repo, same
+12 tasks, same Haiku, same settings, measured on 2026-10-11). "After" = **L3** below. Only one
+setting differs: `TOKENCUT_TASK_MASK=1`; R8 is always on in the new code.
+
+Requires the code on branch `trimming/researchpapers_methodology` (`git checkout
+trimming/researchpapers_methodology` in `D:\TokenCut`).
+
+**Terminal 1 — gateway** (new PowerShell window)
+```powershell
+cd D:\TokenCut
+.venv\Scripts\Activate.ps1
+$env:TOKENCUT_LOG_DIR = "logs\gateway\L3"
+$env:TOKENCUT_MODE = "trim"
+$env:TOKENCUT_TIER = "moderate"
+$env:TOKENCUT_TASK_MASK = "1"
+$env:TOKENCUT_CAPTURE = "1"
+python -m tokencut.gateway
+```
+Check `http://127.0.0.1:8787/tokencut/health` shows `"task_masking": true`.
+
+**Terminal 2 — Claude Code** (new PowerShell window)
+```powershell
+cd C:\Users\pc\tokencut-sympy
+git reset --hard start; git clean -fd
+$env:ANTHROPIC_BASE_URL = "http://127.0.0.1:8787/anthropic"
+claude --model haiku
+```
+
+Then the **same 12 tasks as Part 3**, one at a time, then `/exit` — do not reset the repo.
+
+Note while running:
+- the agent mentioning a `[TokenCut: earlier output … removed]` note, or re-running a command /
+  re-reading a file it already had (that is the R10 risk);
+- in task 10 ("full git diff"): does the agent get the whole diff in one go? (R8)
+- errors, usage limits (task number).
+
+**How it is compared with L1 afterwards:** billed input cost per request and in total,
+requests per task, re-reads after a `task_masked` note, the 3 bugs graded with the official
+hidden tests, the core suite comparison in task 11.
+
+---
+
 # Part 3 — long session on sympy: L1 (moderate) and L2 (shadow)
 
 Goal: a realistic long session (60–100+ requests) with three real SWE-bench bugs and large

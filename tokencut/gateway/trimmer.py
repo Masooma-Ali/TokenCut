@@ -33,6 +33,15 @@ _SHOW_FILE = re.compile(
     r"^\s*(?:cat|head|tail|nl|bat|sed\s+-n\s+\S+)\b(?:\s+-\S+)*(?:\s+\d+)?\s+"
     r"([^\s|;&<>]+\.py)\s*$"
 )
+# R8: a diff is code, not a log (every line matters), so it is never trimmed on arrival.
+_DIFF = re.compile(r"^(?:diff --git |@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@)", re.MULTILINE)
+# R8: "show me the full diff / file / output ..." -> the user wants that output whole.
+# "the whole test suite" does not match: the word must refer to an output-like noun.
+_FULL_REQUEST = re.compile(
+    r"\b(?:full|entire|whole|complete)\b(?:\W+\w+){0,2}?\W+"
+    r"(?:diffs?|files?|output|contents?|code|logs?|listing)\b",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -168,6 +177,11 @@ def _trim_result(seg: Segment, ctx: _Context, config: TrimConfig) -> tuple[str |
     path = _call_path(call_input)
     budget = max(config.min_keep_tokens, round(TIER_BUDGET_FRACTION[config.tier] * seg.token_count))
     query = f"{ctx.last_user_text}\n{call_input}"
+
+    # R8: trimming a diff, or output the user asked for in full, leaves fragments the agent
+    # fetches again (live run L1: 3 extra requests, a net loss). Leave them whole.
+    if _DIFF.search(seg.text) or _FULL_REQUEST.search(ctx.last_user_text):
+        return None, "protected"
 
     if path.endswith(".py") and seg.result_kind in (
         ToolResultKind.FILE_READ,
