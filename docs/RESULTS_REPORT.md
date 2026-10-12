@@ -386,8 +386,90 @@ definitions**, so the two runs end up almost the same. With Claude Code on this 
 tier choice hardly matters; tool pruning is what saves. At the switch to Haiku, 6,370 tokens
 were read from cache (likely the system-prompt prefix still cached from the S4 session).
 
-## 4. Comparison with research (SWE-Pruner, SWEzze, LongCodeZip, Pichay, Complexity Trap, Anthropic context editing)
-_Pending._
+## 4. Comparison with research
+
+Papers and docs read on 2026-10-11/12 (full text or main sections). Numbers are quoted from
+the sources; inconsistencies inside a paper are noted. Where a source could not be read, this
+is stated.
+
+### 4.1 What each work trims and how
+
+**Context pruning / compression for code (from the proposal's reference list)**
+
+| Work | What it reduces | Method | When / where | Reported result | Cost of the method |
+|---|---|---|---|---|---|
+| **HCP** — Zhang et al., *Hierarchical Context Pruning* (arXiv 2406.18294; arXiv page lists no venue) | repository code for a code-completion model | tree-sitter + BFS over imports; keep current file whole and only **level-1 dependency files**; remove "global context" of other files; **top-k = 5** most similar functions keep full bodies, **top-p = 0.3** keep **headers only**, the rest dropped; similarity via OpenAI ada-002 embeddings | once, before generation | input "from over 50,000 tokens to approximately 8,000"; exact match up for all 6 models (+3.20 to +6.70 points, CrossCodeEval Python); "retaining only the function header information is sufficient" | embedding calls; authors note latency grows with many files |
+| **LongCodeZip** — Shi et al., ASE 2025 (arXiv 2510.00446) | long code context | **coarse**: rank functions by approximated mutual information (drop in the instruction's perplexity given the function), keep the best, **placeholders** for the rest; **fine**: split kept functions into perplexity blocks, **0/1 knapsack** per function under a budget **adapted to each function's importance** | once, before generation | ~4.3–5.3× compression with higher scores than LLMLingua / LongLLMLingua / RAG (RepoQA 75.3 vs 59.3 LongLLMLingua, DeepSeek-Coder-6.7B); generation 15.70 s → 6.59 s; input cost −77 % | 2.58 s compression with a 7B model (GPU) |
+| **LLMLingua** — Jiang et al., EMNLP 2023 (arXiv 2310.05736) | general prompts | small LM deletes low-information **tokens**; budget controller; iterative token-level compression | once | "up to 20x compression with little performance loss" | small LM |
+| **LongLLMLingua** — Jiang et al., ACL 2024 (arXiv 2310.06839) | long prompts (documents) | question-aware compression of documents (method details in full paper, not read) | once | ~4× fewer tokens with up to +21.4 % (NaturalQuestions, GPT-3.5); 1.4–2.6× lower end-to-end latency; −94 % cost on LooGLE | small LM |
+| **ICAE** — Ge et al., ICLR 2024 (arXiv 2307.06945) | any context | LLM encodes context into short **memory slots** the LLM conditions on | once | 4× compression with ~1 % added parameters (Llama) | needs model weights — **not usable with closed API models** |
+| **SWE-Pruner** — Wang et al., 2026 (arXiv 2601.16746) | file-read / search outputs in agent sessions (`cat`, `grep`); not history, not tool definitions | middleware; the agent passes an optional `context_focus_question`; a 0.6B reranker scores tokens, a line is kept if its mean score > 0.5 (line-level, structure preserved); no question → raw output | on arrival, per tool call | Sonnet 4.5 on SWE-bench Verified: tokens −23.1 %, cost −26.8 %, solved 70.6 % → 72.0 %, rounds 51.0 → 41.7; LLMLingua-2 output parsed as valid code only 0.29 % of the time | 0.6B model, ~45–102 ms; agent tool schema changes |
+| **LaMR** — Wang et al., 2026 (arXiv 2605.15315) | file reads / tool outputs in agent sessions | middleware; two rubrics with separate CRFs — **semantic evidence** and **dependency support** (imports, definitions, enclosing headers, try/except siblings) — mixed by a gate; **AST repair** after pruning; the agent can still request more | on arrival | Sonnet 4.5: tokens −30.5 %, solved 70.6 % → 71.8 %, rounds 51.0 → 39.6; Opus 4.6: −3.0 %. **SWE-Pruner increased tokens on Opus 4.6 (+6.6 %, up to +22 % in 4 of 5 multi-turn settings)** because removing structurally needed code "forces the agent into repeated file reads"; LaMR itself had one +7.9 % case | 0.6B model; no latency or dollar figures |
+| **Aider repo map** (tool docs) | a repo summary sent with **every** request | tree-sitter symbols + graph ranking of the most-referenced definitions with signatures; `--map-tokens` default 1k, adjusted dynamically | every request | – | none (no model) |
+| GraphCodeBERT (ICLR 2021) | – | code representations from data flow | – | supporting evidence for structure-aware methods | – |
+
+**Agent context management (found while testing)**
+
+| Work | What it reduces | Method | When | Prompt cache | Reported result |
+|---|---|---|---|---|---|
+| **Pichay** — Mason, *Demand Paging for LLM Context Windows* (arXiv 2603.09023) | old tool outputs | **transparent proxy**; file reads paged out to a handle `[Paged out: Read <path> (<bytes>, <lines>). Re-read if needed.]`; Bash/search "ephemeral" (dropped); **errors never evicted**; a re-request (same tool + arguments) is a page fault and **pins** the item | results older than 4 user turns and > 500 bytes; stricter zones at 60k / 100k / 120k tokens | measured, not designed around: a 12-turn collapse dropped cache hits to 25 % for one turn (~105k recomputed); recommends batching changes | effective input 114,222 → 71,816 (−37.1 %); offline fault rate 0.0254 %, one live session 97 % re-reads |
+| **The Complexity Trap** — Lindenbauer et al., NeurIPS 2025 (arXiv 2508.21433) | old tool outputs (~84 % of an average SWE-agent turn) | **observation masking**: outputs older than the last M = 10 turns become a short note; vs LLM summarisation; hybrid | rolling window | cost factor only | Qwen3-Coder 480B: raw 53.4 % / $1.29, masking 54.8 % / $0.61 (−52.7 %), summary 53.8 % / $0.64 |
+| **Anthropic context editing** (API beta, `clear_tool_uses_20250919`) | old tool results | clear the oldest, keep the newest N, placeholder | on a trigger | docs: **invalidates the cached prefix**; `clear_at_least` (in gateways mirroring it) makes a clear worth it | – |
+| **Don't Break the Cache** — Lumer et al. (arXiv 2601.06007) | – | evaluates caching strategies over 500 agent sessions, 3 providers | – | **placement matters more than enabling caching**; naive full caching can raise latency | caching cuts cost 41–80 %, TTFT 13–31 % |
+| SWEzze (arXiv 2603.28119) | issue-resolution code context | trained reranker, oracle-guided distillation | once | n/a | ~6× compression, 51–71 % fewer tokens (summary, not verified) |
+| *What Does Context Compression Cost an Agent?* — Liu (arXiv 2608.16370) | – | – | – | – | **not read**; title matches the re-read finding — check before citing |
+
+What they trim, in short: almost all code-compression papers trim **code context once**,
+before the model starts; only **SWE-Pruner, LaMR and Pichay** act on **tool outputs during an
+agent session**. **None trims tool definitions, and none is designed around the provider's
+prompt cache** — the two features that produced TokenCut's live saving (S4 vs S4-shadow).
+
+### 4.2 Where TokenCut stands
+
+| Aspect | TokenCut (measured here) | Closest research |
+|---|---|---|
+| Architecture | transparent gateway, 3 providers, no agent change, model-free | Pichay (proxy, one provider); SWE-Pruner / LaMR (middleware, 0.6B model, SWE-Pruner changes the tool schema) |
+| On-arrival trimming | whole functions + line markers (Python), tail/errors/head (logs); 0–1 trims per Claude Code session; one harmful trim (L1 git diff → 3 re-fetches) | SWE-Pruner, LaMR: line-level with structure / dependency repair |
+| Offline selection | level with BM25 / embeddings (81 held-out tasks); skeletons almost never fit (B2) | HCP (headers as a fixed share), LongCodeZip (blocks inside functions, knapsack) |
+| History | only at cache events; −64 % per request after a model switch; never fired in a 107-request session (L1) | Complexity Trap, Pichay, context editing: regularly (last 4–10 turns kept) |
+| Prompt cache | **designed around it** | measured as damage (Pichay), warned about (Anthropic docs), placement matters (Don't Break the Cache) |
+| Re-fetch handling | per-file protection after a re-read | Pichay: fault detection + pinning; LaMR: keeps structural lines to avoid re-reads |
+| Tool definitions | pruning at cache events (94 % of the S4 saving) | not covered |
+| Images / PDFs | not handled | not handled by any work read |
+
+### 4.3 Methods TokenCut does not use yet — what to adopt
+
+| # | Method (source) | What it would change in TokenCut | Tokens | Cost | Correct output | Latency | Fit |
+|---|---|---|---|---|---|---|---|
+| 1 | **Headers as a guaranteed share** (HCP: top-k full, top-p headers) | reserve part of each budget for signatures of the next-best functions instead of filling it with full code first | ↓ | ↓ | ↑ (HCP: accuracy up on 6/6 models) | none with BM25 instead of embeddings | **yes** — fixes the near-dead skeleton feature (B2, R2) |
+| 2 | **Blocks inside large functions + knapsack** (LongCodeZip) | split big functions / classes into blocks, score blocks with BM25 (model-free), pick with a knapsack and a per-function budget | ↓ | ↓ | ↑ | small | **yes** — fixes the big-class case (astropy-7746, R3) |
+| 3 | **Dependency repair** (LaMR) | when a line is kept, also keep its enclosing class / function header, the imports it uses and paired blocks (tree-sitter, no model) | ≈ | ↓ (fewer re-reads) | ↑ | small | **yes** — line-level outputs (grep, diffs, multi-file `cat`) |
+| 4 | **Trim only when the intent is clear** (SWE-Pruner: no question → raw output) | leave output whole when the user asks for "full" output or for a diff | ≈ | ↓ (no re-fetch) | ↑ | none | **yes** — R8 |
+| 5 | **Mask old outputs by age / finished task** (Complexity Trap, Pichay) | after a task ends, replace its large outputs with notes — only when the remaining session repays the one-time cache rewrite | ↓↓ | ↓ if long session | ≈ (masking matched summaries) | none | **yes, to test** — R10 |
+| 6 | **Error output never removed; ephemeral vs re-readable outputs; pin on re-request** (Pichay) | refine history and on-arrival rules | ↓ | ↓ | ↑ | none | **yes** — R11 |
+| 7 | **Minimum saving before changing history** (`clear_at_least`) | change history only when the saving outweighs the cache rewrite | – | ↓ | – | none | **yes** — R12 |
+| 8 | Per-item ratio by relevance (LongLLMLingua) | search results / logs: compress less-relevant items more | ↓ | ↓ | ≈ | none (BM25) | maybe |
+| 9 | Rank by reference count (Aider repo map) | offline file pool ranking (the retrieve-setting weakness) | – | – | ↑ offline | none | offline only (no repo map in the gateway) |
+| – | Token deletion (LLMLingua), memory slots (ICAE), 0.6B pruners (SWE-Pruner, LaMR) | – | – | – | token deletion breaks code (0.29 % valid AST) | GPU model | **no** for a model-free laptop gateway |
+
+**Common lesson** (LaMR, SWE-Pruner, Pichay and our L1 run): pruning that leaves fragments
+makes the agent re-read, which can cost **more** than it saves — most of all with stronger
+models. Effective methods keep **self-contained units** (relevant lines + their headers +
+imports), or leave output whole when unsure.
+
+**Evaluation method to borrow** (Complexity Trap, SWE-Pruner, LaMR): run a real agent on
+SWE-bench Verified with and without the method and report **solve rate, tokens, cost and
+rounds** — the evidence TokenCut still lacks at scale (CLAUDE.md step D).
+
+### 4.4 Citation checks
+- **HCP:** the arXiv page (2406.18294, June 2024) lists no venue — confirm "AAAI 2025" before
+  citing. "50k → 8k tokens" and "better on all six models" are confirmed in the paper.
+- **LaMR:** the token *increase* on stronger models is reported for **SWE-Pruner** with Opus
+  4.6 (+6.6 %, up to +22 %), not for LaMR — adjust the slide wording.
+- **SWE-Pruner:** its abstract range (29–54 % on SWE-QA) holds only for the GLM rows; its
+  latency text says "below 100 ms" while its table shows 102 ms at 8k tokens.
+- **LongCodeZip:** "up to 5.6×" comes from one model's row; most rows are 4–5×.
+- Not checked here: PILOT, Arch-Router and Workload-Router-Pool numbers (model routing).
 
 ## 5. Limitations and risks
 - **Images and PDFs are never trimmed and are not counted.** The adapters mark image /
@@ -434,3 +516,16 @@ _Pending._
   auto-compact may act before it does. Measure where Claude Code compacts.
 - **R5 — Commit the analysis scripts** (per-task diagnostic, latency benchmark) under `eval/`
   so these numbers are reproducible by the team.
+- **R10 — Mask a finished task's large outputs, cache-aware** (Complexity Trap, Pichay; also
+  proposed by a team member): after a new user message, replace the previous task's large
+  outputs with notes, only when the expected remaining session repays the one-time cache
+  rewrite of that task's span. Simulate on the L1 captures first.
+- **R11 — Pichay's rules:** never remove error output; drop old command/search output, page
+  out file reads with a re-read note; detect re-requests by (tool, arguments) and pin them.
+- **R12 — Minimum-saving rule:** change history only when the saving outweighs the cache
+  rewrite (like `clear_at_least`).
+- **R13 — HCP-style header share and LongCodeZip-style blocks, model-free:** guaranteed budget
+  share for signatures (top-k full, top-p headers) and BM25-scored blocks inside large
+  functions with knapsack selection (§4.3 rows 1–2; tune on dev, confirm on fresh held-out).
+- **R14 — LaMR-style dependency repair for line-level trims:** keep enclosing headers and used
+  imports with every kept line (tree-sitter, no model) (§4.3 row 3).
