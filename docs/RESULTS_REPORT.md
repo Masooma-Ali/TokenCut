@@ -550,9 +550,61 @@ cache read, the rest = cache write). The model reproduces L1's measured bill wit
 What it shows: on a long session R10 cuts input cost by about a tenth, matching the prototype
 (−11.2 %); on short sessions it adds a little and never made a run more expensive. R8 changes
 no cost in the replay — its value is avoiding the re-fetch loop, which only a live run shows.
-Masking time stays small (≤ 46 ms for the largest L1 request). Not yet shown: whether the
-agent re-reads masked outputs, and whether bugs are still fixed — live run L3
+Masking time stays small (≤ 46 ms for the largest L1 request).
+
+### 4.7 Live check — L3 (R8 + R10) vs L1, 2026-10-12
+
+Same repo, same 12 tasks, same Haiku 5.5, same settings as L1; only difference: the new code
+(R8 always on) and `TOKENCUT_TASK_MASK=1`. Typed by a team member
 (`docs/LIVE_TEST_SCRIPT.md` Part 4).
+
+| Measure | L1 (before) | L3 (after) |
+|---|---|---|
+| Requests | 107 | **86** |
+| Billed: cache read · write · uncached | 12,681,823 · 166,287 · 7,519 | 7,836,922 · 200,981 · 7,477 |
+| Input-equivalent cost, whole session | 1,483,560 | **1,042,395 (−29.7 %)** |
+| Input-equivalent cost per request | 13,865 | **12,121 (−12.6 %)** |
+| R10 masks | – | **21 outputs, 17,220 → 2,612 tokens, at 7 task boundaries** |
+| `git diff` in task 10 | trimmed (2,652 → 983) → agent re-fetched per file (4 extra diffs) | **2,358 tokens, sent whole (R8)**; agent: "The diff is complete", reviewed it in one go |
+| On-arrival trims | 1 (the diff) | 1: a pytest output (3,188 → 1,089, log rules, task 2) |
+| Identical repeated tool calls | 0 | 0 |
+| Bugs fixed (official hidden tests on the agent's source changes) | 3 / 3 | **3 / 3** (FAIL_TO_PASS pass; full test files pass) |
+| Core suite before / after (task 11) | 105 failed / 1,456 passed, unchanged | same |
+| Trimming time per request | median 2.5 ms, max 137 ms | median 27 ms, p95 48 ms, max 225 ms |
+
+What it shows:
+- **Per request, L3 is 12.6 % cheaper** — in line with the replay estimate for R10 (−9.9 %).
+  The whole session is 29.7 % cheaper, but part of that comes from L3 needing fewer requests
+  (86 vs 107): some of it is R8 (no diff re-fetch loop), the rest is normal variation between
+  agent runs, so the per-request figure is the fairer one.
+- **R8 worked live:** the full diff arrived whole and the re-fetch loop of L1 did not happen.
+- **R10 caused no visible re-reading:** no identical repeated tool calls; for task 11 the agent
+  compared with task 2 using the result files it had saved itself, not the masked output.
+  Correctness was unchanged (3/3 bugs, no new core failures).
+- **Same harm mechanism, new place:** in task 2 the agent's `pytest … | tail -n 200` output
+  (3,188 tokens) was trimmed with the log rules into 6 fragments; the agent said "the output
+  above was cut off in the middle" and re-ran the tests with a compact summary. R8 only covers
+  diffs and explicit "full" requests, so on-arrival log trimming can still trigger re-runs —
+  see R13.
+- Trimming time rose (median 27 ms) because masked notes are recounted each turn; still small
+  next to the ~3 s model latency (R1 would remove it).
+- One run of each; agent behaviour varies between runs, so treat the percentages as indicative.
+
+**In real money (Haiku 5.5 list prices, 2026-10-13):** $0.10 / $0.50 per MTok input / output
+for prompts up to 100K tokens and **$0.50 / $2.50 above 100K**; cache reads 0.1×, and Claude
+Code's **1-hour cache writes 2×** input (the input-equivalent figures above used 1.25×, the
+5-minute write price — relative comparisons are similar, absolute ones slightly low).
+
+| Run | Dollar cost | Requests whose prompt exceeded 100K tokens | Prompt size median / max |
+|---|---|---|---|
+| L1 | **$0.753** | 81 of 107 | 120,376 / 166,793 |
+| L3 | **$0.405 (−46 %)** | 36 of 86 | 93,898 / 118,871 |
+
+R10 kept most L3 requests under Haiku's 100K price step, so the dollar saving (−46 %) is much
+larger than the token saving (−12.6 % per request). This effect is specific to tiered pricing
+(Haiku 5.5) and long sessions.
+
+Data: `logs/gateway/L3/` (local), agent changes kept for grading.
 
 ## 5. Limitations and risks
 - **Images and PDFs are never trimmed and are not counted.** The adapters mark image /
@@ -605,7 +657,11 @@ agent re-reads masked outputs, and whether bugs are still fixed — live run L3
   the expected remaining session repays the one-time cache rewrite of that task's span. The
   model sees full output while it works, which would have avoided the L1 re-fetch. Simulate
   on the L1 captures first.
-  **Status: implemented 2026-10-12 as opt-in `TOKENCUT_TASK_MASK=1` (§4.6); live check pending.**
+  **Status: implemented 2026-10-12 as opt-in `TOKENCUT_TASK_MASK=1` (§4.6); live run L3: −12.6 % per request, 3/3 bugs fixed, no re-reads (§4.7).**
+- **R13 — Mark trimmed command output so agents do not re-run it** (L3): a pytest output
+  trimmed into fragments made the agent re-run the tests. Options: raise the threshold for
+  command output, keep one contiguous tail block instead of scattered fragments, or say in the
+  note what was kept ("failures and summary kept; N passing lines omitted").
 - **R11 — HCP-style header share and LongCodeZip-style blocks, model-free:** guaranteed budget
   share for signatures (top-k full, top-p headers) and BM25-scored blocks inside large
   functions with knapsack selection (§4.3 rows 1–2; tune on dev, confirm on fresh held-out).
