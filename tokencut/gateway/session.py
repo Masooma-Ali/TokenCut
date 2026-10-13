@@ -48,6 +48,8 @@ class ConversationState:
     model_seen: dict[str, float] = field(default_factory=dict)  # model -> last request time
     last_event_tokens: int | None = None  # request size at the last event
     events: int = 0
+    user_turns: int = 0  # real user messages in the last request (a new one = a new task)
+    requests: int = 0  # requests seen in this conversation
 
 
 class SessionStore:

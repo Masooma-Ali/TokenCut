@@ -368,3 +368,54 @@ def test_mode_from_env(monkeypatch):
     config = GatewayConfig.from_env()
     assert (config.mode, config.trim.tier, config.trim.min_tokens) == ("trim", Tier.AGGRESSIVE, 500)
     assert trimmer.TrimConfig().tier == Tier.MODERATE
+
+
+# ---------- R8: diffs and output asked for in full stay whole ----------
+
+
+def git_diff(n_files: int = 12) -> str:
+    parts = []
+    for i in range(n_files):
+        parts += [f"diff --git a/pkg/mod_{i}.py b/pkg/mod_{i}.py",
+                  "index 1234abc..5678def 100644",
+                  f"--- a/pkg/mod_{i}.py",
+                  f"+++ b/pkg/mod_{i}.py",
+                  f"@@ -{10 + i},7 +{10 + i},8 @@ def helper_{i}(value):"]
+        parts += [f"     value = value * {j} + {i}" for j in range(6)]
+        parts += [f"-    return value + {i}", f"+    return value - {i}", "+    # fixed sign"]
+    return "\n".join(parts)
+
+
+def bash_conversation(user_text: str, command: str, output: str) -> dict:
+    return {
+        "model": "claude-haiku-4-5",
+        "max_tokens": 100,
+        "messages": [
+            {"role": "user", "content": user_text},
+            {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "b1", "name": "Bash", "input": {"command": command}}]},
+            {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "b1", "content": output}]},
+        ],
+    }
+
+
+def test_git_diff_output_is_never_trimmed():
+    diff = git_diff()
+    assert count_tokens(diff) > 600
+    body = bash_conversation("review my changes", "git diff", diff)
+    new_body, report = run(body, TrimConfig(min_tokens=300))
+    assert new_body is None and report.trimmed == []
+
+
+def test_output_the_user_asked_for_in_full_is_not_trimmed():
+    body = bash_conversation("show me the full test output", "pytest -q", pytest_log())
+    new_body, report = run(body, TrimConfig(min_tokens=300))
+    assert new_body is None and report.trimmed == []
+
+
+def test_whole_test_suite_request_is_still_trimmed():
+    # "whole" refers to the suite, not to the output: the log is trimmed as before
+    body = bash_conversation("run the whole core test suite and group the failures", "pytest -q", pytest_log())
+    _, report = run(body, TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]

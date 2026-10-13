@@ -97,6 +97,8 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_CACHE_TTL` | `300` | seconds of idle after which the provider cache counts as expired |
 | `TOKENCUT_PRUNE_TOOLS` | off | `1` = at cache events, send only tools used so far + core tools |
 | `TOKENCUT_CORE_TOOLS` | Claude Code / Gemini CLI basics | comma-separated tools always kept when pruning |
+| `TOKENCUT_TASK_MASK` | off | `1` = when the user starts a new task, earlier tasks' large tool outputs become notes (only if the cache rewrite pays off) |
+| `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest tool output masked at a new task |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become

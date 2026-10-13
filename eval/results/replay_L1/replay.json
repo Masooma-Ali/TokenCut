@@ -1,0 +1,735 @@
+{
+  "run": "L1",
+  "requests": 109,
+  "distinct_outputs": 82,
+  "proxy_tokens": 7699187,
+  "tool_output_tokens": 1731043,
+  "on_arrival": [
+    {
+      "threshold": 2000,
+      "method": "current",
+      "outputs_trimmed": 1,
+      "diffs_trimmed": 1,
+      "first_seen_saved": 1669,
+      "request_weighted_saved": 21697,
+      "pct_of_session": 0.28,
+      "pct_of_tool_output": 1.25,
+      "ms_total": 0.0,
+      "trims": [
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 2652,
+          "after": 983,
+          "diff": true,
+          "first_request": 96
+        }
+      ]
+    },
+    {
+      "threshold": 2000,
+      "method": "r8",
+      "outputs_trimmed": 0,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 0,
+      "request_weighted_saved": 0,
+      "pct_of_session": 0.0,
+      "pct_of_tool_output": 0.0,
+      "ms_total": 0.1,
+      "trims": []
+    },
+    {
+      "threshold": 2000,
+      "method": "lamr",
+      "outputs_trimmed": 0,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 0,
+      "request_weighted_saved": 0,
+      "pct_of_session": 0.0,
+      "pct_of_tool_output": 0.0,
+      "ms_total": 0.1,
+      "trims": []
+    },
+    {
+      "threshold": 1000,
+      "method": "current",
+      "outputs_trimmed": 7,
+      "diffs_trimmed": 1,
+      "first_seen_saved": 7099,
+      "request_weighted_saved": 506385,
+      "pct_of_session": 6.58,
+      "pct_of_tool_output": 29.25,
+      "ms_total": 0.0,
+      "trims": [
+        {
+          "tool": "Glob",
+          "kind": "search",
+          "before": 1341,
+          "after": 509,
+          "diff": false,
+          "first_request": 4
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1838,
+          "after": 632,
+          "diff": false,
+          "first_request": 5
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 521,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 636,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 494,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 532,
+          "diff": false,
+          "first_request": 70
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 2652,
+          "after": 983,
+          "diff": true,
+          "first_request": 96
+        }
+      ]
+    },
+    {
+      "threshold": 1000,
+      "method": "r8",
+      "outputs_trimmed": 4,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 3392,
+      "request_weighted_saved": 271904,
+      "pct_of_session": 3.53,
+      "pct_of_tool_output": 15.71,
+      "ms_total": 0.4,
+      "trims": [
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 521,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 636,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 494,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 532,
+          "diff": false,
+          "first_request": 70
+        }
+      ]
+    },
+    {
+      "threshold": 1000,
+      "method": "lamr",
+      "outputs_trimmed": 4,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 3370,
+      "request_weighted_saved": 266602,
+      "pct_of_session": 3.46,
+      "pct_of_tool_output": 15.4,
+      "ms_total": 34.6,
+      "trims": [
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 541,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 646,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 568,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 450,
+          "diff": false,
+          "first_request": 70
+        }
+      ]
+    },
+    {
+      "threshold": 500,
+      "method": "current",
+      "outputs_trimmed": 19,
+      "diffs_trimmed": 5,
+      "first_seen_saved": 9578,
+      "request_weighted_saved": 640387,
+      "pct_of_session": 8.32,
+      "pct_of_tool_output": 36.99,
+      "ms_total": 0.1,
+      "trims": [
+        {
+          "tool": "Glob",
+          "kind": "search",
+          "before": 1341,
+          "after": 509,
+          "diff": false,
+          "first_request": 4
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1838,
+          "after": 632,
+          "diff": false,
+          "first_request": 5
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 521,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 441,
+          "diff": false,
+          "first_request": 11
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 700,
+          "after": 528,
+          "diff": false,
+          "first_request": 12
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 636,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 946,
+          "after": 456,
+          "diff": false,
+          "first_request": 19
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 494,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 575,
+          "after": 489,
+          "diff": false,
+          "first_request": 35
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 651,
+          "after": 506,
+          "diff": false,
+          "first_request": 49
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 736,
+          "after": 484,
+          "diff": false,
+          "first_request": 55
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 682,
+          "after": 475,
+          "diff": false,
+          "first_request": 56
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 485,
+          "diff": false,
+          "first_request": 69
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 532,
+          "diff": false,
+          "first_request": 70
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 2652,
+          "after": 983,
+          "diff": true,
+          "first_request": 96
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 750,
+          "after": 484,
+          "diff": true,
+          "first_request": 97
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 852,
+          "after": 491,
+          "diff": true,
+          "first_request": 98
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 589,
+          "after": 473,
+          "diff": true,
+          "first_request": 99
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 516,
+          "after": 474,
+          "diff": true,
+          "first_request": 100
+        }
+      ]
+    },
+    {
+      "threshold": 500,
+      "method": "r8",
+      "outputs_trimmed": 12,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 5086,
+      "request_weighted_saved": 397205,
+      "pct_of_session": 5.16,
+      "pct_of_tool_output": 22.95,
+      "ms_total": 0.7,
+      "trims": [
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 521,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 441,
+          "diff": false,
+          "first_request": 11
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 700,
+          "after": 528,
+          "diff": false,
+          "first_request": 12
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 636,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 946,
+          "after": 456,
+          "diff": false,
+          "first_request": 19
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 494,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 575,
+          "after": 489,
+          "diff": false,
+          "first_request": 35
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 651,
+          "after": 506,
+          "diff": false,
+          "first_request": 49
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 736,
+          "after": 484,
+          "diff": false,
+          "first_request": 55
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 682,
+          "after": 475,
+          "diff": false,
+          "first_request": 56
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 485,
+          "diff": false,
+          "first_request": 69
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 532,
+          "diff": false,
+          "first_request": 70
+        }
+      ]
+    },
+    {
+      "threshold": 500,
+      "method": "lamr",
+      "outputs_trimmed": 12,
+      "diffs_trimmed": 0,
+      "first_seen_saved": 4669,
+      "request_weighted_saved": 359979,
+      "pct_of_session": 4.68,
+      "pct_of_tool_output": 20.8,
+      "ms_total": 69.5,
+      "trims": [
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1185,
+          "after": 541,
+          "diff": false,
+          "first_request": 9
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 463,
+          "diff": false,
+          "first_request": 11
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 700,
+          "after": 518,
+          "diff": false,
+          "first_request": 12
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1907,
+          "after": 646,
+          "diff": false,
+          "first_request": 14
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 946,
+          "after": 651,
+          "diff": false,
+          "first_request": 19
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1270,
+          "after": 568,
+          "diff": false,
+          "first_request": 34
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 575,
+          "after": 562,
+          "diff": false,
+          "first_request": 35
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 651,
+          "after": 512,
+          "diff": false,
+          "first_request": 49
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 736,
+          "after": 586,
+          "diff": false,
+          "first_request": 55
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 682,
+          "after": 601,
+          "diff": false,
+          "first_request": 56
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 634,
+          "after": 366,
+          "diff": false,
+          "first_request": 69
+        },
+        {
+          "tool": "Bash",
+          "kind": "command_output",
+          "before": 1213,
+          "after": 450,
+          "diff": false,
+          "first_request": 70
+        }
+      ]
+    }
+  ],
+  "r10": [
+    {
+      "min_tokens": 300,
+      "baseline_ie": 1483560,
+      "r10_ie": 1317244,
+      "saved": 198386,
+      "extra_rewrite": 32069,
+      "change_pct": -11.21,
+      "boundaries": [
+        {
+          "request": 6,
+          "task": 3,
+          "outputs": 2,
+          "removed": 3179,
+          "rewrite_cost": 409,
+          "later_requests": 103,
+          "net_gain": 52889
+        },
+        {
+          "request": 15,
+          "task": 4,
+          "outputs": 4,
+          "removed": 4426,
+          "rewrite_cost": 3366,
+          "later_requests": 94,
+          "net_gain": 63591
+        },
+        {
+          "request": 28,
+          "task": 5,
+          "outputs": 3,
+          "removed": 1792,
+          "rewrite_cost": 4472,
+          "later_requests": 81,
+          "net_gain": 18141
+        },
+        {
+          "request": 36,
+          "task": 8,
+          "outputs": 2,
+          "removed": 1845,
+          "rewrite_cost": 543,
+          "later_requests": 73,
+          "net_gain": 20970
+        },
+        {
+          "request": 47,
+          "task": 10,
+          "outputs": 2,
+          "removed": 690,
+          "rewrite_cost": 4752,
+          "later_requests": 62,
+          "net_gain": 1562
+        },
+        {
+          "request": 53,
+          "task": 11,
+          "outputs": 1,
+          "removed": 651,
+          "rewrite_cost": 1822,
+          "later_requests": 56,
+          "net_gain": 3891
+        },
+        {
+          "request": 85,
+          "task": 12,
+          "outputs": 7,
+          "removed": 4474,
+          "rewrite_cost": 14526,
+          "later_requests": 24,
+          "net_gain": 2281
+        },
+        {
+          "request": 103,
+          "task": 14,
+          "outputs": 5,
+          "removed": 5359,
+          "rewrite_cost": 2178,
+          "later_requests": 6,
+          "net_gain": 2991
+        }
+      ]
+    },
+    {
+      "min_tokens": 1000,
+      "baseline_ie": 1483560,
+      "r10_ie": 1383017,
+      "saved": 122883,
+      "extra_rewrite": 22340,
+      "change_pct": -6.78,
+      "boundaries": [
+        {
+          "request": 6,
+          "task": 3,
+          "outputs": 2,
+          "removed": 3179,
+          "rewrite_cost": 409,
+          "later_requests": 103,
+          "net_gain": 52889
+        },
+        {
+          "request": 15,
+          "task": 4,
+          "outputs": 2,
+          "removed": 3092,
+          "rewrite_cost": 5774,
+          "later_requests": 94,
+          "net_gain": 41501
+        },
+        {
+          "request": 36,
+          "task": 8,
+          "outputs": 1,
+          "removed": 1270,
+          "rewrite_cost": 1571,
+          "later_requests": 73,
+          "net_gain": 13422
+        },
+        {
+          "request": 85,
+          "task": 12,
+          "outputs": 1,
+          "removed": 1213,
+          "rewrite_cost": 7518,
+          "later_requests": 24,
+          "net_gain": -2817
+        },
+        {
+          "request": 103,
+          "task": 14,
+          "outputs": 1,
+          "removed": 2652,
+          "rewrite_cost": 7068,
+          "later_requests": 6,
+          "net_gain": -4451
+        }
+      ]
+    }
+  ]
+}

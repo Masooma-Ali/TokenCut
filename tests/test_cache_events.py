@@ -266,3 +266,78 @@ def test_cache_events_can_be_disabled(monkeypatch):
     config = GatewayConfig.from_env()
     assert config.cache_events is False
     assert config.events.prune_tools is True and config.events.core_tools == ("Read", "Bash")
+
+
+# ---------- R10: mask a finished task's large outputs at the next task ----------
+
+TASKS = CacheEventConfig(task_masking=True, task_mask_min_tokens=300)
+
+
+def two_tasks(n_first: int, n_second: int, model: str = "claude-sonnet-5-5") -> dict:
+    """Task 1 (n_first bash turns), then a new user message and n_second more turns."""
+    body = conversation(["bash"] * n_first, model=model)
+    body["messages"].append({"role": "assistant", "content": [{"type": "text", "text": "done"}]})
+    body["messages"].append({"role": "user", "content": "now update the docs"})
+    for i in range(n_second):
+        body["messages"] += turn(100 + i)
+    return body
+
+
+def test_task_masking_is_off_by_default():
+    store = SessionStore()
+    run(conversation(["bash"] * 6), store, now=0)
+    new, _, _ = run(two_tasks(6, 0), store, now=5)
+    assert new is None
+
+
+def test_new_task_masks_previous_task_outputs():
+    store = SessionStore()
+    run(conversation(["bash"] * 6), store, now=0, events=TASKS)
+    body = two_tasks(6, 0)
+    new, report, event = run(body, store, now=5, events=TASKS)
+    assert event is None  # same model, warm cache: not a cache event
+    out = results(new)
+    assert len(out) == 6 and all(o.startswith("[TokenCut: earlier output of `pytest -k") for o in out)
+    assert all("1 failed" in o for o in out)  # summary / error lines survive in the note
+    assert {d["how"] for d in report.trimmed} == {"task_masked"}
+    assert new["messages"][-1] == body["messages"][-1]  # the new user message is untouched
+    assert new["messages"][: 1] == body["messages"][: 1]
+
+
+def test_outputs_of_the_running_task_stay_whole_and_cache_stays_valid():
+    store = SessionStore()
+    run(conversation(["bash"] * 6), store, now=0, events=TASKS)
+    first, _, _ = run(two_tasks(6, 0), store, now=5, events=TASKS)
+    body = two_tasks(6, 2)
+    nxt, report, _ = run(body, store, now=10, events=TASKS)
+    assert nxt["messages"][: len(first["messages"])] == first["messages"]  # identical prefix
+    assert results(nxt)[-2:] == results(body)[-2:]  # task 2's own outputs untouched
+    assert {d["how"] for d in report.trimmed} == {"history_pinned"}
+
+
+def test_no_masking_on_first_sight():
+    store = SessionStore()
+    new, _, _ = run(two_tasks(6, 1), store, now=0, events=TASKS)
+    assert new is None  # nothing known about this conversation yet: its cache may be valid
+
+
+def test_task_masking_skipped_when_it_does_not_pay_off():
+    # One modest old output followed by a very long cached tail (a long explanation): the
+    # one-time cache rewrite of that tail would cost more than the cache reads saved later.
+    long_answer = {"role": "assistant", "content": [{"type": "text", "text": "explanation " * 6000}]}
+    task1 = conversation(["bash"])
+    task1["messages"].append(long_answer)
+    store = SessionStore()
+    run(task1, store, now=0, events=TASKS)
+    body = copy.deepcopy(task1)
+    body["messages"].append({"role": "user", "content": "now update the docs"})
+    new, report, _ = run(body, store, now=5, events=TASKS)
+    assert new is None and report.trimmed == []
+
+
+def test_task_masking_settings_from_env(monkeypatch):
+    assert GatewayConfig.from_env().events.task_masking is False  # off by default
+    monkeypatch.setenv("TOKENCUT_TASK_MASK", "1")
+    monkeypatch.setenv("TOKENCUT_TASK_MASK_TOKENS", "1000")
+    events = GatewayConfig.from_env().events
+    assert events.task_masking is True and events.task_mask_min_tokens == 1000
