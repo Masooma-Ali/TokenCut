@@ -827,3 +827,33 @@ earlier output had not been trimmed), not re-fetches of trimmed output.
 variation is large, so more bugs or repeated runs would be needed to make the cost saving
 statistically certain. Single-prompt runs (attempt 2) showed TokenCut has almost nothing to
 do without follow-up messages.
+
+### Which techniques matter — ranking after step D
+Step D logged every trim with the rule that made it, so its 1.40 M saved tokens split by
+technique (B arm, 29 sessions):
+
+| Technique | Tokens saved | Share | Re-reads that followed it |
+|---|---|---|---|
+| R10 task masking (first mask + re-sent identically) | 1,271,983 | **90.5 %** | 4 |
+| On-arrival code trimming | 60,063 | 4.3 % | 1 |
+| On-arrival search trimming | 53,751 | 3.8 % | 0 |
+| On-arrival command / log trimming | 19,094 | 1.4 % | 0 (but a test re-run in L3) |
+
+Ranking of all techniques, combining step D with the live runs (L1/L3, S4/S5):
+
+| Rank | Technique | Tokens / cost | Quality | Latency | When it applies |
+|---|---|---|---|---|---|
+| 1 | **R10 task masking** | 90.5 % of step D savings; requests above Haiku's 100K price step 33 → 3; L3 −12.6 % per request, −46 % in dollars | held (19/29 vs 18/29; 3/3 in L3); 4 re-reads in 29 sessions | ~4 ms median | every multi-message session |
+| 2 | **Tool pruning** at cache events | −64 % per request after a model switch, −29 % per session (S4 vs S4-shadow) | held in S4/S5; risk of a missing tool (earlier `curl` workaround) | ms | only at cache events (model switch) — opt-in, not in step D |
+| 3 | **R8 protection** (diffs, "full" requests) | saves nothing itself | prevents a measured failure (L1 diff re-fetch loop; L3 reviewed the diff in one go) | none | always on |
+| 4 | On-arrival **code** trimming | 4.3 % of step D savings; often nothing to trim with Claude Code | 1 re-read | ms; up to ~0.8 s on very large requests (§2) | whole Python file reads |
+| 5 | On-arrival **search** trimming | 3.8 % | no issues seen | ms | large grep / glob results |
+| 6 | On-arrival **command / log** trimming | 1.4 % | worst risk per token saved (L3 test re-run after fragments) | ms | large test / command output |
+| 7 | Cache-event **history** trimming | ~1–3k tokens per event (S4/S5); never triggered in L1 or step D | held | ms | model switch, expired cache, context nearly full |
+| – | Tier choice | hardly any difference (S4 vs S5) | aggressive slightly raises re-read risk | – | on-arrival trims, protected recent turns |
+
+Conclusions: R10 is TokenCut's most valuable technique with a selective agent like Claude
+Code; its re-read risk is the next thing to reduce (e.g. not masking a file the agent is still
+editing). Tool pruning is the strongest when it triggers and pairs naturally with the planned
+model routing (ODE). On-arrival trimming adds little with Claude Code (its value is with agents
+that read whole files), and log trimming has the worst risk-to-saving ratio. R8 should stay on.
