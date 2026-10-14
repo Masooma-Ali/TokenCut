@@ -667,3 +667,193 @@ Data: `logs/gateway/L3/` (local), agent changes kept for grading.
   functions with knapsack selection (§4.3 rows 1–2; tune on dev, confirm on fresh held-out).
 - **R12 — LaMR-style dependency repair for line-level trims:** keep enclosing headers and used
   imports with every kept line (tree-sitter, no model) (§4.3 row 3).
+
+## 7. Step D — task-success check (plan, agreed 2026-10-13)
+
+**Question:** on real SWE-bench bugs, does TokenCut lower tokens and cost (and keep latency
+about the same) **without lowering how many bugs the agent fixes**? This is the main open
+evidence gap (CLAUDE.md §9 item 1). Branch: `test/step-d`. Status: **pilot being prepared**.
+
+### Fixed settings
+| Item | Value |
+|---|---|
+| Agent / model | Claude Code (headless `claude -p`), **Haiku 5.5**, default effort (medium) |
+| Run A (baseline) | TokenCut `TOKENCUT_MODE=shadow` — forwards unchanged, measures everything |
+| Run B (TokenCut) | `TOKENCUT_MODE=trim`, `TOKENCUT_TIER=moderate`, R8 (always on) + R10 (`TOKENCUT_TASK_MASK=1`), default 2,000-token threshold, **no tool pruning** |
+| Both | `TOKENCUT_CAPTURE=1`, own log folder per run, same prompt, same turn and time limits |
+| Paid by | the team's prepaid Claude plan (usage limits may pause the run; it resumes) |
+| Code | no TokenCut changes; the step D script lives under `eval/` |
+
+Why these choices: one change at a time (A vs B differ only in TokenCut); Haiku is cheap enough
+for a meaningful number of bugs and fixed 3/3 bugs in L1/L3; moderate is the setting we would
+recommend (the tier barely changed savings in S4 vs S5, and more aggressive cuts raise the
+re-run risk seen in L3); tool pruning rarely triggers without model switches and is measured
+offline from the A captures instead.
+
+### Steps
+1. **Choose and validate bugs (free).** Fresh SWE-bench Lite **sympy** tasks (not the three used
+   in L1/L3). Keep a bug only if, on this machine, its official `FAIL_TO_PASS` test fails before
+   the official fix and passes after it, and its `PASS_TO_PASS` tests pass. **Pilot: 5 bugs.**
+2. **Automate the agent (free to build).** Per bug and run: fresh copy of sympy at the bug's
+   commit → start the gateway with that run's settings → `claude -p "<official issue text>"
+   --model haiku` with a fixed one-line note on which Python to use (identical in A and B),
+   limited tools (no "skip all permissions"), turn and time limits → save the agent's changes.
+   A/B order alternates per bug.
+3. **Stop / resume safely.** Results saved after every run; finished runs skipped on restart;
+   a usage-limit stop discards the interrupted run and repeats it from a fresh copy later; A/B
+   stay paired.
+4. **Grade automatically (free).** Agent's changes on a clean copy + official hidden tests:
+   resolved = `FAIL_TO_PASS` and `PASS_TO_PASS` both pass.
+5. **Log everything once** (so step D never has to be re-run for missing data):
+   - `eval/results/stepd/requests.csv` (numbers only, committable): one row per request —
+     timestamp, bug, run, request number, model, tokens per kind, tokens **before and after**
+     trimming, every trim / R10 mask, cache events, trimming time, total latency, billed usage
+     (cache read / write / uncached / output), **dollar cost** at Haiku 5.5 prices (incl. the
+     100K price step and 1-hour cache writes), HTTP status.
+   - `eval/results/stepd/runs.csv`: one row per run — bug, run, start / end, duration, requests,
+     totals of tokens sent and billed, **dollar cost**, R8 / R10 counts, re-runs or re-reads
+     after a TokenCut note, repeated tool calls, files changed, diff size, resolved (F2P / P2P
+     separately), how it ended (finished / time limit / usage limit), versions and settings.
+   - `eval/results/stepd/summary.md`: A vs B resolve rate, cost, tokens, requests, latency,
+     with confidence intervals and per-bug pairs.
+   - `logs/stepd/` (local, gitignored, private): captured requests, full agent transcripts,
+     agent diffs, test output — for before/after views and offline replays (e.g. what A would
+     cost with B's settings, or with tool pruning) without new runs.
+6. **Pilot first:** 5 bugs × 2 runs = 10 runs → short report → the team decides on the full
+   run (20–30 bugs).
+7. **Analyse and report** here: paired A vs B results, failure analysis (did TokenCut ever cause
+   a failure or a re-run loop), examples from the before/after viewer.
+
+Not included: tool pruning, Gemini / GPT (Gemini blocked on the free tier — see note below),
+tier or effort comparisons.
+
+Note — other providers (2026-10-13): Codex CLI only sends OpenAI's Responses API format, which
+TokenCut's OpenAI route does not parse (Chat Completions only), and ChatGPT Plus sign-in uses a
+different backend — not testable without code changes. Gemini CLI connected through TokenCut
+(`GOOGLE_GEMINI_BASE_URL`), and TokenCut parsed its requests with 0 errors, but Google refused
+the free-tier keys (403 "project denied access" on one account; quota exhausted after automatic
+retries on another), so no Gemini session could be completed.
+
+### Changes made after checking the first 3 bugs (2026-10-13)
+The run was started directly (no separate pilot) with a close check after the first 3 bugs
+(sympy-24909, 24152, 23117). Two problems were found and fixed before continuing; the earlier
+attempts are kept in `eval/results/stepd/attempt1_no_warmup/` and `attempt2_single_prompt/`.
+
+1. **Cache-order effect (attempt 1).** The first request of a run carries Claude Code's system
+   prompt and ~30k proxy tokens of tool definitions. The first run of a bug pays the 2× cache
+   write; the second run of the same bug reads that cache. So whichever arm ran second looked
+   cheaper (24909: A first $0.037 vs B second $0.019; 24152: B first $0.029 vs A second
+   $0.017). A warm-up request before each run was tried (attempt 2) and dropped: Claude Code's
+   first request is not byte-identical between runs (the tool list varied, 28 vs 35 tools, as
+   connectors load), so a warm-up cannot reliably prepare the cache. **Fix: the summary also
+   reports a "warm-start cost"** — each run's cost with its first request's cache writes billed
+   as cache reads (later requests unchanged) — which removes the order effect for all runs.
+2. **Single-prompt sessions give TokenCut almost nothing to do (attempt 2).** With one prompt
+   per bug there is never a new user message, so **R10 can never act**, and on-arrival trimming
+   acted in 1 of 3 bugs (one whole-file read in 24909). A/B differences were mostly normal
+   agent variation (24152: 9 vs 16 requests with nothing trimmed). Attempt 2 result (3 bugs):
+   resolved 2/3 vs 2/3; cost (warm start) −8 % for B — not attributable to TokenCut.
+   **Fix (option 2, agreed):** each bug is now a short session of **three messages in one
+   Claude Code session** (`--session-id`, then `--resume`), identical in A and B:
+   1. "Here is an issue … First investigate it: find the relevant code and reproduce the
+      problem. Do not change any files yet. Use <python> …"
+   2. "Now make the code change in the repository that resolves the issue."
+   3. "Run the tests relevant to your change with the same Python and summarise what you
+      changed and why."
+   This matches how people use Claude Code and gives R10 task boundaries; grading is the same
+   official SWE-bench tests.
+
+Other observations from the check: every run completed (no stalls, timeouts or usage-limit
+stops); one transient 502 (gateway briefly could not reach Anthropic, Claude Code retried);
+the computed cost matched Claude Code's own reported cost within ~1 %; runs cost about
+$0.01–0.04 each; auto permission mode blocked some `cd` / `PYTHONPATH` shell commands (same in
+both arms; the agent worked around it).
+
+### Results (completed 2026-10-14)
+29 SWE-bench Lite sympy bugs, each run once without (A) and once with (B) TokenCut, in
+three-message Claude Code sessions (Haiku 5.5). 58 runs, all ended normally. One run
+(18835/A) was redone because an internet outage made 26 of its requests fail (logged in
+`runs_network_failed.csv`, not counted). Full tables: `eval/results/stepd/analysis.md`
+(per task) and `runs.csv` / `requests.csv` (every run and request); script
+`eval/stepd_analyse.py`.
+
+**Correctness**
+| | A (no trimming) | B (TokenCut) |
+|---|---|---|
+| Bugs fixed (official hidden tests) | **18 / 29 (62 %)** | **19 / 29 (66 %)** |
+
+Fixed only in A: 18698, 20049. Fixed only in B: 21379, 21612, 22840. Sign test on these five
+discordant bugs: p = 1.0 — **no detectable difference**. With 29 bugs a small change in fix
+rate could still go unnoticed, but there is no sign that TokenCut lowers correctness.
+
+**Cost, tokens, time** (per task: mean over the 29 bugs, B − A, 95 % bootstrap interval)
+| Measure | A | B | Change | 95 % CI of B − A | B lower in |
+|---|---|---|---|---|---|
+| Cost per task, warm start | $0.0457 | $0.0391 | **−14.4 %** | −$0.025 … +$0.005 | 14 / 29 |
+| Cost per task, raw | $0.0476 | $0.0416 | −12.6 % | −$0.025 … +$0.006 | 14 / 29 |
+| Tokens sent per task | 1.12 M | 1.07 M | −4.4 % | −224k … +103k | 15 / 29 |
+| Requests per task | 26.8 | 27.0 | +0.6 % | −3 … +3 | 10 / 29 |
+| Wall time per task | 306 s | 347 s | +13.4 % | −107 … +236 s | 18 / 29 |
+
+Per request (removes "the agent took more or fewer steps"): tokens sent **−3.7 %**, billed
+prompt −4.2 %, **cost −6.9 %**. **Requests whose prompt went above Haiku's 100K price step:
+A 33, B 3.**
+
+**What TokenCut did in B:** acted in 27 / 29 bugs (R10 masks at task boundaries in 43
+requests, on-arrival trims in 61); removed 1.40 M of the 32.5 M tokens the agent sent
+(**4.3 %**). Trimming time per request: median 3.8 ms, p95 63 ms, max 235 ms.
+**Re-reads after a trim / mask: 5** (in 21171 ×2, 18698, 20590, 21055). Identical repeated
+tool calls: A 4, B 17 — mostly the agent re-running its own test script after an edit (their
+earlier output had not been trimmed), not re-fetches of trimmed output.
+
+**What it means**
+- **Correctness held:** 19/29 vs 18/29, with failures in both directions.
+- **Cost went down about 7 % per request and about 14 % per task in total, but the per-task
+  saving is not statistically certain:** the 95 % interval includes zero and B was cheaper in
+  only half the bugs, because how many steps the agent takes varies a lot between runs. One
+  bug dominates the total (19254: A $0.269 after 56 requests, B $0.052 after 30).
+- **The clearest effect is the price step:** R10 kept B's long sessions under Haiku's 100K
+  step (3 requests above it vs 33 in A), which is where the per-request saving comes from.
+  This matches L3 (−46 % in dollars).
+- **Latency:** TokenCut adds a few ms per request; the +13 % wall time is noise from the
+  agent's own test runs (e.g. 20322/B spent ~40 min running slow sympy tests), not trimming.
+- **Re-read risk is real but small:** 5 re-reads in 29 sessions. 18698 is the one bug fixed
+  only in A where a re-read also happened in B; whether it mattered cannot be told from one run.
+- Compared with research: SWE-Pruner and LaMR report 23–31 % fewer tokens with open-source
+  agents that read whole files; with Claude Code (which reads selectively) TokenCut removes
+  4.3 % and saves ~7 % per request — consistent with the live runs (§3) and the reasons in §4.
+
+**Limits:** one model (Haiku 5.5), one repository (sympy), one run per bug and arm; agent
+variation is large, so more bugs or repeated runs would be needed to make the cost saving
+statistically certain. Single-prompt runs (attempt 2) showed TokenCut has almost nothing to
+do without follow-up messages.
+
+### Which techniques matter — ranking after step D
+Step D logged every trim with the rule that made it, so its 1.40 M saved tokens split by
+technique (B arm, 29 sessions):
+
+| Technique | Tokens saved | Share | Re-reads that followed it |
+|---|---|---|---|
+| R10 task masking (first mask + re-sent identically) | 1,271,983 | **90.5 %** | 4 |
+| On-arrival code trimming | 60,063 | 4.3 % | 1 |
+| On-arrival search trimming | 53,751 | 3.8 % | 0 |
+| On-arrival command / log trimming | 19,094 | 1.4 % | 0 (but a test re-run in L3) |
+
+Ranking of all techniques, combining step D with the live runs (L1/L3, S4/S5):
+
+| Rank | Technique | Tokens / cost | Quality | Latency | When it applies |
+|---|---|---|---|---|---|
+| 1 | **R10 task masking** | 90.5 % of step D savings; requests above Haiku's 100K price step 33 → 3; L3 −12.6 % per request, −46 % in dollars | held (19/29 vs 18/29; 3/3 in L3); 4 re-reads in 29 sessions | ~4 ms median | every multi-message session |
+| 2 | **Tool pruning** at cache events | −64 % per request after a model switch, −29 % per session (S4 vs S4-shadow) | held in S4/S5; risk of a missing tool (earlier `curl` workaround) | ms | only at cache events (model switch) — opt-in, not in step D |
+| 3 | **R8 protection** (diffs, "full" requests) | saves nothing itself | prevents a measured failure (L1 diff re-fetch loop; L3 reviewed the diff in one go) | none | always on |
+| 4 | On-arrival **code** trimming | 4.3 % of step D savings; often nothing to trim with Claude Code | 1 re-read | ms; up to ~0.8 s on very large requests (§2) | whole Python file reads |
+| 5 | On-arrival **search** trimming | 3.8 % | no issues seen | ms | large grep / glob results |
+| 6 | On-arrival **command / log** trimming | 1.4 % | worst risk per token saved (L3 test re-run after fragments) | ms | large test / command output |
+| 7 | Cache-event **history** trimming | ~1–3k tokens per event (S4/S5); never triggered in L1 or step D | held | ms | model switch, expired cache, context nearly full |
+| – | Tier choice | hardly any difference (S4 vs S5) | aggressive slightly raises re-read risk | – | on-arrival trims, protected recent turns |
+
+Conclusions: R10 is TokenCut's most valuable technique with a selective agent like Claude
+Code; its re-read risk is the next thing to reduce (e.g. not masking a file the agent is still
+editing). Tool pruning is the strongest when it triggers and pairs naturally with the planned
+model routing (ODE). On-arrival trimming adds little with Claude Code (its value is with agents
+that read whole files), and log trimming has the worst risk-to-saving ratio. R8 should stay on.
