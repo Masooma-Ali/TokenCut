@@ -1,0 +1,13 @@
+instance_id,base_commit,created_at,version,f2p,p2p,f2p_pass_before,f2p_pass_after,p2p_pass_after,usable,reason
+sympy__sympy-24909,d3b4158dea271485e3daa11bf82e69b8dab348ce,2023-03-13,1.13,1,2,0,1,2,True,ok
+sympy__sympy-24213,e8c22f6eac7314be8d92590bfff92ced79ee03e2,2022-11-03,1.12,1,31,0,1,31,True,ok
+sympy__sympy-24152,b9af885473ad7e34b5b0826cb424dd26d8934670,2022-10-21,1.12,1,6,0,1,6,True,ok
+sympy__sympy-24102,58598660a3f6ab3d918781c4988c2e4b2bdd9297,2022-10-01,1.12,2,0,0,2,0,True,ok
+sympy__sympy-24066,514579c655bf22e2af14f0743376ae1d7befe345,2022-09-16,1.12,1,30,0,1,30,True,ok
+sympy__sympy-23117,c5cef2499d6eed024b0db5c792d6ec7c53baa470,2022-02-19,1.11,1,3,0,1,3,True,ok
+sympy__sympy-22714,3ff4717b6aef6086e78f01cdfa06f64ae23aed7e,2021-12-19,1.10,1,11,0,1,11,True,ok
+sympy__sympy-22005,2c83657ff1c62fc2761b639469fdac7f7561a72a,2021-09-02,1.9,1,2,0,1,2,True,ok
+sympy__sympy-21847,d9b18c518d64d0ebe8e35a98c2fb519938b9b151,2021-08-10,1.9,1,9,0,1,9,True,ok
+sympy__sympy-21614,b4777fdcef467b7132c055f8ac2c9a5059e6a145,2021-06-14,1.9,1,6,0,1,6,True,ok
+sympy__sympy-21055,748ce73479ee2cd5c861431091001cc18943c735,2021-03-07,1.8,1,13,0,1,13,True,ok
+sympy__sympy-20590,cffd4e0f86fefd4802349a9f9b19ed70934ea354,2020-12-12,1.7,1,21,0,1,21,True,ok
