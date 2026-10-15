@@ -36,9 +36,10 @@ _SHOW_FILE = re.compile(
 # R8: a diff is code, not a log (every line matters), so it is never trimmed on arrival.
 _DIFF = re.compile(r"^(?:diff --git |@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@)", re.MULTILINE)
 # R8: "show me the full diff / file / output ..." -> the user wants that output whole.
-# "the whole test suite" does not match: the word must refer to an output-like noun.
+# "the whole test suite" does not match: the word must refer to an output-like noun, in the
+# same phrase (only spaces between): "wait for it to complete, see its output" is no request.
 _FULL_REQUEST = re.compile(
-    r"\b(?:full|entire|whole|complete)\b(?:\W+\w+){0,2}?\W+"
+    r"\b(?:full|entire|whole|complete)\b(?:[ \t]+[\w'-]+){0,2}?[ \t]+"
     r"(?:diffs?|files?|output|contents?|code|logs?|listing)\b",
     re.IGNORECASE,
 )

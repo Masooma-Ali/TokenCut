@@ -419,3 +419,18 @@ def test_whole_test_suite_request_is_still_trimmed():
     body = bash_conversation("run the whole core test suite and group the failures", "pytest -q", pytest_log())
     _, report = run(body, TrimConfig(min_tokens=300))
     assert [d["how"] for d in report.trimmed] == ["command_output"]
+
+
+def test_complete_as_a_verb_is_not_a_full_output_request():
+    # Mini-SWE-Agent's standard instructions: "complete" ends a clause, it does not ask for
+    # full output. Matching it protected every output of 150 replayed sessions.
+    text = "Wait for the first command to complete, see its output, then issue the next command."
+    body = bash_conversation(text, "pytest -q", pytest_log())
+    _, report = run(body, TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]
+
+
+def test_full_output_request_across_a_line_break_is_not_matched():
+    body = bash_conversation("Make the change in full.\nThe output must stay short.", "pytest -q", pytest_log())
+    _, report = run(body, TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]

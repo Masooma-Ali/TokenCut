@@ -548,7 +548,7 @@ No other headline number changed.
 | Does it save money? | **Yes, with conditions**: 7–13 % per request (step D), 12.6 % / 46 % dollars (L3), 64 % after a model switch (with pruning) | §5.3, §8, §9 |
 | Is the per-bug saving statistically certain? | **No** (CI includes 0) | §9.2 |
 | Does on-arrival trimming help with Claude Code? | **Barely** (0–1 % live, 9.5 % of step D saving) | §5, §9.4 |
-| Does it help with agents that read whole files? | **Not tested yet** | next step: Mini-SWE-Agent |
+| Does it help with agents that read whole files? | **Not tested yet.** Mini-SWE-Agent (the agent SWE-Pruner / LaMR used) turned out to view line ranges, not whole files: replay 6.8 % (Sonnet 4.5) / 5.7 % (GLM-4.6) of tokens sent, 16 % / 10 % at a 500-token threshold; **0 % as shipped** (outputs arrive as user messages) | RESULTS_REPORT §8 (offline replay, 150 public sessions); whole-file candidates checked in §8.1 |
 | Other providers? | **Not tested** (Codex format unsupported, Gemini blocked) | §5.5 |
 | Is it fast enough? | **Yes for normal requests** (median 3.8 ms in step D); up to about 0.8 s on very large synthetic histories | §4.2, §9.3 |
 | Main risk | **Re-reads after a trim or mask** (5 in 29 sessions; L1 diff loop; L3 test re-run) | §5.4, §8, §9.3 |
