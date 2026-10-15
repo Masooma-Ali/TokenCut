@@ -48,6 +48,7 @@ DEFAULT_CORE_TOOLS = (
     "Read", "Edit", "MultiEdit", "Write", "Bash", "Grep", "Glob", "LS", "TodoWrite", "Task",
     "read_file", "write_file", "replace", "run_shell_command", "search_file_content", "glob",
     "list_directory", "apply_patch", "str_replace_editor", "str_replace_based_edit_tool",
+    "mcp__tokencut__repo_map", "mcp__tokencut__find_code", "mcp__tokencut__symbol",
 )
 _ONE_HOUR_TTL = re.compile(r'"ttl"\s*:\s*"1h"')
 # Provider prices relative to uncached input (Anthropic): a cache read ~0.1x, a write ~1.25x.
