@@ -283,10 +283,11 @@ def two_tasks(n_first: int, n_second: int, model: str = "claude-sonnet-5-5") -> 
     return body
 
 
-def test_task_masking_is_off_by_default():
+def test_task_masking_can_be_switched_off():
+    off = CacheEventConfig(task_masking=False)
     store = SessionStore()
-    run(conversation(["bash"] * 6), store, now=0)
-    new, _, _ = run(two_tasks(6, 0), store, now=5)
+    run(conversation(["bash"] * 6), store, now=0, events=off)
+    new, _, _ = run(two_tasks(6, 0), store, now=5, events=off)
     assert new is None
 
 
@@ -336,8 +337,8 @@ def test_task_masking_skipped_when_it_does_not_pay_off():
 
 
 def test_task_masking_settings_from_env(monkeypatch):
-    assert GatewayConfig.from_env().events.task_masking is False  # off by default
-    monkeypatch.setenv("TOKENCUT_TASK_MASK", "1")
+    assert GatewayConfig.from_env().events.task_masking is True  # on by default (P1)
+    monkeypatch.setenv("TOKENCUT_TASK_MASK", "0")
     monkeypatch.setenv("TOKENCUT_TASK_MASK_TOKENS", "1000")
     events = GatewayConfig.from_env().events
-    assert events.task_masking is True and events.task_mask_min_tokens == 1000
+    assert events.task_masking is False and events.task_mask_min_tokens == 1000

@@ -62,7 +62,7 @@ class CacheEventConfig:
     history_min_tokens: int = 200  # older results smaller than this are left alone
     prune_tools: bool = False  # opt-in: fewer tool definitions at events
     core_tools: tuple[str, ...] = DEFAULT_CORE_TOOLS
-    task_masking: bool = False  # opt-in (R10): mask finished tasks' outputs at a new task
+    task_masking: bool = True  # R10 (on by default since P1): mask finished tasks' outputs at a new task
     task_mask_min_tokens: int = 300  # (tunable) smaller outputs are left alone
     task_min_expected_requests: int = 20  # (tunable) assume at least this many requests follow
 

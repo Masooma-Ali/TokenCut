@@ -91,7 +91,7 @@ class GatewayConfig:
             cache_ttl_seconds=int(os.environ.get("TOKENCUT_CACHE_TTL",
                                                  CacheEventConfig.cache_ttl_seconds)),
             prune_tools=os.environ.get("TOKENCUT_PRUNE_TOOLS", "") == "1",
-            task_masking=os.environ.get("TOKENCUT_TASK_MASK", "") == "1",
+            task_masking=os.environ.get("TOKENCUT_TASK_MASK", "1") != "0",
             task_mask_min_tokens=int(os.environ.get("TOKENCUT_TASK_MASK_TOKENS",
                                                     CacheEventConfig.task_mask_min_tokens)),
         )
