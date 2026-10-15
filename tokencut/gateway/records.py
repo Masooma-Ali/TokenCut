@@ -5,6 +5,7 @@ headers, so the log is safe to keep. Full request bodies are saved only when cap
 switched on, for building parser test fixtures.
 """
 
+import dataclasses
 import json
 import time
 from collections import deque
@@ -16,6 +17,7 @@ from tokencut.gateway.adapters import anthropic, gemini, openai
 from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
+from tokencut.gateway.virtual import VirtualConfig, finish_tools, offers_tools, resolve
 
 ADAPTERS = {"anthropic": anthropic, "openai": openai, "gemini": gemini}
 RECENT_RECORDS = 1000
@@ -28,13 +30,18 @@ def analyse(
     trim_config: TrimConfig | None = None,
     session: tuple[SessionStore, CacheEventConfig] | None = None,
     now: float | None = None,
+    virtual: VirtualConfig | None = None,
 ) -> tuple[dict, bytes | None]:
     """Split a request into segments and count tokens per kind; with a TrimConfig, also
-    work out the cache-safe trim. Returns (analysis, trimmed body bytes or None).
+    work out the cache-safe trim and the gateway's own tools (virtual.py). Returns
+    (analysis, body bytes to send or None if unchanged).
     Raises on bad input (the caller then forwards the original body)."""
     start = time.perf_counter()
     data = json.loads(body)
     adapter = ADAPTERS[provider]
+    answered = []  # the gateway's answers to its own tools (replace the agent's errors)
+    if trim_config is not None and virtual is not None:
+        answered = resolve(provider, data, virtual.store)
     segments = adapter.parse(data)
     analysis = {
         "model": adapter.model_of(data, path),
@@ -46,6 +53,9 @@ def analyse(
     if trim_config is not None:
         trim_start = time.perf_counter()
         event = None
+        ccr = virtual is not None and virtual.ccr and offers_tools(provider, data)
+        if ccr:
+            trim_config = dataclasses.replace(trim_config, ccr=True)
         if session is not None:  # cache-event trimming (remembers decisions per conversation)
             store, events_config = session
             new_body, report, event = trim_with_cache_events(
@@ -54,6 +64,21 @@ def analyse(
             )
         else:
             new_body, report = trim_request(data, segments, trim_config)
+        if virtual is not None:
+            if ccr:  # keep every original we shortened (fallback if it leaves the request)
+                shortened = {d["segment"] for d in report.trimmed}
+                for seg in segments:
+                    if seg.id in shortened:
+                        virtual.store.put(seg.text)
+            out = new_body if new_body is not None else data
+            extra = answered + finish_tools(provider, out, ccr, virtual.lazy_tools,
+                                            virtual.core_tools)
+            for entry in extra:
+                report.tokens_before += entry["before"]
+                report.tokens_after += entry["after"]
+                report.trimmed.append(entry)
+            if extra:
+                new_body = out
         analysis["trim"] = {
             **report.as_dict(),
             "tier": trim_config.tier.value,

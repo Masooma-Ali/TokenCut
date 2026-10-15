@@ -20,10 +20,12 @@ from pathlib import PurePosixPath
 
 from tokencut.contracts import TIER_BUDGET_FRACTION, Segment, SegmentKind, Tier, ToolResultKind
 from tokencut.gateway.adapters.common import lookup, set_text
+from tokencut.gateway.ccr import with_ref
 from tokencut.gateway.codeview import trim_file_listing
 from tokencut.gateway.textcut import trim_output
 from tokencut.tokens import count_tokens
 
+_GATEWAY_TOOL_PREFIX = "tokencut_"  # tools the gateway answers itself (virtual.py)
 _REMINDER = re.compile(r"<system-reminder>.*?</system-reminder>", re.DOTALL)
 _WORD = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|[0-9]+")
 _EDIT_WORDS = frozenset({"edit", "write", "replace", "create", "patch", "insert"})
@@ -49,6 +51,7 @@ class TrimConfig:
     tier: Tier = Tier.MODERATE
     min_tokens: int = 2_000  # tool results smaller than this are never trimmed
     min_keep_tokens: int = 500  # never cut a result below this
+    ccr: bool = False  # add a reference to every shortened output (it can be fetched back)
 
 
 @dataclass
@@ -63,7 +66,7 @@ class TrimReport:
 
     def as_dict(self) -> dict:
         return {
-            "segments_trimmed": len(self.trimmed),
+            "segments_trimmed": sum(1 for t in self.trimmed if t["how"] != "ccr_tool"),
             "tokens_before": self.tokens_before,
             "tokens_after": self.tokens_after,
             "tokens_saved": self.saved,
@@ -148,9 +151,13 @@ def trim_request(
                 if path:
                     ctx.edited.add(path)
         elif seg.kind == SegmentKind.TOOL_RESULT and seg.token_count >= config.min_tokens:
+            if seg.tool_name.startswith(_GATEWAY_TOOL_PREFIX):
+                continue  # the gateway's own answers (a retrieved original) stay whole
             new_text, how = _trim_result(seg, ctx, config)
             if new_text is None or not isinstance(lookup(body, seg.path), str):
                 continue
+            if config.ccr:
+                new_text = with_ref(new_text, seg.text)
             after = count_tokens(new_text)
             if after >= seg.token_count:
                 continue

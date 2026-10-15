@@ -26,6 +26,7 @@ from dataclasses import dataclass
 
 from tokencut.contracts import Segment, SegmentKind, Tier, ToolResultKind
 from tokencut.gateway.adapters.common import lookup, set_text
+from tokencut.gateway.ccr import with_ref
 from tokencut.gateway.session import ConversationState, SessionStore, conversation_key, fingerprint
 from tokencut.gateway.textcut import _ERROR
 from tokencut.gateway.trimmer import (
@@ -184,7 +185,8 @@ def _note(info: _ResultInfo, later: list[_ResultInfo], edits: list[tuple[int, st
 
 
 def _history_replacements(segments: list[Segment], state: ConversationState,
-                          config: CacheEventConfig, keep_turns: int) -> dict[str, tuple[str, str]]:
+                          config: CacheEventConfig, keep_turns: int,
+                          ccr: bool = False) -> dict[str, tuple[str, str]]:
     """fingerprint -> (replacement text, how) for old tool results, decided at an event."""
     results, edits = _scan(segments)
     recent_from = _recent_from(segments, keep_turns)
@@ -199,6 +201,8 @@ def _history_replacements(segments: list[Segment], state: ConversationState,
         if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
             continue
         note, how = _note(info, results[i + 1:], edits)
+        if ccr:
+            note = with_ref(note, seg.text)
         if info.path:
             state.masked_paths.add(info.path)
         if count_tokens(note) < seg.token_count:
@@ -216,7 +220,8 @@ def _real_user_positions(segments: list[Segment]) -> list[int]:
 
 
 def _task_replacements(segments: list[Segment], state: ConversationState,
-                       config: CacheEventConfig, task_start: int) -> dict[str, tuple[str, str]]:
+                       config: CacheEventConfig, task_start: int,
+                       ccr: bool = False) -> dict[str, tuple[str, str]]:
     """fingerprint -> (note, "task_masked") for large tool results before `task_start`.
 
     Masking changes cached history, so the request is re-cached from the first masked
@@ -235,6 +240,8 @@ def _task_replacements(segments: list[Segment], state: ConversationState,
         if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
             continue
         note, _ = _note(info, results[i + 1:], edits)
+        if ccr:
+            note = with_ref(note, seg.text)
         if count_tokens(note) < seg.token_count:
             candidates[fp] = (note, info)
     if not candidates:
@@ -345,7 +352,7 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
 
         if event is not None:
             decided = _history_replacements(segments, state, events_config,
-                                            KEEP_RECENT_TURNS[config.tier])
+                                            KEEP_RECENT_TURNS[config.tier], config.ccr)
             for fp, (text, _) in decided.items():
                 state.pinned[fp] = text
             if events_config.prune_tools:
@@ -356,7 +363,8 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
         elif (events_config.task_masking and not first_sight and user_positions
               and len(user_positions) > state.user_turns):
             # R10: the user started a new task; its own outputs are still to come.
-            decided = _task_replacements(segments, state, events_config, user_positions[-1])
+            decided = _task_replacements(segments, state, events_config, user_positions[-1],
+                                         config.ccr)
             for fp, (text, _) in decided.items():
                 state.pinned[fp] = text
         else:
