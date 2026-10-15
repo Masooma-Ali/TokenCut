@@ -167,14 +167,17 @@ def main(argv: list[str] | None = None) -> None:
 
     objective = ("file@5", "chunk@10")
     index_methods = [m for m in rows[0]["methods"] if m.startswith("index ")]
-    best = max(index_methods, key=lambda m: (
+    best = index_methods[0] if args.weights else max(index_methods, key=lambda m: (
         sum(statistics.mean(r["methods"][m][k] for r in rows) for k in objective), m))
     shown = ["bm25_files", "bm25", "tokencut_v1", best]
     if "index 0.4,0.4,0.2,1" in index_methods and best != "index 0.4,0.4,0.2,1":
         shown.append("index 0.4,0.4,0.2,1")
     table_rows = [{**r, "methods": {m: r["methods"][m] for m in shown}} for r in rows]
     report = [f"# Repo index search — {args.set} set", "", summarise(table_rows, args.set), "",
-              f"Best index weights on this set (mean of {' + '.join(objective)}): `{best}`", ""]
+              (f"Index weights reported: `{best}` (given with --weights; chosen on dev)"
+               if args.weights else
+               f"Best index weights on this set (mean of {' + '.join(objective)}): `{best}`"),
+              ""]
     for other in ("bm25_files", "bm25", "tokencut_v1"):
         for key in objective:
             report.append("- " + compare(rows, best, other, key))

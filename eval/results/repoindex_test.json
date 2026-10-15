@@ -1,0 +1,3842 @@
+[
+ {
+  "task": "astropy__astropy-12907",
+  "repo": "astropy/astropy",
+  "chunks": 17609,
+  "index_build_and_search_s": 7.51,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "repo": "astropy/astropy",
+  "chunks": 17981,
+  "index_build_and_search_s": 7.72,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "repo": "astropy/astropy",
+  "chunks": 18240,
+  "index_build_and_search_s": 7.5,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "repo": "astropy/astropy",
+  "chunks": 17922,
+  "index_build_and_search_s": 7.71,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "repo": "astropy/astropy",
+  "chunks": 11861,
+  "index_build_and_search_s": 4.92,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "repo": "astropy/astropy",
+  "chunks": 12316,
+  "index_build_and_search_s": 5.12,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13315",
+  "repo": "django/django",
+  "chunks": 31606,
+  "index_build_and_search_s": 9.09,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13321",
+  "repo": "django/django",
+  "chunks": 31369,
+  "index_build_and_search_s": 9.34,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13401",
+  "repo": "django/django",
+  "chunks": 31398,
+  "index_build_and_search_s": 9.07,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13447",
+  "repo": "django/django",
+  "chunks": 32201,
+  "index_build_and_search_s": 9.51,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13448",
+  "repo": "django/django",
+  "chunks": 31472,
+  "index_build_and_search_s": 9.76,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13551",
+  "repo": "django/django",
+  "chunks": 31565,
+  "index_build_and_search_s": 9.29,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13590",
+  "repo": "django/django",
+  "chunks": 31601,
+  "index_build_and_search_s": 9.16,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13658",
+  "repo": "django/django",
+  "chunks": 31706,
+  "index_build_and_search_s": 9.5,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13660",
+  "repo": "django/django",
+  "chunks": 31712,
+  "index_build_and_search_s": 9.42,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "django__django-13710",
+  "repo": "django/django",
+  "chunks": 32720,
+  "index_build_and_search_s": 9.66,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10354,
+  "index_build_and_search_s": 4.54,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10782,
+  "index_build_and_search_s": 4.89,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.6666666666666666,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 0.6666666666666666
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.6666666666666666
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.6666666666666666
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10815,
+  "index_build_and_search_s": 4.64,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10872,
+  "index_build_and_search_s": 4.65,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10850,
+  "index_build_and_search_s": 4.62,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10878,
+  "index_build_and_search_s": 4.72,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10888,
+  "index_build_and_search_s": 4.89,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.2,
+    "chunk@10": 0.2,
+    "chunk@20": 0.2
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.4,
+    "chunk@10": 0.4,
+    "chunk@20": 0.4
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.4,
+    "chunk@10": 0.4,
+    "chunk@20": 0.4
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.4,
+    "chunk@10": 0.4,
+    "chunk@20": 0.4
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10890,
+  "index_build_and_search_s": 5.07,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10957,
+  "index_build_and_search_s": 5.08,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10965,
+  "index_build_and_search_s": 4.96,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10963,
+  "index_build_and_search_s": 4.87,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "repo": "matplotlib/matplotlib",
+  "chunks": 10966,
+  "index_build_and_search_s": 5.03,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "repo": "mwaskom/seaborn",
+  "chunks": 2469,
+  "index_build_and_search_s": 1.03,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "repo": "mwaskom/seaborn",
+  "chunks": 2589,
+  "index_build_and_search_s": 1.16,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "repo": "mwaskom/seaborn",
+  "chunks": 2708,
+  "index_build_and_search_s": 1.09,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "repo": "mwaskom/seaborn",
+  "chunks": 2869,
+  "index_build_and_search_s": 1.19,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "repo": "pydata/xarray",
+  "chunks": 4181,
+  "index_build_and_search_s": 1.59,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "repo": "pydata/xarray",
+  "chunks": 4658,
+  "index_build_and_search_s": 1.9,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "repo": "pydata/xarray",
+  "chunks": 4696,
+  "index_build_and_search_s": 1.99,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "repo": "pydata/xarray",
+  "chunks": 4889,
+  "index_build_and_search_s": 2.02,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "repo": "pydata/xarray",
+  "chunks": 5059,
+  "index_build_and_search_s": 2.13,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "repo": "pylint-dev/pylint",
+  "chunks": 7785,
+  "index_build_and_search_s": 1.52,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "repo": "pylint-dev/pylint",
+  "chunks": 8875,
+  "index_build_and_search_s": 1.83,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "repo": "pylint-dev/pylint",
+  "chunks": 9860,
+  "index_build_and_search_s": 2.13,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "repo": "pylint-dev/pylint",
+  "chunks": 9952,
+  "index_build_and_search_s": 2.05,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "repo": "pylint-dev/pylint",
+  "chunks": 9935,
+  "index_build_and_search_s": 2.02,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "repo": "pylint-dev/pylint",
+  "chunks": 10115,
+  "index_build_and_search_s": 2.02,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "repo": "pytest-dev/pytest",
+  "chunks": 4921,
+  "index_build_and_search_s": 1.42,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 7418,
+  "index_build_and_search_s": 4.14,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.6666666666666666,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 0.6666666666666666
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 7366,
+  "index_build_and_search_s": 4.12,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 7288,
+  "index_build_and_search_s": 4.15,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 7538,
+  "index_build_and_search_s": 4.22,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.3333333333333333
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 7652,
+  "index_build_and_search_s": 4.33,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8006,
+  "index_build_and_search_s": 4.65,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8079,
+  "index_build_and_search_s": 4.44,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8173,
+  "index_build_and_search_s": 4.58,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8332,
+  "index_build_and_search_s": 4.75,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.3333333333333333
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8344,
+  "index_build_and_search_s": 4.62,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8346,
+  "index_build_and_search_s": 4.67,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "repo": "scikit-learn/scikit-learn",
+  "chunks": 8387,
+  "index_build_and_search_s": 4.69,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 7353,
+  "index_build_and_search_s": 2.32,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.5
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 7357,
+  "index_build_and_search_s": 2.38,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 7279,
+  "index_build_and_search_s": 2.36,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6644,
+  "index_build_and_search_s": 2.18,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6660,
+  "index_build_and_search_s": 2.19,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6793,
+  "index_build_and_search_s": 2.19,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6873,
+  "index_build_and_search_s": 2.28,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 0.6666666666666666
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.3333333333333333,
+    "chunk@20": 0.6666666666666666
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.6666666666666666,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 0.6666666666666666
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.3333333333333333,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 0.6666666666666666
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6894,
+  "index_build_and_search_s": 2.26,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.6666666666666666,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6958,
+  "index_build_and_search_s": 2.31,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "repo": "sphinx-doc/sphinx",
+  "chunks": 6984,
+  "index_build_and_search_s": 2.36,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "repo": "sympy/sympy",
+  "chunks": 22229,
+  "index_build_and_search_s": 11.16,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "repo": "sympy/sympy",
+  "chunks": 24710,
+  "index_build_and_search_s": 23.03,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "repo": "sympy/sympy",
+  "chunks": 22470,
+  "index_build_and_search_s": 10.99,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "repo": "sympy/sympy",
+  "chunks": 22710,
+  "index_build_and_search_s": 11.21,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "repo": "sympy/sympy",
+  "chunks": 22727,
+  "index_build_and_search_s": 11.33,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "repo": "sympy/sympy",
+  "chunks": 22918,
+  "index_build_and_search_s": 11.63,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "repo": "sympy/sympy",
+  "chunks": 22914,
+  "index_build_and_search_s": 11.78,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 0.5
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.5,
+    "chunk@10": 0.5,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "repo": "sympy/sympy",
+  "chunks": 22924,
+  "index_build_and_search_s": 11.88,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "repo": "sympy/sympy",
+  "chunks": 23313,
+  "index_build_and_search_s": 12.07,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "repo": "sympy/sympy",
+  "chunks": 23420,
+  "index_build_and_search_s": 11.89,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "repo": "sympy/sympy",
+  "chunks": 23658,
+  "index_build_and_search_s": 12.15,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "repo": "sympy/sympy",
+  "chunks": 23681,
+  "index_build_and_search_s": 12.85,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "repo": "sympy/sympy",
+  "chunks": 24717,
+  "index_build_and_search_s": 22.94,
+  "methods": {
+   "bm25": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 1.0
+   },
+   "bm25_files": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 0.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "repo": "sympy/sympy",
+  "chunks": 24760,
+  "index_build_and_search_s": 22.42,
+  "methods": {
+   "bm25": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": 0.0,
+    "chunk@10": 0.0,
+    "chunk@20": 0.0
+   },
+   "bm25_files": {
+    "file@1": 0.0,
+    "file@3": 0.0,
+    "file@5": 0.0,
+    "chunk@5": null,
+    "chunk@10": null,
+    "chunk@20": null
+   },
+   "tokencut_v1": {
+    "file@1": 1.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.2,0.4,0,0.7": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   },
+   "index 0.4,0.4,0.2,1": {
+    "file@1": 0.0,
+    "file@3": 1.0,
+    "file@5": 1.0,
+    "chunk@5": 1.0,
+    "chunk@10": 1.0,
+    "chunk@20": 1.0
+   }
+  }
+ }
+]

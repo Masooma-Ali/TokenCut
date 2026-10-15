@@ -857,3 +857,45 @@ Code; its re-read risk is the next thing to reduce (e.g. not masking a file the 
 editing). Tool pruning is the strongest when it triggers and pairs naturally with the planned
 model routing (ODE). On-arrival trimming adds little with Claude Code (its value is with agents
 that read whole files), and log trimming has the worst risk-to-saving ratio. R8 should stay on.
+
+## 8. P1 "big wins" (branch `feature/p1-big-wins`, 2026-10-16)
+
+Built at a team member's request after step D showed on-arrival trimming removes only ~4 %
+with Claude Code. Goal: attack where the tokens go: exploration turns, tool definitions,
+finished-task history. Needs the other two members' review before merging.
+
+| Feature | Setting | Status |
+|---|---|---|
+| R10 task masking on by default | `TOKENCUT_TASK_MASK` (default on) | measured in step D (−6.9 % per request) |
+| CCR: every shortened output can be fetched back exactly (`tokencut_retrieve`) | `TOKENCUT_CCR=1` | unit-tested; **not measured live** |
+| Lazy tool loading (core + used tools + catalog `tokencut_enable_tools`) | `TOKENCUT_LAZY_TOOLS=1` | unit-tested; **not measured live** |
+| Repo index MCP server: `repo_map`, `find_code`, `symbol` | `python -m tokencut.repoindex serve` | offline retrieval measured (below); **agent use not measured** |
+
+### Repo index search, offline (no API cost)
+`python -m eval.repoindex_eval`. Query = issue text; metric = whether the code the real fix
+edited is near the top. Weights chosen on the dev tasks (39 usable; grid of 144 settings),
+reported once on the held-out test tasks (80 usable).
+
+| Test set (80 tasks) | file@1 | file@3 | file@5 | chunk@5 | chunk@10 | chunk@20 |
+|---|---|---|---|---|---|---|
+| File BM25 (SWE-bench baseline) | 0.35 | 0.54 | 0.62 | – | – | – |
+| Chunk BM25 | 0.30 | 0.51 | 0.62 | 0.29 | 0.39 | 0.49 |
+| Iteration 1 scorer | 0.47 | 0.65 | 0.68 | 0.32 | 0.38 | 0.41 |
+| **Repo index (dev weights)** | 0.46 | **0.70** | **0.74** | **0.41** | **0.49** | **0.54** |
+
+- vs file BM25 on file@5: +0.11 (95 % CI +0.01 … +0.21), p = 0.049; vs chunk BM25 on chunk@10:
+  +0.10 (CI +0.04 … +0.18), p = 0.013; vs Iteration 1 on chunk@10: +0.11, p = 0.013; on
+  file@5: +0.06, not significant.
+- Per repo, file@5 vs file BM25: better on django (0.90 vs 0.70), matplotlib (0.83 vs 0.58),
+  xarray (0.80 vs 0.40), sympy (0.57 vs 0.43); level on astropy, seaborn, pylint, sklearn;
+  worse on sphinx (0.60 vs 0.70).
+- The dev gain was larger (file@5 0.82 vs 0.67) — part of it was selection on dev, as expected.
+- Speed: a running server searches django (32k chunks) in ~0.4 s; first index of django from
+  source ~3–8 s plus ~5 s for the graph, cached and incremental afterwards.
+- Embeddings were **not** evaluated here (whole-repo embedding takes hours on this laptop).
+
+### What this does and does not show
+It shows the index puts the fix's code in front of the agent more often than BM25 does. It
+does **not** yet show fewer turns or lower cost: that needs live runs (step D protocol, A vs
+B with `claude mcp add tokencut …`, `TOKENCUT_LAZY_TOOLS=1`, `TOKENCUT_CCR=1`), which cost API
+money and need the team's go-ahead.
