@@ -215,9 +215,27 @@ def _history_replacements(segments: list[Segment], state: ConversationState,
 
 
 def _real_user_positions(segments: list[Segment]) -> list[int]:
-    """Positions of user messages typed by the user (not tool results, not reminders)."""
-    return [pos for pos, s in enumerate(segments)
-            if s.kind == SegmentKind.USER_TEXT and _REMINDER.sub("", s.text).strip()]
+    """Position of the first user text of each task (not tool results, not reminders).
+
+    A task starts only where the agent had finished its turn: the user text comes before any
+    assistant message, or after an assistant message without tool calls. Text that arrives
+    after a tool call is context the agent injects between steps (Claude Code 2.1 adds e.g.
+    "The following skills are available ..." without a <system-reminder> wrapper)."""
+    positions: list[int] = []
+    turn_open = True  # may a new task start here?
+    last_assistant = None
+    for pos, s in enumerate(segments):
+        if s.role in ("assistant", "model") and s.message_index >= 0:
+            if s.message_index != last_assistant:
+                last_assistant = s.message_index
+                turn_open = True
+            if s.kind == SegmentKind.TOOL_CALL:
+                turn_open = False
+        elif (s.kind == SegmentKind.USER_TEXT and turn_open
+              and _REMINDER.sub("", s.text).strip()):
+            positions.append(pos)
+            turn_open = False  # one task start per finished turn
+    return positions
 
 
 def _task_replacements(segments: list[Segment], state: ConversationState,

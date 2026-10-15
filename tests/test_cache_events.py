@@ -342,3 +342,25 @@ def test_task_masking_settings_from_env(monkeypatch):
     monkeypatch.setenv("TOKENCUT_TASK_MASK_TOKENS", "1000")
     events = GatewayConfig.from_env().events
     assert events.task_masking is False and events.task_mask_min_tokens == 1000
+
+
+def test_context_injected_between_tool_steps_is_not_a_new_task():
+    # Claude Code 2.1 adds user-role text after tool results ("The following skills are
+    # available ...") with no <system-reminder> wrapper. The agent has not finished its turn,
+    # so this is the same task: nothing may be masked (live smoke test, 2026-10-16).
+    def with_injection(n: int) -> dict:
+        body = conversation(["bash"] * n)
+        for m in body["messages"][2::2]:  # every tool-result message
+            m["content"].append({"type": "text", "text": "The following skills are available:"})
+        return body
+
+    store = SessionStore()
+    run(with_injection(3), store, now=0, events=TASKS)
+    new, report, _ = run(with_injection(5), store, now=5, events=TASKS)
+    assert new is None and report.trimmed == []
+    # A real new task (after the assistant finished its turn) is still recognised.
+    body = with_injection(5)
+    body["messages"].append({"role": "assistant", "content": [{"type": "text", "text": "done"}]})
+    body["messages"].append({"role": "user", "content": "now update the docs"})
+    new, report, _ = run(body, store, now=10, events=TASKS)
+    assert {d["how"] for d in report.trimmed} == {"task_masked"}
