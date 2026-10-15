@@ -237,3 +237,26 @@ def test_settings_from_env(monkeypatch):
     config = GatewayConfig.from_env()
     assert config.virtual.ccr and config.virtual.lazy_tools
     assert config.virtual.core_tools == ("Read", "Bash")
+
+
+def test_history_notes_carry_a_reference_when_ccr_is_on():
+    from tests.test_cache_events import CONFIG
+    from tests.test_cache_events import conversation as long_conversation
+    from tests.test_cache_events import results as res
+    from tokencut.gateway.adapters import anthropic
+    from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
+    from tokencut.gateway.session import SessionStore
+
+    store = SessionStore()
+    config = TrimConfig(tier=CONFIG.tier, min_tokens=CONFIG.min_tokens, ccr=True)
+    body = long_conversation(["bash"] * 8)
+    trim_with_cache_events("anthropic", body["model"], body, anthropic.parse(body), config,
+                           CacheEventConfig(), store, now=0)
+    switched = long_conversation(["bash"] * 8, model="claude-haiku-5-5")
+    new, _, event = trim_with_cache_events("anthropic", switched["model"], switched,
+                                           anthropic.parse(switched), config,
+                                           CacheEventConfig(), store, now=5)
+    assert event == "model_switch"
+    notes = [r for r in res(new) if r.startswith("[TokenCut: earlier output")]
+    assert notes and all(REF.search(n) for n in notes)
+    assert REF.search(notes[0]).group(1) == ref_for(res(switched)[0])

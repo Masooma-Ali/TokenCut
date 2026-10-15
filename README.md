@@ -97,8 +97,10 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_CACHE_TTL` | `300` | seconds of idle after which the provider cache counts as expired |
 | `TOKENCUT_PRUNE_TOOLS` | off | `1` = at cache events, send only tools used so far + core tools |
 | `TOKENCUT_CORE_TOOLS` | Claude Code / Gemini CLI basics | comma-separated tools always kept when pruning |
-| `TOKENCUT_TASK_MASK` | off | `1` = when the user starts a new task, earlier tasks' large tool outputs become notes (only if the cache rewrite pays off) |
+| `TOKENCUT_TASK_MASK` | **on** | when the user starts a new task, earlier tasks' large tool outputs become notes (only if the cache rewrite pays off); `0` = off |
 | `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest tool output masked at a new task |
+| `TOKENCUT_CCR` | off | `1` = every shortened output gets a reference; the gateway offers `tokencut_retrieve` and answers it with the exact original lines |
+| `TOKENCUT_LAZY_TOOLS` | off | `1` = every request carries only core / used tools + a catalog tool `tokencut_enable_tools` for the rest |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become
@@ -115,6 +117,30 @@ a file that was read again or edited become a short note, and (opt-in) unused to
 definitions are dropped. The last few turns are never touched. The decisions are remembered
 per conversation and re-sent identically until the next event; a file the agent re-reads
 after its old read was removed is protected from then on.
+
+**Reversible trimming (P1, `TOKENCUT_CCR=1`).** Every shortened output ends with
+`[TokenCut ref tc_…]`. The gateway adds a `tokencut_retrieve(ref, start_line, end_line)` tool;
+the agent does not know it and answers "no such tool", and the gateway replaces that answer
+with the exact original lines before forwarding. References are hashes of the original, so
+they are identical every turn (cache-safe) and survive restarts.
+
+**Lazy tool loading (P1, `TOKENCUT_LAZY_TOOLS=1`).** Each request carries only the core tools
+(`TOKENCUT_CORE_TOOLS`), tools already used, and one catalog tool `tokencut_enable_tools`
+listing the rest; enabling one adds it from that request on (one cache rewrite).
+
+## Repo index for the agent (P1, local MCP server)
+
+Not part of the gateway: a local MCP server that indexes the working tree (uncommitted
+edits included) and gives the agent `repo_map`, `find_code` and `symbol`, so it can find
+code in one call instead of several grep + read rounds.
+
+```bash
+python -m tokencut.repoindex build --repo .            # first index (cached, incremental after)
+claude mcp add tokencut -- python -m tokencut.repoindex serve --repo .
+python -m tokencut.repoindex find --repo . "QuerySet.only() crashes with select_related"
+```
+`--embed` adds dense embeddings (computed once in the background, cached per chunk).
+Offline check on SWE-bench tasks: `python -m eval.repoindex_eval --set dev|test`.
 
 ## Code map
 

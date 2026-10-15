@@ -38,11 +38,13 @@ log = logging.getLogger(__name__)
 INDEX_VERSION = 1
 DEFAULT_CACHE_DIR = Path(
     os.environ.get("TOKENCUT_INDEX_DIR", Path.home() / ".cache" / "tokencut" / "repoindex"))
-# Score = weighted sum of signals in [0, 1] (tunable, tuned on the dev tasks only: DECISIONS).
-W_STRUCTURAL = 0.4
+# Score = weighted sum of signals in [0, 1], times TEST_FACTOR for chunks in test files.
+# (tunable) Chosen on the 40 dev tasks only (eval/repoindex_eval.py; DECISIONS change log).
+W_STRUCTURAL = 0.2
 W_TEXT = 0.4
-W_FILE = 0.2
-W_EMBED = 0.3  # only when embeddings were computed for the repository
+W_FILE = 0.0
+TEST_FACTOR = 0.7  # bug fixes rarely edit tests; they still show up when clearly relevant
+W_EMBED = 0.3  # (not tuned) only when embeddings were computed for the repository
 PSEUDO_MENTIONS = 3  # query names nothing: its best text matches act as the mentions
 MAP_DIR_LINES = 40
 MAP_METHODS_SHOWN = 12
@@ -250,8 +252,10 @@ class RepoIndex:
 
     def search(self, query: str, k: int = 10, weights: tuple[float, ...] | None = None,
                chunks: list[Chunk] | None = None) -> list[Hit]:
-        """Best k chunks for the query. `chunks`: precomputed self.chunks() (speed)."""
-        w_struct, w_text, w_file, w_embed = weights or (W_STRUCTURAL, W_TEXT, W_FILE, W_EMBED)
+        """Best k chunks for the query. `weights`: (structural, text, file, embed,
+        test factor). `chunks`: precomputed self.chunks() (speed)."""
+        w_struct, w_text, w_file, w_embed, test_factor = weights or (
+            W_STRUCTURAL, W_TEXT, W_FILE, W_EMBED, TEST_FACTOR)
         chunks = chunks if chunks is not None else self.chunks()
         words = tokenize(query)
         text = normalised(self.text.scores(words))
@@ -284,6 +288,8 @@ class RepoIndex:
             s, t = structural.get(cid, 0.0), text.get(cid, 0.0)
             f, e = file_text.get(chunk.file_path, 0.0), embed.get(cid, 0.0)
             score = w_struct * s + w_text * t + w_file * f + (w_embed * e if embed else 0.0)
+            if is_test_file(chunk.file_path):
+                score *= test_factor
             hits.append(Hit(chunk, score, s, t, f, e))
         hits.sort(key=lambda h: (-h.score, h.chunk.id))
         return hits[:k]
