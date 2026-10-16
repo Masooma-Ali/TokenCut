@@ -899,3 +899,38 @@ It shows the index puts the fix's code in front of the agent more often than BM2
 does **not** yet show fewer turns or lower cost: that needs live runs (step D protocol, A vs
 B with `claude mcp add tokencut …`, `TOKENCUT_LAZY_TOOLS=1`, `TOKENCUT_CCR=1`), which cost API
 money and need the team's go-ahead.
+
+### Step D again with the P1 features (completed 2026-10-16)
+29 sympy bugs (same list and three-message sessions as §7), Claude Code 2.1.295 + Haiku,
+`--effort medium`, `--strict-mcp-config`, this Linux laptop (all 29 tasks re-validated here).
+Arm A = no trimming (shadow). Arm P = trim moderate + R8 + R10 + CCR + lazy tools + repo-index
+MCP server. One run per bug and arm, alternating order. Script `eval/stepd_p1_run.py`; data
+`eval/results/stepd_p1/` (numbers only).
+
+| | A (no TokenCut) | P (P1 features) | change |
+|---|---|---|---|
+| Bugs fixed | **22 / 29** | **18 / 29** | −4 (fixed only by A: 19254, 20049, 21379, 22840; only by P: none; sign test p = 0.125) |
+| Cost, total | $0.961 | $0.725 | **−24.6 %** (per bug: mean −$0.008, 95 % CI −$0.013 … −$0.002; P cheaper in 24 / 29) |
+| Cost on the 18 bugs both fixed | $0.519 | $0.353 | −32.1 % |
+| Cost per request | | | −17.1 % |
+| Requests | 852 | 775 | −9.0 % |
+| Wall time | 16,987 s | 14,038 s | −17.4 % |
+| Cache reads / writes (billed tokens) | 48.8 M / 1.02 M | 18.9 M / 1.48 M | −61 % / +45 % |
+
+What P did (gateway logs): it sent 61 % fewer proxy tokens than the agent produced, 92 % of
+that from lazy tool loading (tool definitions); R10 masked 129 outputs; on-arrival trimming
+fired 5 times; the agent called the repo index 45 times (≈1.5 per bug, nearly always
+`find_code` first) and **never** called `tokencut_retrieve`; it enabled hidden tools 10 times.
+
+**Bug found (not fixed yet, so all runs used the same code):** lazy tool loading also pruned
+Claude Code's WebSearch side requests, whose only tool is Anthropic's server tool
+`web_search_20250305`; those searches returned nothing. In 19254 (fixed only by A) the agent
+enabled WebSearch, got empty results, and refused to implement an unverified formula — arm A
+searched successfully. Fix: never hide provider server tools, and leave requests with only a
+few tools alone. The other three A-only failures (20049, 21379, 22840) are not analysed yet.
+
+**What it means:** P1 cuts cost clearly (−25 %, CI excludes zero), mostly through lazy tool
+loading, but fixed 4 fewer bugs. With 4 discordant bugs all against P the difference is not
+statistically significant (p = 0.125), yet it is a warning sign, and at least one of the four
+is caused by a TokenCut bug. Do not merge with lazy tools on by default until the failures are
+explained and the web-search bug is fixed and re-tested.
