@@ -29,6 +29,9 @@ PROVIDERS = ("anthropic", "openai")
 MIN_ORIGINAL_CHARS = 500  # smaller outputs are never shortened, so never retrieved
 CATALOG_SUMMARY_CHARS = 90
 CATALOG_MAX_CHARS = 4_000  # past this, hidden tools are listed by name only
+# Requests with fewer client tools are side requests (Claude Code's WebSearch / summary
+# calls): left alone. Provider server tools (web search, code execution) are never hidden.
+MIN_CLIENT_TOOLS = 2
 
 
 
@@ -222,12 +225,9 @@ def _catalog(hidden: list[tuple[str, str]]) -> str:
 def finish_tools(provider: str, body: dict, ccr: bool, lazy: bool,
                  core_tools: tuple[str, ...]) -> list[dict]:
     """Lazy-prune the tool list and add the gateway's tools, in place. Report entries."""
-    if provider not in PROVIDERS or not (ccr or lazy):
-        return []
-    lists = _tool_lists(body)
-    if len(lists) != 1 or lists[0][0] is not body.get("tools"):
-        return []  # no tools (plain chat), or a legacy "functions" list: leave alone
-    tools, how = lists[0]
+    if not (ccr or lazy) or not offers_tools(provider, body):
+        return []  # no tools (plain chat), a side request, or a legacy "functions" list
+    tools, how = _tool_lists(body)[0]
     entries = []
     if lazy:
         called = {name for _, name, _ in _calls(provider, body)}
@@ -237,7 +237,7 @@ def finish_tools(provider: str, body: dict, ccr: bool, lazy: bool,
         kept, hidden, removed, cache_mark = [], [], 0, None
         for tool in tools:
             name = _tool_name(tool, how)
-            if not name or name in keep or name in VIRTUAL_TOOLS:
+            if not name or name in keep or name in VIRTUAL_TOOLS or _is_server_tool(tool):
                 kept.append(tool)
                 continue
             hidden.append((name, _summary(tool, how)))
@@ -263,4 +263,11 @@ def finish_tools(provider: str, body: dict, ccr: bool, lazy: bool,
 def offers_tools(provider: str, body: dict) -> bool:
     """Will finish_tools be able to add the gateway's tools to this request?"""
     lists = _tool_lists(body)
-    return provider in PROVIDERS and len(lists) == 1 and lists[0][0] is body.get("tools")
+    if provider not in PROVIDERS or len(lists) != 1 or lists[0][0] is not body.get("tools"):
+        return False
+    return sum(1 for t in lists[0][0] if not _is_server_tool(t)) >= MIN_CLIENT_TOOLS
+
+
+def _is_server_tool(tool: dict) -> bool:
+    """A tool the provider runs itself (Anthropic web_search_..., code_execution_...)."""
+    return tool.get("type") not in (None, "custom", "function")

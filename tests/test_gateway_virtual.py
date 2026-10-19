@@ -138,7 +138,8 @@ def test_retrieve_falls_back_to_the_store():
 def test_openai_format():
     body = {
         "model": "gpt-5",
-        "tools": [{"type": "function", "function": {"name": "read_file", "parameters": {}}}],
+        "tools": [{"type": "function", "function": {"name": "read_file", "parameters": {}}},
+                  {"type": "function", "function": {"name": "run_shell", "parameters": {}}}],
         "messages": [
             {"role": "user", "content": "fix compute_total"},
             {"role": "assistant", "tool_calls": [{"id": "c1", "type": "function", "function": {
@@ -260,3 +261,17 @@ def test_history_notes_carry_a_reference_when_ccr_is_on():
     notes = [r for r in res(new) if r.startswith("[TokenCut: earlier output")]
     assert notes and all(REF.search(n) for n in notes)
     assert REF.search(notes[0]).group(1) == ref_for(res(switched)[0])
+
+
+def test_lazy_tools_never_hide_provider_server_tools():
+    # Live step D (P1, sympy-19254): Claude Code's WebSearch side request carries only
+    # Anthropic's server tool; lazy loading hid it and every search came back empty.
+    side = {"model": "claude-haiku-5-5", "max_tokens": 100,
+            "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 8}],
+            "messages": [{"role": "user", "content": "Perform a web search for the query: x"}]}
+    _, sent = send(side, VirtualConfig(ccr=True, lazy_tools=True, core_tools=("Read",)))
+    assert sent["tools"] == side["tools"]  # side request with one tool: left alone
+    body = lazy_body()
+    body["tools"].append({"type": "web_search_20250305", "name": "web_search"})
+    _, sent = send(body, LAZY)
+    assert "web_search" in tool_names(sent) and "WebFetch" not in tool_names(sent)
