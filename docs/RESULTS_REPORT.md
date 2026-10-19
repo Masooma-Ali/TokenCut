@@ -934,3 +934,26 @@ loading, but fixed 4 fewer bugs. With 4 discordant bugs all against P the differ
 statistically significant (p = 0.125), yet it is a warning sign, and at least one of the four
 is caused by a TokenCut bug. Do not merge with lazy tools on by default until the failures are
 explained and the web-search bug is fixed and re-tested.
+
+### Fix and re-run of the four P-only failures (2026-10-19)
+The web-search bug was fixed (`virtual.py`: provider server tools are never hidden; side
+requests with fewer than 2 client tools are left alone; DECISIONS 2026-10-19). Transcripts of
+the other three failures show no TokenCut notes, re-reads or tool errors (21379: the agent found
+`core/mod.py` itself but patched a caller in `hyperbolic.py`). Arm P re-run once on the four
+bugs only (`eval/results/stepd_p1_rerun/`):
+
+| Bug | First run (P) | Re-run (P, fixed code) | Note |
+|---|---|---|---|
+| 19254 | not fixed | not fixed | web search now works; the agent implemented a bound whose values differ from the official tests |
+| 20049 | not fixed | **fixed** | |
+| 21379 | not fixed | **fixed** | |
+| 22840 | not fixed | not fixed | unexplained; failed twice |
+
+Only the failures were re-run, so "20 / 29" would overstate P (bugs it fixed were not given a
+second chance to fail). Report it as: first run 18 vs 22; of the 4 differences, 1 was a TokenCut
+bug (fixed) and 2 passed on a re-run, which points to agent variation; 22840 remains open.
+
+### Results page
+`eval/demo_data.py` builds the page's data (per-bug billed costs, every recorded request replayed
+through the current gateway code, tokens removed per technique, offline results, evidence files).
+Terminal demo without API cost: `.venv/bin/python -m eval.demo_savings sympy__sympy-21055`.
