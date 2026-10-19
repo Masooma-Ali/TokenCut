@@ -28,8 +28,11 @@ from tokencut.contracts import SegmentKind
 from tokencut.gateway.adapters import anthropic
 
 HOME = Path.home()
-sd.RESULTS = sd.ROOT / "eval" / "results" / "stepd_p1"
-sd.PRIVATE = sd.ROOT / "logs" / "stepd_p1"
+# STEPD_P1_OUT: results folder name (re-runs go to their own folder); STEPD_P1_ARMS: e.g. "P"
+OUT = os.environ.get("STEPD_P1_OUT", "stepd_p1")
+ONLY_ARMS = [a for a in os.environ.get("STEPD_P1_ARMS", "A,P").split(",") if a]
+sd.RESULTS = sd.ROOT / "eval" / "results" / OUT
+sd.PRIVATE = sd.ROOT / "logs" / OUT
 sd.GRADE_WORK = HOME / "stepd-p1" / "grade"
 sd.RUN_DIR = HOME / "stepd-p1" / "work" / "repo"
 sd.PYTHON = str(HOME / "tokencut-sympy" / ".venv" / "bin" / "python")
@@ -168,6 +171,7 @@ def main(argv: list[str] | None = None) -> None:
     state = sd.load_state()
     for i, task in enumerate(argv):
         order = ["A", "P"] if i % 2 == 0 else ["P", "A"]  # alternate so cache effects cancel out
+        order = [arm for arm in order if arm in ONLY_ARMS]
         for k, arm in enumerate(order):
             key = f"{task}/{arm}"
             if key in state["done"]:
