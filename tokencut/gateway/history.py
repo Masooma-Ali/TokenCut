@@ -26,6 +26,7 @@ from dataclasses import dataclass
 
 from tokencut.contracts import Segment, SegmentKind, Tier, ToolResultKind
 from tokencut.gateway.adapters.common import lookup, set_text
+from tokencut.gateway.ccr import with_ref
 from tokencut.gateway.session import ConversationState, SessionStore, conversation_key, fingerprint
 from tokencut.gateway.textcut import _ERROR
 from tokencut.gateway.trimmer import (
@@ -47,6 +48,7 @@ DEFAULT_CORE_TOOLS = (
     "Read", "Edit", "MultiEdit", "Write", "Bash", "Grep", "Glob", "LS", "TodoWrite", "Task",
     "read_file", "write_file", "replace", "run_shell_command", "search_file_content", "glob",
     "list_directory", "apply_patch", "str_replace_editor", "str_replace_based_edit_tool",
+    "mcp__tokencut__repo_map", "mcp__tokencut__find_code", "mcp__tokencut__symbol",
 )
 _ONE_HOUR_TTL = re.compile(r'"ttl"\s*:\s*"1h"')
 # Provider prices relative to uncached input (Anthropic): a cache read ~0.1x, a write ~1.25x.
@@ -62,7 +64,7 @@ class CacheEventConfig:
     history_min_tokens: int = 200  # older results smaller than this are left alone
     prune_tools: bool = False  # opt-in: fewer tool definitions at events
     core_tools: tuple[str, ...] = DEFAULT_CORE_TOOLS
-    task_masking: bool = False  # opt-in (R10): mask finished tasks' outputs at a new task
+    task_masking: bool = True  # R10 (on by default since P1): mask finished tasks' outputs at a new task
     task_mask_min_tokens: int = 300  # (tunable) smaller outputs are left alone
     task_min_expected_requests: int = 20  # (tunable) assume at least this many requests follow
 
@@ -184,7 +186,8 @@ def _note(info: _ResultInfo, later: list[_ResultInfo], edits: list[tuple[int, st
 
 
 def _history_replacements(segments: list[Segment], state: ConversationState,
-                          config: CacheEventConfig, keep_turns: int) -> dict[str, tuple[str, str]]:
+                          config: CacheEventConfig, keep_turns: int,
+                          ccr: bool = False) -> dict[str, tuple[str, str]]:
     """fingerprint -> (replacement text, how) for old tool results, decided at an event."""
     results, edits = _scan(segments)
     recent_from = _recent_from(segments, keep_turns)
@@ -199,6 +202,8 @@ def _history_replacements(segments: list[Segment], state: ConversationState,
         if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
             continue
         note, how = _note(info, results[i + 1:], edits)
+        if ccr:
+            note = with_ref(note, seg.text)
         if info.path:
             state.masked_paths.add(info.path)
         if count_tokens(note) < seg.token_count:
@@ -210,13 +215,32 @@ def _history_replacements(segments: list[Segment], state: ConversationState,
 
 
 def _real_user_positions(segments: list[Segment]) -> list[int]:
-    """Positions of user messages typed by the user (not tool results, not reminders)."""
-    return [pos for pos, s in enumerate(segments)
-            if s.kind == SegmentKind.USER_TEXT and _REMINDER.sub("", s.text).strip()]
+    """Position of the first user text of each task (not tool results, not reminders).
+
+    A task starts only where the agent had finished its turn: the user text comes before any
+    assistant message, or after an assistant message without tool calls. Text that arrives
+    after a tool call is context the agent injects between steps (Claude Code 2.1 adds e.g.
+    "The following skills are available ..." without a <system-reminder> wrapper)."""
+    positions: list[int] = []
+    turn_open = True  # may a new task start here?
+    last_assistant = None
+    for pos, s in enumerate(segments):
+        if s.role in ("assistant", "model") and s.message_index >= 0:
+            if s.message_index != last_assistant:
+                last_assistant = s.message_index
+                turn_open = True
+            if s.kind == SegmentKind.TOOL_CALL:
+                turn_open = False
+        elif (s.kind == SegmentKind.USER_TEXT and turn_open
+              and _REMINDER.sub("", s.text).strip()):
+            positions.append(pos)
+            turn_open = False  # one task start per finished turn
+    return positions
 
 
 def _task_replacements(segments: list[Segment], state: ConversationState,
-                       config: CacheEventConfig, task_start: int) -> dict[str, tuple[str, str]]:
+                       config: CacheEventConfig, task_start: int,
+                       ccr: bool = False) -> dict[str, tuple[str, str]]:
     """fingerprint -> (note, "task_masked") for large tool results before `task_start`.
 
     Masking changes cached history, so the request is re-cached from the first masked
@@ -235,6 +259,8 @@ def _task_replacements(segments: list[Segment], state: ConversationState,
         if info.path and any(_same_file(info.path, p) for p in state.protected_paths):
             continue
         note, _ = _note(info, results[i + 1:], edits)
+        if ccr:
+            note = with_ref(note, seg.text)
         if count_tokens(note) < seg.token_count:
             candidates[fp] = (note, info)
     if not candidates:
@@ -345,7 +371,7 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
 
         if event is not None:
             decided = _history_replacements(segments, state, events_config,
-                                            KEEP_RECENT_TURNS[config.tier])
+                                            KEEP_RECENT_TURNS[config.tier], config.ccr)
             for fp, (text, _) in decided.items():
                 state.pinned[fp] = text
             if events_config.prune_tools:
@@ -356,7 +382,8 @@ def trim_with_cache_events(provider: str, model: str, body: dict, segments: list
         elif (events_config.task_masking and not first_sight and user_positions
               and len(user_positions) > state.user_turns):
             # R10: the user started a new task; its own outputs are still to come.
-            decided = _task_replacements(segments, state, events_config, user_positions[-1])
+            decided = _task_replacements(segments, state, events_config, user_positions[-1],
+                                         config.ccr)
             for fp, (text, _) in decided.items():
                 state.pinned[fp] = text
         else:

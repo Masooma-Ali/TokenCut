@@ -31,6 +31,7 @@ from tokencut.gateway.records import RequestLog, analyse, now_iso
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig
 from tokencut.gateway.usage import UsageSniffer
+from tokencut.gateway.virtual import VirtualConfig
 
 log = logging.getLogger("tokencut.gateway")
 
@@ -72,6 +73,7 @@ class GatewayConfig:
     trim: TrimConfig = field(default_factory=TrimConfig)
     cache_events: bool = True  # re-trim history when the provider cache is lost anyway
     events: CacheEventConfig = field(default_factory=CacheEventConfig)
+    virtual: VirtualConfig = field(default_factory=VirtualConfig)  # CCR, lazy tool loading
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -91,13 +93,18 @@ class GatewayConfig:
             cache_ttl_seconds=int(os.environ.get("TOKENCUT_CACHE_TTL",
                                                  CacheEventConfig.cache_ttl_seconds)),
             prune_tools=os.environ.get("TOKENCUT_PRUNE_TOOLS", "") == "1",
-            task_masking=os.environ.get("TOKENCUT_TASK_MASK", "") == "1",
+            task_masking=os.environ.get("TOKENCUT_TASK_MASK", "1") != "0",
             task_mask_min_tokens=int(os.environ.get("TOKENCUT_TASK_MASK_TOKENS",
                                                     CacheEventConfig.task_mask_min_tokens)),
         )
         core = os.environ.get("TOKENCUT_CORE_TOOLS")
         if core:
             events.core_tools = tuple(t.strip() for t in core.split(",") if t.strip())
+        virtual = VirtualConfig(
+            ccr=os.environ.get("TOKENCUT_CCR", "") == "1",
+            lazy_tools=os.environ.get("TOKENCUT_LAZY_TOOLS", "") == "1",
+            core_tools=events.core_tools,
+        )
         return cls(
             upstreams=upstreams,
             log_dir=Path(log_dir) if log_dir else None,
@@ -106,6 +113,7 @@ class GatewayConfig:
             trim=trim,
             cache_events=os.environ.get("TOKENCUT_CACHE_EVENTS", "1") != "0",
             events=events,
+            virtual=virtual,
         )
 
 
@@ -136,6 +144,8 @@ def create_app(
             "cache_events": config.cache_events,
             "prune_tools": config.events.prune_tools,
             "task_masking": config.events.task_masking,
+            "ccr": config.virtual.ccr,
+            "lazy_tools": config.virtual.lazy_tools,
         }
 
     @app.get("/tokencut/stats")
@@ -161,7 +171,7 @@ def create_app(
                 # Trim before sending. Any failure: send the original request (fail open).
                 try:
                     analysis, trimmed = await asyncio.to_thread(
-                        analyse, provider, path, body, config.trim, session
+                        analyse, provider, path, body, config.trim, session, None, config.virtual
                     )
                     record["analysis"] = analysis
                     if trimmed is not None:
@@ -174,7 +184,9 @@ def create_app(
                 # Shadow: measure (and work out the possible trim) in a worker thread while the
                 # unchanged request is already on its way, so no latency is added.
                 analysis_task = asyncio.create_task(
-                    asyncio.to_thread(analyse, provider, path, body, config.trim, session)
+                    asyncio.to_thread(
+                        analyse, provider, path, body, config.trim, session, None, config.virtual
+                    )
                 )
 
         url = f"{config.upstreams[provider]}/{path}"

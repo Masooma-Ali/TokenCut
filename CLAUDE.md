@@ -147,8 +147,11 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_CACHE_TTL` | `300` | idle seconds after which the cache counts as expired (requests marked `"ttl": "1h"` use 3600 — Claude Code appears to use this) |
 | `TOKENCUT_PRUNE_TOOLS` | off | `1` = at cache events keep only tools used so far + core tools |
 | `TOKENCUT_CORE_TOOLS` | Claude Code / Gemini CLI basics | comma-separated tools always kept when pruning |
-| `TOKENCUT_TASK_MASK` | off | `1` = at a new user task, mask earlier tasks' large outputs if the cache rewrite pays off (R10) |
+| `TOKENCUT_TASK_MASK` | **on** (P1) | at a new user task, mask earlier tasks' large outputs if the cache rewrite pays off (R10); `0` = off |
 | `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest output masked at a new task |
+| `TOKENCUT_CCR` | off | `1` = shortened outputs carry a `tc_…` reference; gateway offers and answers `tokencut_retrieve` (P1) |
+| `TOKENCUT_LAZY_TOOLS` | off | `1` = only core / used tools sent + catalog tool `tokencut_enable_tools` (P1) |
+| `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
 | `TOKENCUT_{ANTHROPIC,OPENAI,GEMINI}_UPSTREAM` | official URLs | other compatible endpoints |
