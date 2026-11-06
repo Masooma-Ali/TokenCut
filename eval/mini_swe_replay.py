@@ -122,7 +122,7 @@ def replay_session(args: tuple[str, str, int]) -> tuple[list[dict], dict]:
     build = anthropic_body if provider == "anthropic" else openai_body
     store = SessionStore()
     trim = TrimConfig(tier=Tier.MODERATE, min_tokens=min_tokens)
-    events = CacheEventConfig()  # defaults; R10 off: one task per session, so it cannot apply
+    events = CacheEventConfig(task_masking=False)  # one task per session: R10 cannot apply
     instance = path.name.removesuffix(".traj.json")
     rows = []
     hows: Counter = Counter()

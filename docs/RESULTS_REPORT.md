@@ -858,7 +858,107 @@ editing). Tool pruning is the strongest when it triggers and pairs naturally wit
 model routing (ODE). On-arrival trimming adds little with Claude Code (its value is with agents
 that read whole files), and log trimming has the worst risk-to-saving ratio. R8 should stay on.
 
-## 8. Mini-SWE-Agent replay — the agent SWE-Pruner and LaMR used (offline, 2026-10-15)
+## 8. P1 "big wins" (branch `feature/p1-big-wins`, 2026-10-16)
+
+Built at a team member's request after step D showed on-arrival trimming removes only ~4 %
+with Claude Code. Goal: attack where the tokens go: exploration turns, tool definitions,
+finished-task history. Needs the other two members' review before merging.
+
+| Feature | Setting | Status |
+|---|---|---|
+| R10 task masking on by default | `TOKENCUT_TASK_MASK` (default on) | measured in step D (−6.9 % per request) |
+| CCR: every shortened output can be fetched back exactly (`tokencut_retrieve`) | `TOKENCUT_CCR=1` | unit-tested; **not measured live** |
+| Lazy tool loading (core + used tools + catalog `tokencut_enable_tools`) | `TOKENCUT_LAZY_TOOLS=1` | unit-tested; **not measured live** |
+| Repo index MCP server: `repo_map`, `find_code`, `symbol` | `python -m tokencut.repoindex serve` | offline retrieval measured (below); **agent use not measured** |
+
+### Repo index search, offline (no API cost)
+`python -m eval.repoindex_eval`. Query = issue text; metric = whether the code the real fix
+edited is near the top. Weights chosen on the dev tasks (39 usable; grid of 144 settings),
+reported once on the held-out test tasks (80 usable).
+
+| Test set (80 tasks) | file@1 | file@3 | file@5 | chunk@5 | chunk@10 | chunk@20 |
+|---|---|---|---|---|---|---|
+| File BM25 (SWE-bench baseline) | 0.35 | 0.54 | 0.62 | – | – | – |
+| Chunk BM25 | 0.30 | 0.51 | 0.62 | 0.29 | 0.39 | 0.49 |
+| Iteration 1 scorer | 0.47 | 0.65 | 0.68 | 0.32 | 0.38 | 0.41 |
+| **Repo index (dev weights)** | 0.46 | **0.70** | **0.74** | **0.41** | **0.49** | **0.54** |
+
+- vs file BM25 on file@5: +0.11 (95 % CI +0.01 … +0.21), p = 0.049; vs chunk BM25 on chunk@10:
+  +0.10 (CI +0.04 … +0.18), p = 0.013; vs Iteration 1 on chunk@10: +0.11, p = 0.013; on
+  file@5: +0.06, not significant.
+- Per repo, file@5 vs file BM25: better on django (0.90 vs 0.70), matplotlib (0.83 vs 0.58),
+  xarray (0.80 vs 0.40), sympy (0.57 vs 0.43); level on astropy, seaborn, pylint, sklearn;
+  worse on sphinx (0.60 vs 0.70).
+- The dev gain was larger (file@5 0.82 vs 0.67) — part of it was selection on dev, as expected.
+- Speed: a running server searches django (32k chunks) in ~0.4 s; first index of django from
+  source ~3–8 s plus ~5 s for the graph, cached and incremental afterwards.
+- Embeddings were **not** evaluated here (whole-repo embedding takes hours on this laptop).
+
+### What this does and does not show
+It shows the index puts the fix's code in front of the agent more often than BM25 does. It
+does **not** yet show fewer turns or lower cost: that needs live runs (step D protocol, A vs
+B with `claude mcp add tokencut …`, `TOKENCUT_LAZY_TOOLS=1`, `TOKENCUT_CCR=1`), which cost API
+money and need the team's go-ahead.
+
+### Step D again with the P1 features (completed 2026-10-16)
+29 sympy bugs (same list and three-message sessions as §7), Claude Code 2.1.295 + Haiku,
+`--effort medium`, `--strict-mcp-config`, this Linux laptop (all 29 tasks re-validated here).
+Arm A = no trimming (shadow). Arm P = trim moderate + R8 + R10 + CCR + lazy tools + repo-index
+MCP server. One run per bug and arm, alternating order. Script `eval/stepd_p1_run.py`; data
+`eval/results/stepd_p1/` (numbers only).
+
+| | A (no TokenCut) | P (P1 features) | change |
+|---|---|---|---|
+| Bugs fixed | **22 / 29** | **18 / 29** | −4 (fixed only by A: 19254, 20049, 21379, 22840; only by P: none; sign test p = 0.125) |
+| Cost, total | $0.961 | $0.725 | **−24.6 %** (per bug: mean −$0.008, 95 % CI −$0.013 … −$0.002; P cheaper in 24 / 29) |
+| Cost on the 18 bugs both fixed | $0.519 | $0.353 | −32.1 % |
+| Cost per request | | | −17.1 % |
+| Requests | 852 | 775 | −9.0 % |
+| Wall time | 16,987 s | 14,038 s | −17.4 % |
+| Cache reads / writes (billed tokens) | 48.8 M / 1.02 M | 18.9 M / 1.48 M | −61 % / +45 % |
+
+What P did (gateway logs): it sent 61 % fewer proxy tokens than the agent produced, 92 % of
+that from lazy tool loading (tool definitions); R10 masked 129 outputs; on-arrival trimming
+fired 5 times; the agent called the repo index 45 times (≈1.5 per bug, nearly always
+`find_code` first) and **never** called `tokencut_retrieve`; it enabled hidden tools 10 times.
+
+**Bug found (not fixed yet, so all runs used the same code):** lazy tool loading also pruned
+Claude Code's WebSearch side requests, whose only tool is Anthropic's server tool
+`web_search_20250305`; those searches returned nothing. In 19254 (fixed only by A) the agent
+enabled WebSearch, got empty results, and refused to implement an unverified formula — arm A
+searched successfully. Fix: never hide provider server tools, and leave requests with only a
+few tools alone. The other three A-only failures (20049, 21379, 22840) are not analysed yet.
+
+**What it means:** P1 cuts cost clearly (−25 %, CI excludes zero), mostly through lazy tool
+loading, but fixed 4 fewer bugs. With 4 discordant bugs all against P the difference is not
+statistically significant (p = 0.125), yet it is a warning sign, and at least one of the four
+is caused by a TokenCut bug. Do not merge with lazy tools on by default until the failures are
+explained and the web-search bug is fixed and re-tested.
+
+### Fix and re-run of the four P-only failures (2026-10-19)
+The web-search bug was fixed (`virtual.py`: provider server tools are never hidden; side
+requests with fewer than 2 client tools are left alone; DECISIONS 2026-10-19). Transcripts of
+the other three failures show no TokenCut notes, re-reads or tool errors (21379: the agent found
+`core/mod.py` itself but patched a caller in `hyperbolic.py`). Arm P re-run once on the four
+bugs only (`eval/results/stepd_p1_rerun/`):
+
+| Bug | First run (P) | Re-run (P, fixed code) | Note |
+|---|---|---|---|
+| 19254 | not fixed | not fixed | web search now works; the agent implemented a bound whose values differ from the official tests |
+| 20049 | not fixed | **fixed** | |
+| 21379 | not fixed | **fixed** | |
+| 22840 | not fixed | not fixed | unexplained; failed twice |
+
+Only the failures were re-run, so "20 / 29" would overstate P (bugs it fixed were not given a
+second chance to fail). Report it as: first run 18 vs 22; of the 4 differences, 1 was a TokenCut
+bug (fixed) and 2 passed on a re-run, which points to agent variation; 22840 remains open.
+
+### Results page
+`eval/demo_data.py` builds the page's data (per-bug billed costs, every recorded request replayed
+through the current gateway code, tokens removed per technique, offline results, evidence files).
+Terminal demo without API cost: `.venv/bin/python -m eval.demo_savings sympy__sympy-21055`.
+
+## 9. Mini-SWE-Agent replay — the agent SWE-Pruner and LaMR used (offline, 2026-10-15)
 
 **Question:** how much does TokenCut remove for the open-source agent SWE-Pruner and LaMR used,
 compared with their results and with Claude Code? No API budget was available, so public agent
@@ -869,7 +969,7 @@ cannot react to the trims (no re-reads, no task-success measure).
 test (as PROGRESS_SUMMARY / FULL_RESULTS assumed). The logs show that assumption was wrong:
 Mini-SWE-Agent mostly views line ranges and caps its own output (see "Why the saving is far
 below…" below). So this section does **not** answer whether TokenCut helps agents that read
-whole files; that question is still open (§8.1).
+whole files; that question is still open (§9.1).
 
 ### Setup
 | Item | Value |
@@ -968,13 +1068,13 @@ is not yet checked: it needs the SWE-bench Verified patches (a small public down
 - **R16 — threshold per agent:** agents that already cap their output (10k characters) leave
   little above 2,000 tokens; test 500–1,000 live (re-read rate!) before changing the default.
 
-### 8.1 Which agents really send whole files? (checked in source code, 2026-10-15)
+### 9.1 Which agents really send whole files? (checked in source code, 2026-10-15)
 Each row was checked in the agent's current source on GitHub (main branch, read on 2026-10-15);
 nothing here is taken from papers or documentation alone.
 
 | Agent | How a file reaches the model (source) | Size limit before sending | Format TokenCut sees | Public SWE-bench logs |
 |---|---|---|---|---|
-| **Mini-SWE-Agent v1** | shell commands only; logs show mostly `grep` + `sed -n 'a,bp'` ranges (§8) | output > 10,000 chars → head + tail | **user message** → TokenCut trims nothing | yes (used in §8) |
+| **Mini-SWE-Agent v1** | shell commands only; logs show mostly `grep` + `sed -n 'a,bp'` ranges (§9) | output > 10,000 chars → head + tail | **user message** → TokenCut trims nothing | yes (used in §9) |
 | **Aider** | `get_files_content()` puts the **whole content** of every file in the chat into the prompt, no truncation (`aider/coders/base_coder.py:637–653`), every request | none in that function | **user message** (`get_chat_files_messages`, `role="user"`, l. 789–800) → TokenCut trims nothing | one run, 2024, Lite (`20240523_aider`) |
 | **Cline** (VS Code v4.1.24, uses `@cline/core`) | `read_files` tool, up to 2,000 lines / 48,000 chars (`sdk/.../executors/output-limits.ts`) | then **every tool result is middle-truncated to 8,000 chars** by default (`message-builder.ts:29`, `truncateToolResultContent`) | tool result | none found |
 | **Gemini CLI** | `read_file` without a range returns the **whole file up to 2,000 lines** (`packages/core/src/utils/fileUtils.ts:640–657`, `utils/constants.ts:10`) | tool output over 40,000 chars truncated (`config.ts:483`); its own output masking is under an experimental setting, default off (`settingsSchema.ts`, not every code path traced) | tool result (`functionResponse`) | none found; our free keys were blocked (§7) |
