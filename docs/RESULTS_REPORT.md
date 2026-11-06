@@ -957,3 +957,135 @@ bug (fixed) and 2 passed on a re-run, which points to agent variation; 22840 rem
 `eval/demo_data.py` builds the page's data (per-bug billed costs, every recorded request replayed
 through the current gateway code, tokens removed per technique, offline results, evidence files).
 Terminal demo without API cost: `.venv/bin/python -m eval.demo_savings sympy__sympy-21055`.
+
+## 9. Mini-SWE-Agent replay — the agent SWE-Pruner and LaMR used (offline, 2026-10-15)
+
+**Question:** how much does TokenCut remove for the open-source agent SWE-Pruner and LaMR used,
+compared with their results and with Claude Code? No API budget was available, so public agent
+sessions were replayed through the gateway code offline: free and reproducible, but the agent
+cannot react to the trims (no re-reads, no task-success measure).
+
+**Correction (2026-10-15):** this run was first planned as the "agent that reads whole files"
+test (as PROGRESS_SUMMARY / FULL_RESULTS assumed). The logs show that assumption was wrong:
+Mini-SWE-Agent mostly views line ranges and caps its own output (see "Why the saving is far
+below…" below). So this section does **not** answer whether TokenCut helps agents that read
+whole files; that question is still open (§9.1).
+
+### Setup
+| Item | Value |
+|---|---|
+| Data | Public SWE-bench "bash-only" trajectories (S3 `swe-bench-submissions/bash-only/<run>/trajs/`), all **75 sympy** tasks of SWE-bench Verified per run; local copy in `cache/mini_swe_agent/` (gitignored) |
+| Runs | **Mini-SWE-Agent v1.13.3 + Claude Sonnet 4.5** (70.6 % on Verified, the same baseline SWE-Pruner and LaMR report) and **v1.17.1 + GLM-4.6** (55.4 %; open-weight, GLM rows of SWE-Pruner) |
+| Replay | `eval/mini_swe_replay.py`: request *k* = system + task + first *k* steps; each request goes through `records.analyse` (the gateway's own entry point: on-arrival trimming + cache events, one conversation memory per session, 10 s between requests so the cache never expires). Sonnet in Anthropic format, GLM in OpenAI format |
+| Settings | `trim`, `moderate`, R8 on, cache events on, no tool pruning, R10 off (one task per session, so it cannot act); threshold 2,000 (default), plus 1,000 and 500 as a sensitivity check (not tuning) |
+| Measure | proxy tokens (o200k) removed, summed over every request of a session (= tokens sent without a cache); gateway time per request |
+| Overlap with step D | 10 of the 29 step D bugs are in this set (18698, 20154, 20590, 21379, 21612, 21847, 22714, 23262, 24066, 24213) |
+
+### Finding 1 — as shipped, TokenCut removes nothing (0.0 %)
+Mini-SWE-Agent v1 does not use tool calling. The model writes its command in a fenced bash
+block and the output comes back as a **plain user message** (`<returncode>…<output>…`).
+TokenCut only trims tool results and never touches user messages, so all 150 sessions pass
+unchanged (column "as shipped" below), although command outputs are 45–57 % of the tokens sent.
+The replay therefore rewrites every step as a `bash` tool call and its output as the tool
+result: what TokenCut sees from an agent that uses tool calling (SWE-Pruner also changes the
+agent's tool setup). TokenCut's code is unchanged by this.
+
+### Finding 2 — a real R8 bug, fixed
+The first replay still removed 0.0 % (Sonnet) and 0.1 % (GLM). Cause: Mini-SWE-Agent's standard
+instructions say *"Wait for the first command to **complete, see its output**, then …"*, and
+R8's "the user wants the full output" pattern matched "complete … output", so every output of
+every session was protected. Fixed (small fix allowed by CLAUDE.md §0): the words between
+*full / entire / whole / complete* and the output noun may now only be separated by spaces
+(no punctuation, no line break). Two failing tests were written first
+(`test_complete_as_a_verb_is_not_a_full_output_request`,
+`test_full_output_request_across_a_line_break_is_not_matched`); 147 tests pass, ruff clean;
+logged in `docs/DECISIONS.md`. Step D is not affected: none of its prompts or its 29 issue texts
+match the old pattern (checked).
+
+### Results (after the fix) — `eval/results/mini_swe/` (`summary.md`, `sessions.csv`, `requests.csv`)
+| Run | Sessions / requests | Tool output share | Saved, as shipped | **Saved, threshold 2,000** | 1,000 | 500 | Sessions with a trim (2,000 / 500) |
+|---|---|---|---|---|---|---|---|
+| Sonnet 4.5 | 75 / 4,374 | 57.4 % | 0.0 % | **6.8 %** | 11.3 % | 16.3 % | 40 / 74 |
+| GLM-4.6 | 75 / 3,874 | 45.3 % | 0.0 % | **5.7 %** | 7.9 % | 9.9 % | 37 / 63 |
+
+Savings are shares of all proxy tokens sent over all requests (67.7 M and 69.9 M). Median per
+session at 2,000: 3.3 % (Sonnet), 0.0 % (GLM). Two `context_full` cache events occurred (GLM,
+requests ≥ 110k tokens) and removed 895 tokens of old output.
+
+**Same 10 bugs as step D** (share of tokens sent):
+
+| | Threshold 2,000 | 1,000 | 500 |
+|---|---|---|---|
+| Mini-SWE-Agent + Sonnet 4.5 (replay, on-arrival only) | 7.2 % | 13.6 % | 19.1 % |
+| Mini-SWE-Agent + GLM-4.6 (replay, on-arrival only) | 3.1 % | 4.0 % | 5.3 % |
+| Claude Code + Haiku 5.5 (step D arm B, live, on-arrival + R10) | 6.0 % | – | – |
+
+In step D on-arrival trimming gave only 9.5 % of the saving (≈ 0.4 % of tokens sent), so for
+on-arrival trimming alone Mini-SWE-Agent + Sonnet gives TokenCut far more to do. Different
+models and agents, so this is indicative only.
+
+### Why the saving is far below SWE-Pruner (−23 %) and LaMR (−31 %)
+Fate of every output ≥ 2,000 tokens (first appearance):
+
+| | Sonnet 4.5 | GLM-4.6 |
+|---|---|---|
+| `git diff` output — R8, never trimmed | 67 outputs, 491k tokens | 44 outputs, 477k tokens |
+| already cut by the agent itself (> 10,000 characters → head + tail) | 48, 147k | 48, 137k |
+| Python file view TokenCut recognises (`cat f.py`, `sed -n 'a,bp' f.py`) | 1, 2k | 1, 2k |
+| Python file view **not** recognised (`cd /testbed && sed -n …`, `nl -ba f.py \| sed -n …`) | 7, 16k | 0 |
+| other (tests, search, listings) | 2, 5k | 6, 17k |
+
+- **Mini-SWE-Agent does not read whole files in practice.** It views line ranges
+  (`sed -n '100,200p'`, `nl -ba … | sed -n`) and cuts any output over 10,000 characters itself.
+  Median output: ~100 tokens; only ~3 % of outputs reach 2,000 tokens.
+- **Most of the large outputs are diffs**, which R8 leaves whole by design (live run L1 showed a
+  trimmed diff causes re-fetches).
+- **Lowering the threshold helps** (Sonnet 6.8 → 16.3 % at 500), but the replay cannot show the
+  re-read cost of cutting many medium-sized outputs — exactly the risk LaMR reports. A live
+  check would be needed before changing the default.
+- SWE-Pruner and LaMR prune **every** read output at line level with a 0.6B model guided by the
+  agent's stated focus; TokenCut is model-free and only cuts large outputs.
+
+### Gateway time (this laptop, `requests.csv`)
+`trim` median 1–20 ms for requests up to 50k proxy tokens and 5–65 ms above that; p95 about
+85–165 ms; whole analysis (parsing + token counting + trimming) p95 ≤ 272 ms at 50–100k tokens.
+Every request re-trims the whole history (codeview runs again on each trimmed Python file),
+which is why p95 is much higher than the median (see R1).
+
+### Limits
+Offline replay: the agent never sees the trimmed text, so re-reads, extra steps and task
+success are not measured; tokens are the o200k proxy, not billed tokens; one repository
+(sympy); the conversion to tool calls is ours (a real tool-calling Mini-SWE-Agent may format
+outputs slightly differently). Gold-code survival (did the code the official fix changes stay?)
+is not yet checked: it needs the SWE-bench Verified patches (a small public download).
+
+### Recommendations (do NOT implement — for the team to decide)
+- **R14 — text-protocol agents:** recognise `<returncode>…<output>…` user messages that follow an
+  assistant bash block as tool output (Mini-SWE-Agent v1 and similar agents). Without it
+  TokenCut saves 0 % with these agents.
+- **R15 — recognise more file views:** `cd <dir> && cat|sed -n … f.py` and `nl -ba f.py | sed -n …`
+  should reach the code-aware trimmer instead of the log rules.
+- **R16 — threshold per agent:** agents that already cap their output (10k characters) leave
+  little above 2,000 tokens; test 500–1,000 live (re-read rate!) before changing the default.
+
+### 9.1 Which agents really send whole files? (checked in source code, 2026-10-15)
+Each row was checked in the agent's current source on GitHub (main branch, read on 2026-10-15);
+nothing here is taken from papers or documentation alone.
+
+| Agent | How a file reaches the model (source) | Size limit before sending | Format TokenCut sees | Public SWE-bench logs |
+|---|---|---|---|---|
+| **Mini-SWE-Agent v1** | shell commands only; logs show mostly `grep` + `sed -n 'a,bp'` ranges (§9) | output > 10,000 chars → head + tail | **user message** → TokenCut trims nothing | yes (used in §9) |
+| **Aider** | `get_files_content()` puts the **whole content** of every file in the chat into the prompt, no truncation (`aider/coders/base_coder.py:637–653`), every request | none in that function | **user message** (`get_chat_files_messages`, `role="user"`, l. 789–800) → TokenCut trims nothing | one run, 2024, Lite (`20240523_aider`) |
+| **Cline** (VS Code v4.1.24, uses `@cline/core`) | `read_files` tool, up to 2,000 lines / 48,000 chars (`sdk/.../executors/output-limits.ts`) | then **every tool result is middle-truncated to 8,000 chars** by default (`message-builder.ts:29`, `truncateToolResultContent`) | tool result | none found |
+| **Gemini CLI** | `read_file` without a range returns the **whole file up to 2,000 lines** (`packages/core/src/utils/fileUtils.ts:640–657`, `utils/constants.ts:10`) | tool output over 40,000 chars truncated (`config.ts:483`); its own output masking is under an experimental setting, default off (`settingsSchema.ts`, not every code path traced) | tool result (`functionResponse`) | none found; our free keys were blocked (§7) |
+| **OpenHands** (`openhands-aci` editor) | `view` without a range returns the **whole file** with line numbers (`editor/editor.py:340–347`) | cut after 16,000 chars (`editor/config.py:1`, `results.maybe_truncate`) | tool result | yes: e.g. Claude Sonnet 4 (75 sympy logs, 14.2 MB), Claude Opus 4.5 (73, 9.2 MB), GPT-5 (75, 9.7 MB) |
+
+**What this means:**
+- Aider is the clearest whole-file agent, but it sends files as user text, so as shipped TokenCut
+  does nothing with it (the same gap as R14).
+- Cline cuts every tool result to 8,000 chars itself — about TokenCut's 2,000-token threshold —
+  so a large whole-file read never reaches the model whole.
+- **OpenHands is the best available test**: it really returns whole files (up to 16,000 chars,
+  ~4,000 tokens) as tool results, which TokenCut can trim, and public logs exist for the same
+  sympy tasks. Not yet checked: whether its agents actually call `view` without a range in these
+  logs, and which editor version those runs used (needs one sample log).
