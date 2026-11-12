@@ -1,6 +1,6 @@
 # Attachments — Research and Plan for TokenCut
 
-*Status: plan (nothing implemented yet). Written 2026-11-12 on branch `Attachments`.*
+*Status: in progress on branch `Attachments` (team approved). Done: step 1 (count attachment tokens), step 2 (tables protected), step 4 (duplicate attachments), step 5 (shrink large images per provider), step 7 (PDF text pages as text, Claude and OpenAI). Step 3 waits for a team decision (see decision 4 below). Written 2026-11-12.*
 
 **Goal.** Real users will attach images, screenshots, PDFs, Word files, spreadsheets and
 slides. TokenCut should cut the tokens (and so the price) these attachments cost, add little
@@ -140,13 +140,13 @@ and Claude Code resize images themselves.
 
 | # | Technique | Type | Expected saving | Quality risk | Notes |
 |---|---|---|---|---|---|
-| 1 | **Count attachment tokens** per provider formula | all | enables the rest | none | image size from the file header, no new library |
-| 2 | **Protect tables from head/tail cuts** (like R8 for diffs) | CSV / Excel as text | – | **fixes a current risk** | until a table-aware trimmer exists |
+| 1 ✅ | **Count attachment tokens** per provider formula | all | enables the rest | none | image size from the file header, no new library |
+| 2 ✅ | **Protect tables from head/tail cuts** (like R8 for diffs) | CSV / Excel as text | – | **fixes a current risk** | until a table-aware trimmer exists |
 | 3 | **Finished attachments → note** at R10 / cache events | images, PDFs, docs | ≈ 100 % of each old one, on every later request | low | reuses R10's cost check |
-| 4 | **Drop exact duplicates** → "same as image #k" | images, files | ≈ 100 % of the duplicate | none | identical bytes |
-| 5 | **Downscale only between the tiers** (Claude 4.7+: 1,568–2,576 px → 1,568 px) | images | e.g. 1920×1080: 2,691 → 1,792 (−33 %) | low | the size older Claude models always get; skip for computer use, "read / zoom" requests, dense-text images; shrink oversized tool-result images to avoid the API error |
+| 4 ✅ | **Drop exact duplicates** → "identical to attachment #n" | tool-returned images and documents | ≈ 100 % of the duplicate | none | Anthropic tool results and Gemini sibling parts; OpenAI tool images arrive as user messages, so they are counted only |
+| 5 ✅ | **Shrink large images to a 1,568-px long edge where the provider bills by size** | images | Claude 4.7+ 1920x1080: 2,691 -> 1,792 (−33 %); OpenAI patch models 2,448 -> 1,647; Gemini 3 / 4 and tile models: none, so untouched | low | only if the provider's formula saves >= 10 %; skipped for computer use and zoom / small-text requests; tool images by default, user attachments with `TOKENCUT_MEDIA_USER=1` |
 | 6 | **Crop** to the relevant region | images | 50–90 % (Headroom's figure) | medium | needs a reliable region signal; later |
-| 7 | **PDF: text only for text pages**, keep page images for figures / tables / scans | PDFs | ≈ 33–38 % per text-heavy PDF (one user's report) | medium | needs a PDF library (pypdf, BSD; PyMuPDF reported AGPL) |
+| 7 ✅ | **PDF: text pages as text**, pages with images / drawings / number tables / scans stay a PDF | PDFs (Claude, OpenAI) | the page image of every text page (e.g. 9 of 26 pages of a real paper) | low–medium | known gap: tables made only of words become plain text; Gemini unchanged; > 50 pages unchanged |
 | 8 | **PDF / PPTX: relevant pages only** + note for the rest | PDFs, slides | depends on length | medium | same idea as code-chunk scoring |
 | 9 | **Word: section-aware trimming** instead of head/tail | DOCX as text | depends | low | keep whole relevant sections |
 | 10 | **Spreadsheet: header + summary + matching rows** + note | CSV / Excel | large on big sheets | medium | after #2 |
@@ -186,8 +186,12 @@ cache only, TokenCut. Enable a technique by default only where answers match.
    Techniques 3–12 on pasted files need explicit approval; tool-result attachments can come first.
 3. **New libraries** (`requirements.txt` is a shared file): Pillow for resizing; a PDF
    library (licence check).
-4. **Claude 5.1+ thinking-block warning:** confirm on Anthropic's computer-use page before #3
-   is applied to screenshots.
+4. **Thinking blocks (confirmed 2026-11-12):** Anthropic's context-editing docs say that on
+   Fable 5.1 / 5.2, Mythos 5.1 / 5.2, Opus 5.5, Sonnet 5.5 and Haiku 5.5, "client-side edits
+   to earlier turns can invalidate the thinking blocks in every later assistant turn". This
+   applies to step 3 **and** to the existing R10 / cache-event trimming. Options: keep as is
+   (step D showed no harm), limit edits on these models, or use Anthropic's server-side
+   tool-result clearing there.
 5. **ODE:** attachment cost per provider and cache state are good bandit features, but ODE is
    deferred until after the mid evaluation.
 

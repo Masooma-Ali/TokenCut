@@ -22,7 +22,13 @@ from tokencut.contracts import TIER_BUDGET_FRACTION, Segment, SegmentKind, Tier,
 from tokencut.gateway.adapters.common import lookup, set_text
 from tokencut.gateway.ccr import with_ref
 from tokencut.gateway.codeview import trim_file_listing
-from tokencut.gateway.textcut import trim_output
+from tokencut.gateway.media import (
+    attachment_key,
+    duplicate_note,
+    note_block,
+    replaceable_tool_attachment,
+)
+from tokencut.gateway.textcut import looks_like_table, trim_output
 from tokencut.tokens import count_tokens
 
 _GATEWAY_TOOL_PREFIX = "tokencut_"  # tools the gateway answers itself (virtual.py)
@@ -37,6 +43,7 @@ _SHOW_FILE = re.compile(
 )
 # R8: a diff is code, not a log (every line matters), so it is never trimmed on arrival.
 _DIFF = re.compile(r"^(?:diff --git |@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@)", re.MULTILINE)
+_TABLE_FILE = re.compile(r"\.(?:csv|tsv)\b", re.IGNORECASE)
 # R8: "show me the full diff / file / output ..." -> the user wants that output whole.
 # "the whole test suite" does not match: the word must refer to an output-like noun, in the
 # same phrase (only spaces between): "wait for it to complete, see its output" is no request.
@@ -53,6 +60,9 @@ class TrimConfig:
     min_tokens: int = 2_000  # tool results smaller than this are never trimmed
     min_keep_tokens: int = 500  # never cut a result below this
     ccr: bool = False  # add a reference to every shortened output (it can be fetched back)
+    resize_images: bool = True  # attachments step 5: shrink large images where it saves tokens
+    media_user: bool = False  # also change the user's own attachments (team decision; off)
+    pdf_text_pages: bool = True  # attachments step 7: PDF pages without images / drawings as text
 
 
 @dataclass
@@ -84,6 +94,7 @@ class _Context:
     calls: dict[str, tuple[str, str]] = field(default_factory=dict)  # call id -> (name, input)
     last_call_by_name: dict[str, str] = field(default_factory=dict)  # for Gemini (no ids)
     edited: set[str] = field(default_factory=set)  # paths an edit tool has touched
+    attachments: dict[str, int] = field(default_factory=dict)  # content hash -> attachment number
 
 
 def _words(name: str) -> set[str]:
@@ -151,6 +162,28 @@ def trim_request(
                 path = _call_path(seg.text)
                 if path:
                     ctx.edited.add(path)
+        elif seg.kind == SegmentKind.MEDIA:
+            # Attachments plan step 4: a tool returning bytes already in the conversation (an
+            # unchanged screenshot) gets a note instead. Decided from earlier content only, so it
+            # is identical every turn; the user's own attachments are never changed.
+            key = attachment_key(lookup(body, seg.path))
+            if key is None:
+                continue
+            if key not in ctx.attachments:
+                ctx.attachments[key] = len(ctx.attachments) + 1
+                continue
+            if not replaceable_tool_attachment(body, seg.path):
+                continue
+            note = duplicate_note(ctx.attachments[key])
+            if new_body is None:
+                new_body = copy.deepcopy(body)
+            lookup(new_body, seg.path[:-1])[seg.path[-1]] = note_block(seg.path, note)
+            after = count_tokens(note)
+            report.tokens_before += seg.token_count
+            report.tokens_after += after
+            report.trimmed.append({"segment": seg.id, "how": "duplicate_attachment",
+                                   "tool": seg.tool_name, "before": seg.token_count,
+                                   "after": after})
         elif seg.kind == SegmentKind.TOOL_RESULT and seg.token_count >= config.min_tokens:
             if seg.tool_name.startswith(_GATEWAY_TOOL_PREFIX):
                 continue  # the gateway's own answers (a retrieved original) stay whole
@@ -189,6 +222,11 @@ def _trim_result(seg: Segment, ctx: _Context, config: TrimConfig) -> tuple[str |
     # R8: trimming a diff, or output the user asked for in full, leaves fragments the agent
     # fetches again (live run L1: 3 extra requests, a net loss). Leave them whole.
     if _DIFF.search(seg.text) or _FULL_REQUEST.search(ctx.last_user_text):
+        return None, "protected"
+    # Tables: head / tail would drop the middle rows, where the answer may be.
+    if seg.result_kind in (ToolResultKind.FILE_READ, ToolResultKind.COMMAND_OUTPUT) and (
+        _TABLE_FILE.search(path or call_input) or looks_like_table(seg.text)
+    ):
         return None, "protected"
 
     if path.endswith(".py") and seg.result_kind in (
