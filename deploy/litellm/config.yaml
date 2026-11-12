@@ -1,0 +1,41 @@
+# LiteLLM proxy for TokenCut ("TokenCut decides, LiteLLM delivers").
+#   GPT / Codex models -> ChatGPT plan (chatgpt/ provider, login in ~/.config/litellm/chatgpt/auth.json)
+#   Claude models      -> Claude plan (Claude Code's own login, forwarded by LiteLLM; NO api key here,
+#                         so a request without the Claude login fails instead of using an API key)
+# Local only: start with --host 127.0.0.1 (deploy/litellm/start.ps1 does this).
+# GPT model names depend on your ChatGPT plan: remove any that test.ps1 reports as unsupported.
+# No secrets in this file: the master key comes from ~/.tokencut/litellm_master_key.
+model_list:
+  - model_name: gpt-6.1-sol
+    model_info:
+      mode: responses
+    litellm_params:
+      model: chatgpt/gpt-6.1-sol
+  - model_name: gpt-6-luna
+    model_info:
+      mode: responses
+    litellm_params:
+      model: chatgpt/gpt-6-luna
+  - model_name: gpt-6-astra
+    model_info:
+      mode: responses
+    litellm_params:
+      model: chatgpt/gpt-6-astra
+  # Claude Code sends plain names like claude-haiku-5-5.
+  - model_name: "claude-*"
+    litellm_params:
+      model: "anthropic/claude-*"
+  - model_name: "anthropic/*"
+    litellm_params:
+      model: "anthropic/*"
+
+litellm_settings:
+  # Claude Code sends Anthropic-only fields (thinking, cache_control, ...); drop what GPT rejects.
+  drop_params: true
+
+general_settings:
+  # Key is read from the environment (set by start-litellm.ps1 / the TokenCut launcher
+  # from ~/.tokencut/litellm_master_key). Never put the key itself in this file.
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # Forward anthropic-beta and x-* headers (Claude Code needs its beta flags, e.g. 1h cache).
+  forward_client_headers_to_llm_api: true

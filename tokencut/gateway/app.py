@@ -23,17 +23,26 @@ from pathlib import Path
 
 import httpx2
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
 from tokencut.contracts import Tier
 from tokencut.gateway.history import CacheEventConfig
 from tokencut.gateway.records import RequestLog, analyse, now_iso
+from tokencut.gateway.routing import (
+    RouteConfig,
+    claude_litellm_headers,
+    claude_via_litellm,
+    gpt_headers,
+    model_from_body,
+    pick_route,
+)
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig
 from tokencut.gateway.usage import UsageSniffer
 from tokencut.gateway.virtual import VirtualConfig
 
 log = logging.getLogger("tokencut.gateway")
+_LIVE_PAGE = Path(__file__).with_name("live.html")
 
 DEFAULT_UPSTREAMS = {
     "anthropic": "https://api.anthropic.com",
@@ -74,6 +83,7 @@ class GatewayConfig:
     cache_events: bool = True  # re-trim history when the provider cache is lost anyway
     events: CacheEventConfig = field(default_factory=CacheEventConfig)
     virtual: VirtualConfig = field(default_factory=VirtualConfig)  # CCR, lazy tool loading
+    route: RouteConfig = field(default_factory=RouteConfig)  # dual-plan demo (GPT via LiteLLM)
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -114,6 +124,7 @@ class GatewayConfig:
             cache_events=os.environ.get("TOKENCUT_CACHE_EVENTS", "1") != "0",
             events=events,
             virtual=virtual,
+            route=RouteConfig.from_env(),
         )
 
 
@@ -146,11 +157,20 @@ def create_app(
             "task_masking": config.events.task_masking,
             "ccr": config.virtual.ccr,
             "lazy_tools": config.virtual.lazy_tools,
+            "gpt_upstream": config.route.gpt_upstream,
         }
 
     @app.get("/tokencut/stats")
     async def stats() -> dict:
         return request_log.summary()
+
+    @app.get("/tokencut/recent")
+    async def recent() -> list[dict]:
+        return request_log.recent_feed()
+
+    @app.get("/tokencut/", response_class=HTMLResponse)
+    async def live_page() -> str:
+        return _LIVE_PAGE.read_text(encoding="utf-8")
 
     async def forward(provider: str, path: str, request: Request) -> Response:
         started = time.perf_counter()
@@ -189,20 +209,50 @@ def create_app(
                     )
                 )
 
-        url = f"{config.upstreams[provider]}/{path}"
-        if request.url.query:
-            url += f"?{request.url.query}"
         headers = {
             k: v for k, v in request.headers.items() if k.lower() not in _DROP_REQUEST_HEADERS
         }
+        route = pick_route(provider, model_from_body(body), config.route)
+        record["route"] = route
+        query = f"?{request.url.query}" if request.url.query else ""
+        direct_url = f"{config.upstreams[provider]}/{path}{query}"
+        direct_headers = headers
+        is_inference = _INFERENCE_PATHS[provider].search(path) is not None
+        if route == "gpt":
+            # Same Anthropic-format body; LiteLLM translates it for the ChatGPT plan.
+            url = f"{config.route.gpt_upstream}/{path}{query}"
+            headers = gpt_headers(headers, config.route)
+            record["via"] = "litellm"
+        elif route == "claude" and is_inference and claude_via_litellm(config.route):
+            # LiteLLM forwards the Claude plan login to Anthropic; direct send is the fallback.
+            url = f"{config.route.gpt_upstream}/{path}{query}"
+            headers = claude_litellm_headers(headers, config.route)
+            record["via"] = "litellm"
+        else:
+            url = direct_url
+            if route in ("claude", "gpt"):
+                record["via"] = "direct"
         # Ask for an uncompressed reply, or usage can't be read (the client's default is gzip).
         headers["accept-encoding"] = "identity"
         client: httpx2.AsyncClient = app.state.client
         try:
-            upstream = await client.send(
-                client.build_request(request.method, url, headers=headers, content=send_body),
-                stream=True,
-            )
+            try:
+                upstream = await client.send(
+                    client.build_request(request.method, url, headers=headers, content=send_body),
+                    stream=True,
+                )
+            except httpx2.RequestError:
+                if not (route == "claude" and record.get("via") == "litellm"):
+                    raise
+                # LiteLLM down: send the Claude request straight to Anthropic (fail open).
+                log.warning("LiteLLM unreachable; sending Claude request directly")
+                record.update(via="direct", fallback="litellm_unreachable")
+                upstream = await client.send(
+                    client.build_request(
+                        request.method, direct_url, headers=direct_headers, content=send_body
+                    ),
+                    stream=True,
+                )
         except httpx2.RequestError as exc:
             record.update(status=502, error=f"upstream unreachable: {type(exc).__name__}")
             await _finish(record, analysis_task, None, started, request_log)

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TokenCut Live</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e4e4df;
+    --claude: #c96442; --gpt: #10a37f; --good: #2f7d32; --warn: #b26a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --card: #1f1f1d; --ink: #ecece8; --muted: #9b9b94; --line: #2e2e2b; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 20px; }
+  h1 { font-size: 22px; margin: 0; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--good);
+         margin-right: 6px; vertical-align: middle; }
+  .dot.off { background: var(--warn); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .card h2 { margin: 0 0 2px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; }
+  .plan { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+  .big { font-size: 30px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);
+         font-variant-numeric: tabular-nums; padding: 2px 0; }
+  .row b { color: var(--ink); font-weight: 600; }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 8px 0 10px; }
+  .bar span { display: block; height: 100%; background: var(--good); width: 0; transition: width .4s; }
+  h3 { font-size: 14px; margin: 28px 0 8px; }
+  .feed { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; }
+  tr:last-child td { border-bottom: 0; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; color: #fff; font-size: 12px; }
+  .claude { background: var(--claude); } .gpt { background: var(--gpt); } .other { background: var(--muted); }
+  .saved { color: var(--good); font-weight: 600; }
+  .muted { color: var(--muted); }
+  .empty { padding: 20px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>TokenCut Live</h1>
+    <span class="sub"><span id="dot" class="dot"></span><span id="status">connecting…</span></span>
+  </header>
+
+  <section class="cards" id="cards"></section>
+
+  <h3>Latest requests</h3>
+  <div class="feed">
+    <table>
+      <thead><tr><th>Time</th><th>Plan</th><th>Model</th><th>Tokens</th><th>Removed</th>
+        <th>Cache read</th><th>What was trimmed</th><th>Latency</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="8" class="empty">Waiting for the agent's first request…</td></tr></tbody>
+    </table>
+  </div>
+</main>
+<script>
+const ROUTES = {
+  claude: { name: "Claude", plan: "Claude Pro plan · via Anthropic", css: "claude", color: "var(--claude)" },
+  gpt: { name: "GPT / Codex", plan: "ChatGPT plan · via LiteLLM", css: "gpt", color: "var(--gpt)" },
+};
+const fmt = n => (n ?? 0).toLocaleString();
+const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function card(route, d) {
+  const r = ROUTES[route] || { name: route, plan: "", css: "other", color: "var(--muted)" };
+  const u = d.billed_usage || {};
+  const input = (u.input_tokens || 0) + (u.cache_read_tokens || 0) + (u.cache_write_tokens || 0);
+  const p = pct(d.tokens_saved, d.tokens);
+  return `<div class="card">
+    <h2><span class="swatch" style="background:${r.color}"></span>${esc(r.name)}</h2>
+    <div class="plan">${esc(r.plan)}</div>
+    <div class="big">${p}%</div>
+    <div class="muted" style="font-size:12px">of request tokens removed</div>
+    <div class="bar"><span style="width:${Math.min(p, 100)}%"></span></div>
+    <div class="row"><span>Requests</span><b>${fmt(d.requests)}</b></div>
+    <div class="row"><span>Tokens removed</span><b>${fmt(d.tokens_saved)} / ${fmt(d.tokens)}</b></div>
+    <div class="row"><span>Billed input</span><b>${fmt(input)}</b></div>
+    <div class="row"><span>Cache reads</span><b>${pct(u.cache_read_tokens, input)}%</b></div>
+  </div>`;
+}
+
+function row(r) {
+  const route = ROUTES[r.route] ? r.route : "other";
+  const label = ROUTES[r.route]?.name || r.route;
+  const trims = (r.trims || []).filter(t => t.before > t.after)
+    .map(t => `${esc(t.how)} ${fmt(t.before)}→${fmt(t.after)}`).join(", ");
+  const ev = r.cache_event ? ` <span class="muted">[${esc(r.cache_event)}]</span>` : "";
+  const time = (r.ts || "").slice(11, 19);
+  const u = r.usage || {};
+  return `<tr><td class="muted">${time}</td>
+    <td><span class="tag ${route}">${esc(label)}</span></td>
+    <td>${esc(r.model)}</td><td>${fmt(r.tokens)}</td>
+    <td class="${r.tokens_saved ? "saved" : "muted"}">${r.tokens_saved ? "−" + fmt(r.tokens_saved) : "0"}${r.applied || !r.tokens_saved ? "" : " (shadow)"}</td>
+    <td>${fmt(u.cache_read_tokens)}</td>
+    <td>${trims || '<span class="muted">—</span>'}${ev}</td>
+    <td class="muted">${r.latency_ms != null ? Math.round(r.latency_ms) + " ms" : ""}</td></tr>`;
+}
+
+async function refresh() {
+  try {
+    const [stats, recent, health] = await Promise.all(
+      ["stats", "recent", "health"].map(p => fetch(`/tokencut/${p}`).then(x => x.json())));
+    const routes = { claude: { requests: 0, tokens: 0, tokens_saved: 0, billed_usage: {} },
+                     ...(health.gpt_upstream ? { gpt: { requests: 0, tokens: 0, tokens_saved: 0, billed_usage: {} } } : {}),
+                     ...stats.by_route };
+    document.getElementById("cards").innerHTML =
+      Object.entries(routes).map(([k, v]) => card(k, v)).join("");
+    document.getElementById("rows").innerHTML = recent.length
+      ? recent.map(row).join("")
+      : '<tr><td colspan="8" class="empty">Waiting for the agent\'s first request…</td></tr>';
+    document.getElementById("dot").className = "dot";
+    document.getElementById("status").textContent =
+      `mode ${health.mode} · tier ${health.tier} · GPT route ${health.gpt_upstream ? "on" : "off"}`;
+  } catch (e) {
+    document.getElementById("dot").className = "dot off";
+    document.getElementById("status").textContent = "gateway not reachable";
+  }
+}
+refresh();
+setInterval(refresh, 2000);
+</script>
+</body>
+</html>
