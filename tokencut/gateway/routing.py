@@ -80,3 +80,52 @@ def claude_litellm_headers(headers: dict[str, str], config: RouteConfig) -> dict
     if config.gpt_key:
         out["x-litellm-api-key"] = f"Bearer {config.gpt_key}"
     return out
+
+
+def _moved_note(block: dict) -> dict:
+    name = str(block.get("title") or "the PDF")
+    return {"type": "text", "text": (
+        f"[TokenCut: {name} from this tool result follows after the tool results of this message "
+        f"(the GPT route does not accept files inside tool results)]")}
+
+
+def move_tool_documents(body: dict) -> tuple[dict, int]:
+    """(body to send to the GPT route, number of documents moved).
+
+    ChatGPT's backend rejects a file inside a tool output (400: "expected an image MIME type",
+    what LiteLLM makes of an Anthropic `document` in a `tool_result`), but reads the same PDF in
+    the user's message. So each document inside a tool result moves to the end of that same
+    user message (after its tool results) and leaves a short note in its place. LiteLLM already
+    does this for images. Same input -> same output, so it is identical on every turn (prompt
+    cache). The input body is not changed."""
+    messages = body.get("messages")
+    if not isinstance(messages, list):
+        return body, 0
+    new_messages, moved = [], 0
+    for message in messages:
+        content = message.get("content") if isinstance(message, dict) else None
+        if not (isinstance(content, list) and message.get("role") == "user"):
+            new_messages.append(message)
+            continue
+        new_content, documents = [], []
+        for block in content:
+            inner = block.get("content") if isinstance(block, dict) else None
+            if (isinstance(block, dict) and block.get("type") == "tool_result"
+                    and isinstance(inner, list)
+                    and any(isinstance(b, dict) and b.get("type") == "document" for b in inner)):
+                kept = []
+                for b in inner:
+                    if isinstance(b, dict) and b.get("type") == "document":
+                        documents.append(b)
+                        kept.append(_moved_note(b))
+                    else:
+                        kept.append(b)
+                block = {**block, "content": kept}
+            new_content.append(block)
+        if documents:
+            moved += len(documents)
+            message = {**message, "content": new_content + documents}
+        new_messages.append(message)
+    if not moved:
+        return body, 0
+    return {**body, "messages": new_messages}, moved

@@ -25,6 +25,7 @@ from pypdf.errors import PyPdfError
 
 from tokencut.contracts import Segment, SegmentKind
 from tokencut.gateway.adapters.common import lookup
+from tokencut.gateway.routing import DEFAULT_GPT_PREFIXES
 from tokencut.tokens import count_tokens
 
 HEAD_B64_CHARS = 1 << 18  # 256k base64 characters (~192 KB): enough to reach an image header
@@ -86,14 +87,20 @@ def _jpeg_size(raw: bytes) -> tuple[int, int] | None:
 
 
 def pdf_pages(raw: bytes) -> int | None:
-    """Page count from the page objects, else from the page tree's /Count."""
+    """Page count from the page objects, else from the page tree's /Count, else (page objects
+    inside compressed object streams, PDF 1.5+) from the PDF parser."""
     if not raw.startswith(b"%PDF"):
         return None
     pages = len(re.findall(rb"/Type\s*/Page(?![A-Za-z])", raw))
     if pages:
         return pages
     counts = [int(c) for c in re.findall(rb"/Type\s*/Pages\b[^>]*?/Count\s+(\d+)", raw)]
-    return max(counts) if counts else None
+    if counts:
+        return max(counts)
+    try:
+        return len(PdfReader(io.BytesIO(raw)).pages) or None
+    except _PDF_ERRORS:
+        return None
 
 
 def _decode(data: str, limit: int | None = None) -> bytes:
@@ -263,7 +270,16 @@ def _estimate(provider: str, model: str, block: Any, body: dict) -> tuple[str, i
     return None
 
 
+def pricing_provider(provider: str, model: str) -> str:
+    """Whose image / PDF prices apply. Claude Code sends GPT models in Claude's format when
+    TokenCut routes them through LiteLLM to the ChatGPT plan: those are priced as OpenAI."""
+    if provider == "anthropic" and model.lower().startswith(DEFAULT_GPT_PREFIXES):
+        return "openai"
+    return provider
+
+
 def _from_bytes(provider: str, model: str, mime: str, data: str, option: str) -> int | None:
+    provider = pricing_provider(provider, model)
     if mime.startswith("image/"):
         size = image_size(_decode(data, HEAD_B64_CHARS))
         if size is None:
@@ -379,16 +395,17 @@ def _computer_use(body: dict) -> bool:
 def attachment_questions(segments: list[Segment]) -> dict[str, str]:
     """Per attachment segment: the user's last message before it plus the user text sent
     with it (same message). Never a later message, so every decision based on it is the same
-    on every turn (prompt cache)."""
+    on every turn (prompt cache). Only role "user": agents such as Claude Code send their own
+    context (environment, skills list) as role "system" messages inside the conversation."""
     with_message: dict[int, list[str]] = {}
     for seg in segments:
-        if seg.kind == SegmentKind.USER_TEXT:
+        if seg.kind == SegmentKind.USER_TEXT and seg.role == "user":
             text = _REMINDER.sub("", seg.text).strip()
             if text:
                 with_message.setdefault(seg.message_index, []).append(text)
     questions, last = {}, ""
     for seg in segments:
-        if seg.kind == SegmentKind.USER_TEXT:
+        if seg.kind == SegmentKind.USER_TEXT and seg.role == "user":
             text = _REMINDER.sub("", seg.text).strip()
             if text:
                 last = text
@@ -426,6 +443,7 @@ def _with_image_data(block: dict, data: str) -> dict:
 
 
 def _image_tokens(provider: str, model: str, w: int, h: int, block: dict, body: dict) -> int:
+    provider = pricing_provider(provider, model)
     if provider == "anthropic":
         return claude_image_tokens(w, h, model)
     if provider == "openai":
@@ -586,7 +604,10 @@ def adjust_images(provider: str, model: str, body: dict, segments: list[Segment]
         how = ("border_trimmed_resized" if target != (cw, ch) else "border_trimmed") \
             if box is not None else "resized"
         changes.append((seg.path, blocks))
-        entries.append({"segment": seg.id, "how": how, "tool": "", "before": before,
+        entries.append({"segment": seg.id, "how": how, "tool": "", "kind": "image",
+                        "from_size": [w, h], "to_size": list(target),
+                        "crop_box": list(box) if box is not None else None,
+                        "before": before,
                         "after": after})
     return changes, entries
 
@@ -604,7 +625,8 @@ _NUMBER_CELL = re.compile(r"[-+]?\d+(?:[.,]\d+)*%?")
 _VISUAL_QUESTION = re.compile(
     r"\b(?:charts?|graphs?|plots?|figures?|fig\.|diagrams?|images?|pictures?|photos?|"
     r"logos?|signatures?|signed|stamps?|seals?|handwrit\w*|colou?rs?|layout|formatting|"
-    r"formats?|fonts?|scan(?:ned|s)?|tables?|maps?|drawings?|screenshots?|visual\w*|"
+    r"(?<!answer )formats?(?!:|\s+(?:your|the|this)\s+(?:final\s+)?(?:answer|reply|response))|"
+    r"fonts?|scan(?:ned|s)?|tables?|maps?|drawings?|screenshots?|visual\w*|"
     r"looks? like|appearance|highlight\w*)", re.IGNORECASE)
 _PDF_ERRORS = (PyPdfError, ValueError, KeyError, TypeError, AttributeError, OSError)
 _SPLIT_CACHE_MAX = 32
@@ -747,7 +769,9 @@ def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user:
         changes.append((seg.path, blocks))
         entries.append({"segment": seg.id, "how": "pdf_text_pages", "tool": "",
                         "before": seg.token_count, "after": seg.token_count, "pages": total,
-                        "page_images_removed": len(text_pages)})
+                        "page_images_removed": len(text_pages), "kind": "pdf",
+                        "text_pages": text_pages,
+                        "visual_pages": [n for n in range(1, total + 1) if n not in text_pages]})
     return changes, entries
 
 

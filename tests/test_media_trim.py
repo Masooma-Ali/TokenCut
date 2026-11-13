@@ -164,3 +164,10 @@ def test_a_later_layout_question_does_not_change_an_earlier_image():
                           {"role": "user", "content": "Is it centred on the page?"}]
     _, second = run("anthropic", later)
     assert second["messages"][:3] == first["messages"][:3]
+
+
+def test_log_entries_say_what_happened_to_each_image():
+    analysis, _ = run("anthropic", tool_image(CHART))
+    entry = next(d for d in analysis["trim"]["details"] if d["how"] == "border_trimmed")
+    assert entry["kind"] == "image" and entry["from_size"] == [1600, 1000]
+    assert entry["to_size"] == [1216, 716] and entry["crop_box"] == [192, 142, 1408, 858]

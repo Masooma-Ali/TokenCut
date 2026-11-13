@@ -12,6 +12,25 @@ logins or keys are in the repository.
 - **Claude Code** installed and logged in with your Claude plan: run `claude`, type `/login`,
   choose your Claude account, then `/exit`
 - A **ChatGPT plan that includes Codex** (Plus, Pro or Business)
+- **Poppler** (`pdftoppm`), for PDFs: see "Poppler for PDFs" below. Without it, Claude Code's
+  Read tool fails whenever the model asks for PDF pages (`pages: "1-20"`), with or without
+  TokenCut. It is a program, not a Python package, so `pip install -r requirements.txt`
+  cannot install it.
+
+### Poppler for PDFs, one time (~44 MB download, ~120 MB unpacked)
+
+1. Download the latest `Release-*.zip` from
+   https://github.com/oschwartz10612/poppler-windows/releases (the standard Windows build).
+2. Unzip it to a folder of your choice, e.g. `D:\tools\poppler`.
+3. Add its `Library\bin` folder to your **user** PATH, then open a new terminal:
+   ```powershell
+   $bin = "D:\tools\poppler\poppler-26.09.0\Library\bin"   # adjust to your folder
+   [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$bin", "User")
+   ```
+   Or, for the current terminal only: `$env:Path += ";$bin"`.
+4. Check: `pdftoppm -v` prints a version. Start Claude Code from a terminal where this works.
+
+macOS: `brew install poppler`. Linux: `sudo apt-get install poppler-utils`.
 
 ## 1. Get the branch
 
@@ -132,6 +151,7 @@ tested way; use them if the shortcut misbehaves.
 | Claude Code asks before every `python -c` | Your `blockReadsOutsideWorkingDirectories` setting | Approve with Yes (it is a safety prompt, not an error) |
 | `address already in use` on port 4000 or 8787 | An old window is still running | Close it (Ctrl+C) or end the old `litellm.exe` / python process |
 | *Claude Code doesn't recognize the model "gpt-6.1-sol"* | Claude Code doesn't know GPT's context size | Harmless warning |
+| `pdftoppm is not installed` when the agent reads a PDF | Poppler missing; Claude Code needs it for PDF page ranges | Install Poppler ("Poppler for PDFs" above), restart the terminal and Claude Code |
 
 ## Good to know
 

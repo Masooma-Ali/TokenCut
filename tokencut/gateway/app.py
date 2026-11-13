@@ -13,6 +13,7 @@ Point an agent at it:
 """
 
 import asyncio
+import json
 import logging
 import os
 import re
@@ -34,6 +35,7 @@ from tokencut.gateway.routing import (
     claude_via_litellm,
     gpt_headers,
     model_from_body,
+    move_tool_documents,
     pick_route,
 )
 from tokencut.gateway.session import SessionStore
@@ -227,6 +229,17 @@ def create_app(
             url = f"{config.route.gpt_upstream}/{path}{query}"
             headers = gpt_headers(headers, config.route)
             record["via"] = "litellm"
+            if is_inference:
+                # ChatGPT rejects PDFs inside tool results: move them next to the tool result
+                # (in shadow mode too, or the request fails). Fail open: send as it was.
+                try:
+                    moved_body, moved = move_tool_documents(json.loads(send_body))
+                    if moved:
+                        send_body = json.dumps(moved_body, ensure_ascii=False,
+                                               separators=(",", ":")).encode()
+                        record["gpt_documents_moved"] = moved
+                except (ValueError, TypeError, AttributeError):
+                    log.warning("could not move tool documents for the GPT route", exc_info=True)
         elif route == "claude" and is_inference and claude_via_litellm(config.route):
             # LiteLLM forwards the Claude plan login to Anthropic; direct send is the fallback.
             url = f"{config.route.gpt_upstream}/{path}{query}"

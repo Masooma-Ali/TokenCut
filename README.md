@@ -182,6 +182,11 @@ pytest
 ```
 
 All tests in `tests/test_setup.py` must pass before you start coding.
+
+**For PDFs with an agent, also install Poppler** (`pdftoppm` on PATH). Claude Code's Read tool
+needs it to read PDF page ranges; it is a program, not a Python package, so it is not in
+`requirements.txt`. Windows steps: `docs/TEAMMATE_SETUP.md` → "Poppler for PDFs";
+macOS `brew install poppler`; Linux `sudo apt-get install poppler-utils`.
 The first run of the token counter downloads a small tokenizer file (needs internet once).
 
 ## Workflow

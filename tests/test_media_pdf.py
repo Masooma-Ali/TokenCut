@@ -247,3 +247,32 @@ def test_a_later_visual_question_does_not_change_an_earlier_pdf():
                           {"role": "user", "content": "What does the chart show?"}]
     _, second = run("anthropic", later)
     assert second["messages"][:3] == first["messages"][:3]
+
+
+def test_log_entry_lists_text_and_picture_pages():
+    analysis, _ = run("anthropic", tool_pdf_request(pdf_block(make_pdf("text", "table", "text"))))
+    entry = split_entries(analysis)[0]
+    assert entry["kind"] == "pdf" and entry["text_pages"] == [1, 3] and entry["visual_pages"] == [2]
+
+
+def test_answer_format_instructions_are_not_visual_questions():
+    # Found on MMLongBench-Doc: "Format your answer as YYYY-MM-DD" kept the whole PDF.
+    for question in ("What is the date of the document? Format your answer as YYYY-MM-DD.",
+                     "How many staff are listed? Answer format: a number"):
+        _, sent = run("anthropic", asked(question, "text", "table", "text"))
+        assert sent is not None, question
+    _, sent = run("anthropic", asked("Check the formatting of page 1", "text", "table", "text"))
+    assert sent is None  # real formatting questions still keep the whole PDF
+
+
+def test_agent_context_messages_are_not_the_users_question():
+    # Found live: Claude Code sends its environment / skills context as role "system" messages
+    # in the conversation ("... whenever you create any chart, graph, plot, image ..."). That is
+    # not what the user asked, so it must not keep the whole PDF.
+    body = asked("What are the payment terms?", "text", "table", "text")
+    body["messages"].insert(1, {"role": "system", "content": [{"type": "text", "text": (
+        "# Environment\n- dataviz: use whenever you create any chart, graph, plot or image; "
+        "check the layout and formatting of every screenshot.")}]})
+    _, sent = run("anthropic", body)
+    assert sent is not None
+    assert [b["type"] for b in sent["messages"][3]["content"][0]["content"]] == ["text", "document"]

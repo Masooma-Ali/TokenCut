@@ -315,3 +315,48 @@ def test_openai_attachments_are_counted_but_never_changed():
     segments, stats = media.with_media_tokens("openai", "gpt-4o", body, openai.parse(body))
     assert stats == {"images": 2, "documents": 0, "unknown": 0, "tokens": 2 * 765}
     assert trim_request(body, segments, TrimConfig())[0] is None  # user messages: never changed
+
+
+# ---------- dual-plan routing: a GPT model in a Claude-format request is priced as OpenAI ----------
+
+
+def test_gpt_model_in_claude_format_uses_the_openai_formula():
+    body = claude_request([image_block(png(1024, 1024))])
+    body["model"] = "gpt-6-luna"  # Claude Code -> TokenCut -> LiteLLM -> ChatGPT plan
+    _, stats = media.with_media_tokens("anthropic", body["model"], body, anthropic.parse(body))
+    assert stats["tokens"] == media.openai_image_tokens(1024, 1024, "gpt-6-luna", "auto") == 1229
+
+
+def objstm_pdf(pages: int) -> bytes:
+    """A PDF whose page objects sit in a compressed object stream (PDF 1.5+), as many modern
+    PDFs are written: the page dictionaries are not visible as plain text."""
+    import zlib
+    kids = " ".join(f"{3 + i} 0 R" for i in range(pages))
+    objects = [b"<</Type/Catalog/Pages 2 0 R>>", f"<</Type/Pages/Kids[{kids}]/Count {pages}>>".encode()]
+    objects += [b"<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]>>"] * pages
+    offsets, body = [], b""
+    for obj in objects:
+        offsets.append(len(body))
+        body += obj + b" "
+    header = " ".join(f"{n + 1} {off}" for n, off in enumerate(offsets)).encode() + b" "
+    stream = zlib.compress(header + body)
+    stm_num, xref_num = len(objects) + 1, len(objects) + 2
+    out = b"%PDF-1.7\n"
+    stm_offset = len(out)
+    out += (f"{stm_num} 0 obj<</Type/ObjStm/N {len(objects)}/First {len(header)}/Filter/FlateDecode"
+            f"/Length {len(stream)}>>stream\n").encode() + stream + b"\nendstream endobj\n"
+    xref_offset = len(out)
+    rows = [b"\x00\x00\x00\x00\x00\xff\xff"]
+    rows += [b"\x02" + stm_num.to_bytes(4, "big") + n.to_bytes(2, "big") for n in range(len(objects))]
+    rows += [b"\x01" + stm_offset.to_bytes(4, "big") + b"\x00\x00",
+             b"\x01" + xref_offset.to_bytes(4, "big") + b"\x00\x00"]
+    xref = zlib.compress(b"".join(rows))
+    out += (f"{xref_num} 0 obj<</Type/XRef/Size {xref_num + 1}/W[1 4 2]/Root 1 0 R/Filter/FlateDecode"
+            f"/Length {len(xref)}>>stream\n").encode() + xref + b"\nendstream endobj\n"
+    return out + f"startxref\n{xref_offset}\n%%EOF\n".encode()
+
+
+def test_pdf_pages_in_compressed_object_streams():
+    # Found on MMLongBench-Doc: such a 17-page PDF was counted as 0 pages / 0 tokens.
+    assert b"/Type/Page" not in objstm_pdf(4)
+    assert media.pdf_pages(objstm_pdf(4)) == 4

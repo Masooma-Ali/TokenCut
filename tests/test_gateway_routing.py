@@ -8,7 +8,13 @@ from fastapi.testclient import TestClient
 
 from tests.test_gateway_app import ANTHROPIC_SSE, REQUEST, FakeProvider
 from tokencut.gateway.app import GatewayConfig, create_app
-from tokencut.gateway.routing import RouteConfig, gpt_headers, model_from_body, pick_route
+from tokencut.gateway.routing import (
+    RouteConfig,
+    gpt_headers,
+    model_from_body,
+    move_tool_documents,
+    pick_route,
+)
 
 GPT_UPSTREAM = "http://127.0.0.1:4000"
 
@@ -170,3 +176,67 @@ def test_non_inference_claude_paths_stay_direct(tmp_path):
 def test_claude_via_litellm_needs_the_gpt_upstream():
     cfg = RouteConfig(claude_via_litellm=True)  # no LiteLLM address: nothing changes
     assert pick_route("anthropic", "claude-haiku-5-5", cfg) == "claude"
+
+
+PDF_BLOCK = {"type": "document", "title": "report.pdf",
+             "source": {"type": "base64", "media_type": "application/pdf", "data": "JVBERi0xLjcK"}}
+
+
+def _pdf_read(model: str) -> dict:
+    return {"model": model, "max_tokens": 10, "messages": [
+        {"role": "user", "content": "What are the payment terms?"},
+        {"role": "assistant", "content": [{"type": "tool_use", "id": "r1", "name": "Read",
+                                           "input": {"file_path": "report.pdf"}}]},
+        {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "r1", "content": [
+            {"type": "text", "text": "PDF file read: report.pdf"}, PDF_BLOCK]}]},
+    ]}
+
+
+def test_move_tool_documents_puts_pdfs_after_the_tool_results():
+    # Found by the attachment benchmark: ChatGPT (via LiteLLM) rejects a PDF inside a tool
+    # result (400, "expected an image MIME type"), but reads it next to the tool result.
+    body = _pdf_read("gpt-6-luna")
+    moved, count = move_tool_documents(body)
+    assert count == 1
+    content = moved["messages"][2]["content"]
+    assert [b["type"] for b in content] == ["tool_result", "document"]
+    assert content[1] == PDF_BLOCK
+    inner = content[0]["content"]
+    assert [b["type"] for b in inner] == ["text", "text"] and "report.pdf" in inner[1]["text"]
+    assert body["messages"][2]["content"][0]["content"][1] == PDF_BLOCK  # input not modified
+    assert move_tool_documents(moved) == (moved, 0)  # nothing left to move: same every turn
+
+
+def test_move_tool_documents_leaves_other_requests_alone():
+    body = {**REQUEST}
+    assert move_tool_documents(body) == (body, 0)
+    images_only = _pdf_read("gpt-6-luna")
+    images_only["messages"][2]["content"][0]["content"][1] = {
+        "type": "image", "source": {"type": "base64", "media_type": "image/png", "data": "iVBO"}}
+    assert move_tool_documents(images_only)[1] == 0  # LiteLLM already handles images
+
+
+def _post_body(client, body: dict):
+    return client.post("/anthropic/v1/messages", content=json.dumps(body).encode(), headers={
+        "authorization": "Bearer claude-plan-token", "anthropic-version": "2023-06-01",
+        "content-type": "application/json"})
+
+
+def test_gpt_route_moves_tool_pdfs_in_shadow_and_trim(tmp_path):
+    for mode in ("shadow", "trim"):
+        fake = FakeProvider()
+        config = GatewayConfig(mode=mode, log_dir=tmp_path / mode,
+                               route=RouteConfig(gpt_upstream=GPT_UPSTREAM))
+        app = create_app(config, transport=httpx2.MockTransport(fake.handler))
+        with TestClient(app) as client:
+            assert _post_body(client, _pdf_read("gpt-6-luna")).status_code == 200
+            sent = json.loads(fake.requests[-1].content)
+            assert [b["type"] for b in sent["messages"][2]["content"]] == ["tool_result", "document"]
+            assert app.state.request_log.recent[-1]["gpt_documents_moved"] == 1
+
+
+def test_claude_route_keeps_tool_pdfs_in_place(routed):
+    client, fake, _ = routed
+    _post_body(client, _pdf_read("claude-haiku-5-5"))
+    sent = json.loads(fake.requests[-1].content)
+    assert [b["type"] for b in sent["messages"][2]["content"]] == ["tool_result"]
