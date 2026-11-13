@@ -26,3 +26,7 @@ cache/
 
 # Gateway logs and captured requests (contain prompts and code)
 logs/
+
+# LiteLLM secrets (live in ~/.tokencut and ~/.config/litellm; never commit)
+litellm_master_key
+auth.json

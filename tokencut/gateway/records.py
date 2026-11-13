@@ -202,7 +202,58 @@ class RequestLog:
             "tool_result_tokens": by_result,
             "attachments": attachments,  # estimated provider tokens, forwarded unchanged
             "billed_usage": usage_total,
+            "by_route": self._by_route(),
         }
+
+    def _by_route(self) -> dict:
+        """Requests, tokens saved and billed usage per route (dual-plan demo)."""
+        out: dict[str, dict] = {}
+        for r in self.recent:
+            route = r.get("route") or r["provider"]
+            entry = out.setdefault(route, {
+                "requests": 0, "tokens": 0, "tokens_saved": 0,
+                "billed_usage": {"input_tokens": 0, "cache_read_tokens": 0,
+                                 "cache_write_tokens": 0, "output_tokens": 0},
+            })
+            entry["requests"] += 1
+            entry["tokens"] += _tokens(r)
+            entry["tokens_saved"] += _saved(r)
+            for field, value in (r.get("usage") or {}).items():
+                entry["billed_usage"][field] = entry["billed_usage"].get(field, 0) + value
+        return dict(sorted(out.items()))
+
+    def recent_feed(self, limit: int = 40) -> list[dict]:
+        """The latest requests, newest first, numbers only (for the live page)."""
+        feed = []
+        for r in list(self.recent)[-limit:][::-1]:
+            trim = (r.get("analysis") or {}).get("trim") or {}
+            feed.append({
+                "ts": r["ts"],
+                "route": r.get("route") or r["provider"],
+                "model": (r.get("analysis") or {}).get("model", ""),
+                "status": r.get("status"),
+                "latency_ms": r.get("latency_ms"),
+                "tokens": _tokens(r),
+                "tokens_saved": _saved(r),
+                "applied": bool(r.get("trim_applied")),
+                "cache_event": trim.get("cache_event"),
+                "trims": [
+                    {"how": d["how"], "before": d["before"], "after": d["after"]}
+                    for d in trim.get("details", [])
+                ],
+                "usage": r.get("usage"),
+            })
+        return feed
+
+
+def _tokens(record: dict) -> int:
+    return int((record.get("analysis") or {}).get("tokens_total", 0))
+
+
+def _saved(record: dict) -> int:
+    """Tokens removed: what was sent less (trim mode) or what could be (shadow mode)."""
+    trim = (record.get("analysis") or {}).get("trim") or {}
+    return int(trim.get("tokens_saved", 0))
 
 
 def _count(values: list[str]) -> dict[str, int]:
