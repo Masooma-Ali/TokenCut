@@ -19,7 +19,7 @@ import re
 import struct
 from typing import Any
 
-from PIL import Image
+from PIL import Image, ImageChops
 from pypdf import PdfReader, PdfWriter
 from pypdf.errors import PyPdfError
 
@@ -342,7 +342,8 @@ _KEEP_DETAIL = re.compile(
     re.IGNORECASE)
 _REMINDER = re.compile(r"<system-reminder>.*?</system-reminder>", re.DOTALL)
 _RESIZE_CACHE_MAX = 32
-_resize_cache: dict[tuple[int, str, str], str | None] = {}  # base64 of the resized image
+_resize_cache: dict[tuple, str | None] = {}  # base64 of the cropped / resized image
+_box_cache: dict[tuple[int, str, str], tuple[int, int, int, int] | None] = {}
 
 
 def tool_attachment(body: dict, path: list[str | int]) -> bool:
@@ -375,13 +376,25 @@ def _computer_use(body: dict) -> bool:
                for t in body.get("tools") or [])
 
 
-def _last_user_text(segments: list[Segment]) -> str:
-    for seg in reversed(segments):
+def attachment_questions(segments: list[Segment]) -> dict[str, str]:
+    """Per attachment segment: the user's last message before it plus the user text sent
+    with it (same message). Never a later message, so every decision based on it is the same
+    on every turn (prompt cache)."""
+    with_message: dict[int, list[str]] = {}
+    for seg in segments:
         if seg.kind == SegmentKind.USER_TEXT:
             text = _REMINDER.sub("", seg.text).strip()
             if text:
-                return text
-    return ""
+                with_message.setdefault(seg.message_index, []).append(text)
+    questions, last = {}, ""
+    for seg in segments:
+        if seg.kind == SegmentKind.USER_TEXT:
+            text = _REMINDER.sub("", seg.text).strip()
+            if text:
+                last = text
+        elif seg.kind == SegmentKind.MEDIA:
+            questions[seg.id] = "\n".join([last, *with_message.get(seg.message_index, [])])
+    return questions
 
 
 def _image_data(block: dict) -> tuple[str, str] | None:
@@ -422,41 +435,114 @@ def _image_tokens(provider: str, model: str, w: int, h: int, block: dict, body: 
                                                 or config.get("media_resolution") or ""))
 
 
-def _resized_b64(data: str, size: tuple[int, int]) -> str | None:
-    """Same input -> same output bytes (fixed filter and settings), cached per image."""
-    key = (len(data), data[:2048], data[-2048:])
+def _adjusted_b64(data: str, box: tuple[int, int, int, int] | None,
+                  size: tuple[int, int] | None) -> str | None:
+    """Crop to `box`, then resize to `size`. Same input -> same output bytes (fixed filter and
+    settings), cached per image and operation."""
+    key = (len(data), data[:2048], data[-2048:], box, size)
     if key not in _resize_cache:
         if len(_resize_cache) >= _RESIZE_CACHE_MAX:
             _resize_cache.pop(next(iter(_resize_cache)))
-        raw = _resize(_decode(data), size)
+        raw = _transform(_decode(data), box, size)
         _resize_cache[key] = base64.b64encode(raw).decode() if raw is not None else None
     return _resize_cache[key]
 
 
-def _resize(raw: bytes, size: tuple[int, int]) -> bytes | None:
+def _open_image(raw: bytes) -> Image.Image | None:
     try:
-        with Image.open(io.BytesIO(raw)) as img:
-            if img.format not in _RESIZE_FORMATS or getattr(img, "is_animated", False):
-                return None
-            fmt = img.format
-            out = img.resize(size, Image.Resampling.LANCZOS)
-            buf = io.BytesIO()
-            if fmt == "JPEG":
-                out.convert("RGB").save(buf, "JPEG", quality=90)
-            elif fmt == "WEBP":
-                out.save(buf, "WEBP", quality=90)
-            else:
-                out.save(buf, "PNG")
-            return buf.getvalue()
+        img = Image.open(io.BytesIO(raw))
+        if img.format not in _RESIZE_FORMATS or getattr(img, "is_animated", False):
+            return None
+        img.load()
+        return img
     except (OSError, ValueError, Image.DecompressionBombError):
         return None
 
 
-def shrink_images(provider: str, model: str, body: dict, segments: list[Segment],
-                  include_user: bool = False) -> tuple[list[tuple[list[str | int], dict]], list[dict]]:
-    """(path -> new block, report entries) for images worth shrinking. The body is not changed."""
-    if _computer_use(body) or _KEEP_DETAIL.search(_last_user_text(segments)):
+def _transform(raw: bytes, box: tuple[int, int, int, int] | None,
+               size: tuple[int, int] | None) -> bytes | None:
+    img = _open_image(raw)
+    if img is None:
+        return None
+    fmt = img.format
+    out = img.crop(box) if box is not None else img
+    if size is not None and size != out.size:
+        out = out.resize(size, Image.Resampling.LANCZOS)
+    buf = io.BytesIO()
+    if fmt == "JPEG":
+        out.convert("RGB").save(buf, "JPEG", quality=90)
+    elif fmt == "WEBP":
+        out.save(buf, "WEBP", quality=90)
+    else:
+        out.save(buf, "PNG")
+    return buf.getvalue()
+
+
+# ---------- step 6: plain outer borders are cut off ----------
+
+BORDER_TOLERANCE = 16  # max per-channel difference still counted as background
+BORDER_PAD = 8  # px of the border kept around the content
+BORDER_MAX_REMOVED = 0.75  # cutting more than this share: a near-empty image, left alone
+BORDER_MIN_CONTENT = 32  # px; smaller content boxes are left alone
+_LAYOUT_QUESTION = re.compile(
+    r"\b(?:layout|align\w*|spacing|spaced|margins?|padding|cent(?:er|re)d?|position\w*|"
+    r"whitespace|white space|gaps?|offset|overflow\w*|cut off|borders?)\b", re.IGNORECASE)
+
+
+def content_box(img: Image.Image) -> tuple[int, int, int, int] | None:
+    """Box (left, top, right, bottom) around everything that differs from a plain background,
+    plus BORDER_PAD px; None if the corners do not share one colour or nothing differs."""
+    rgb = img.convert("RGB")
+    w, h = rgb.size
+    corners = [rgb.getpixel(p) for p in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1))]
+    background = corners[0]
+    if any(max(abs(a - b) for a, b in zip(c, background, strict=True)) > BORDER_TOLERANCE
+           for c in corners):
+        return None
+    red, green, blue = ImageChops.difference(rgb, Image.new("RGB", rgb.size, background)).split()
+    strongest = ImageChops.lighter(ImageChops.lighter(red, green), blue)
+    box = strongest.point(lambda v: 255 if v > BORDER_TOLERANCE else 0).getbbox()
+    if box is None:
+        return None
+    left, top, right, bottom = box
+    return (max(0, left - BORDER_PAD), max(0, top - BORDER_PAD),
+            min(w, right + BORDER_PAD), min(h, bottom + BORDER_PAD))
+
+
+def _border_box(data: str, w: int, h: int) -> tuple[int, int, int, int] | None:
+    """The content box worth cropping to, cached per image."""
+    key = (len(data), data[:2048], data[-2048:])
+    if key not in _box_cache:
+        if len(_box_cache) >= _RESIZE_CACHE_MAX:
+            _box_cache.pop(next(iter(_box_cache)))
+        img = _open_image(_decode(data))
+        box = content_box(img) if img is not None else None
+        if box is not None:
+            bw, bh = box[2] - box[0], box[3] - box[1]
+            if (bw, bh) == (w, h) or min(bw, bh) < BORDER_MIN_CONTENT \
+                    or 1 - (bw * bh) / (w * h) > BORDER_MAX_REMOVED:
+                box = None
+        _box_cache[key] = box
+    return _box_cache[key]
+
+
+def _image_note(w: int, h: int, box: tuple[int, int, int, int], size: tuple[int, int]) -> str:
+    bw, bh = box[2] - box[0], box[3] - box[1]
+    scaled = f", then scaled to {size[0]}x{size[1]}" if size != (bw, bh) else ""
+    return (f"[TokenCut: plain border cut from this image: original {w}x{h}, kept the "
+            f"{bw}x{bh} area at offset ({box[0]}, {box[1]}){scaled}; positions refer to the "
+            "image as sent]")
+
+
+def adjust_images(provider: str, model: str, body: dict, segments: list[Segment],
+                  include_user: bool = False, resize: bool = True, trim: bool = True
+                  ) -> tuple[list[tuple[list[str | int], list[dict]]], list[dict]]:
+    """(path -> replacement blocks, report entries): plain borders cut (step 6) and large images
+    shrunk (step 5), only where the provider's own formula saves >= MIN_SAVING. The body is not
+    changed; a cropped image is followed by a note, so insert in descending path order."""
+    if _computer_use(body) or not (resize or trim):
         return [], []
+    questions = attachment_questions(segments)
     changes, entries = [], []
     for seg in segments:
         if seg.kind != SegmentKind.MEDIA:
@@ -471,20 +557,36 @@ def shrink_images(provider: str, model: str, body: dict, segments: list[Segment]
         if is_tool and "computer" in _tool_name(body, seg.path).lower():
             continue
         size = image_size(_decode(image[1], HEAD_B64_CHARS))
-        if size is None or max(size) <= TARGET_LONG_EDGE:
+        if size is None:
             continue
         w, h = size
-        scale = TARGET_LONG_EDGE / max(w, h)
-        target = (max(1, round(w * scale)), max(1, round(h * scale)))
+        # a note can follow the image except inside Gemini's functionResponse.parts
+        can_note = not (len(seg.path) == 7 and seg.path[0] == "contents")
+        question = questions.get(seg.id, "")
+        trim_here = trim and can_note and not _LAYOUT_QUESTION.search(question)
+        resize_here = resize and not _KEEP_DETAIL.search(question)
+        box = _border_box(image[1], w, h) if trim_here else None
+        cw, ch = (box[2] - box[0], box[3] - box[1]) if box is not None else (w, h)
+        target = (cw, ch)
+        if resize_here and max(cw, ch) > TARGET_LONG_EDGE:
+            scale = TARGET_LONG_EDGE / max(cw, ch)
+            target = (max(1, round(cw * scale)), max(1, round(ch * scale)))
+        if box is None and target == (w, h):
+            continue
         before = _image_tokens(provider, model, w, h, block, body)
         after = _image_tokens(provider, model, *target, block, body)
         if before - after < MIN_SAVING * before:
             continue
-        encoded = _resized_b64(image[1], target)
+        encoded = _adjusted_b64(image[1], box, target)
         if encoded is None:
             continue
-        changes.append((seg.path, _with_image_data(block, encoded)))
-        entries.append({"segment": seg.id, "how": "resized", "tool": "", "before": before,
+        blocks = [_with_image_data(block, encoded)]
+        if box is not None:
+            blocks.append(note_block(seg.path, _image_note(w, h, box, target)))
+        how = ("border_trimmed_resized" if target != (cw, ch) else "border_trimmed") \
+            if box is not None else "resized"
+        changes.append((seg.path, blocks))
+        entries.append({"segment": seg.id, "how": how, "tool": "", "before": before,
                         "after": after})
     return changes, entries
 
@@ -497,6 +599,13 @@ PDF_TABLE_ROWS = 3  # this many number-table rows: a table (columns are lost as 
 PDF_MAX_PAGES = 50  # longer PDFs are left as they are (~115 ms per page the first time)
 _DRAW_OP = re.compile(rb"(?<![A-Za-z])(?:re|l|c|v|y)(?=\s)")
 _NUMBER_CELL = re.compile(r"[-+]?\d+(?:[.,]\d+)*%?")
+# Intent safety: a question about how pages look keeps the whole PDF (EcoDoc, ACL 2025, also
+# chooses text or image per page from page characteristics and query intent).
+_VISUAL_QUESTION = re.compile(
+    r"\b(?:charts?|graphs?|plots?|figures?|fig\.|diagrams?|images?|pictures?|photos?|"
+    r"logos?|signatures?|signed|stamps?|seals?|handwrit\w*|colou?rs?|layout|formatting|"
+    r"formats?|fonts?|scan(?:ned|s)?|tables?|maps?|drawings?|screenshots?|visual\w*|"
+    r"looks? like|appearance|highlight\w*)", re.IGNORECASE)
 _PDF_ERRORS = (PyPdfError, ValueError, KeyError, TypeError, AttributeError, OSError)
 _SPLIT_CACHE_MAX = 32
 _split_cache: dict[tuple[int, str, str], tuple[str, str | None, list[int], int] | None] = {}
@@ -597,6 +706,7 @@ def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user:
     if provider not in ("anthropic", "openai"):
         return [], []  # Gemini: its docs conflict on whether PDF text is billed
     changes, entries = [], []
+    questions = attachment_questions(segments)
     for seg in segments:
         if seg.kind != SegmentKind.MEDIA:
             continue
@@ -605,6 +715,8 @@ def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user:
             continue
         if not (tool_attachment(body, seg.path) or include_user):
             continue
+        if _VISUAL_QUESTION.search(questions.get(seg.id, "")):
+            continue  # the question is about how pages look: keep every page picture
         if provider == "anthropic" and block.get("type") == "document":
             source = block.get("source") or {}
             if source.get("type") != "base64" or source.get("media_type") != "application/pdf":

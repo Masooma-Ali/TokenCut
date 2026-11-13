@@ -209,3 +209,41 @@ def test_pdf_setting_from_environment(monkeypatch):
     assert GatewayConfig.from_env().trim.pdf_text_pages
     monkeypatch.setenv("TOKENCUT_PDF_TEXT_PAGES", "0")
     assert not GatewayConfig.from_env().trim.pdf_text_pages
+
+
+# ---------- intent safety: a question about how pages look keeps the whole PDF ----------
+
+
+def asked(question: str, *kinds: str) -> dict:
+    body = tool_pdf_request(pdf_block(make_pdf(*kinds)))
+    body["messages"][0]["content"] = question
+    return body
+
+
+def test_visual_questions_keep_the_whole_pdf():
+    for question in ("What does the chart on page 2 show?", "Is the contract signed?",
+                     "What colour is the logo?", "Describe the layout of the first page",
+                     "Summarise the table", "Read the scanned form"):
+        analysis, sent = run("anthropic", asked(question, "text", "table", "text"))
+        assert sent is None and split_entries(analysis) == [], question
+
+
+def test_text_questions_still_split():
+    _, sent = run("anthropic", asked("Summarise the payment terms", "text", "table", "text"))
+    assert [b["type"] for b in sent["messages"][2]["content"][0]["content"]] == ["text", "document"]
+
+
+def test_question_attached_with_the_pdf_counts():
+    body = {"model": "claude-sonnet-4-5", "max_tokens": 10, "messages": [{"role": "user", "content": [
+        pdf_block(make_pdf("text", "table")), {"type": "text", "text": "Is it signed?"}]}]}
+    assert run("anthropic", body, media_user=True)[1] is None
+
+
+def test_a_later_visual_question_does_not_change_an_earlier_pdf():
+    body = asked("Summarise the payment terms", "text", "table", "text")
+    _, first = run("anthropic", body)
+    later = json.loads(json.dumps(body))
+    later["messages"] += [{"role": "assistant", "content": "Payment is due in 30 days."},
+                          {"role": "user", "content": "What does the chart show?"}]
+    _, second = run("anthropic", later)
+    assert second["messages"][:3] == first["messages"][:3]

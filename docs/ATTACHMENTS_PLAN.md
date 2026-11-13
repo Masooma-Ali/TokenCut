@@ -1,6 +1,6 @@
 # Attachments — Research and Plan for TokenCut
 
-*Status: in progress on branch `Attachments` (team approved). Done: step 1 (count attachment tokens), step 2 (tables protected), step 4 (duplicate attachments), step 5 (shrink large images per provider), step 7 (PDF text pages as text, Claude and OpenAI). Step 3 waits for a team decision (see decision 4 below). Written 2026-11-12.*
+*Status: in progress on branch `Attachments` (team approved). Done: step 1 (count attachment tokens), step 2 (tables protected), step 4 (duplicate attachments), step 5 (shrink large images per provider), step 7 (PDF text pages as text, Claude and OpenAI), step 6 (plain borders cut). Step 8 dropped (unsafe without a model); steps 9–11 wait for a team decision. Step 3 waits for a team decision (see decision 4 below). Written 2026-11-12.*
 
 **Goal.** Real users will attach images, screenshots, PDFs, Word files, spreadsheets and
 slides. TokenCut should cut the tokens (and so the price) these attachments cost, add little
@@ -145,12 +145,12 @@ and Claude Code resize images themselves.
 | 3 | **Finished attachments → note** at R10 / cache events | images, PDFs, docs | ≈ 100 % of each old one, on every later request | low | reuses R10's cost check |
 | 4 ✅ | **Drop exact duplicates** → "identical to attachment #n" | tool-returned images and documents | ≈ 100 % of the duplicate | none | Anthropic tool results and Gemini sibling parts; OpenAI tool images arrive as user messages, so they are counted only |
 | 5 ✅ | **Shrink large images to a 1,568-px long edge where the provider bills by size** | images | Claude 4.7+ 1920x1080: 2,691 -> 1,792 (−33 %); OpenAI patch models 2,448 -> 1,647; Gemini 3 / 4 and tile models: none, so untouched | low | only if the provider's formula saves >= 10 %; skipped for computer use and zoom / small-text requests; tool images by default, user attachments with `TOKENCUT_MEDIA_USER=1` |
-| 6 | **Crop** to the relevant region | images | 50–90 % (Headroom's figure) | medium | needs a reliable region signal; later |
-| 7 ✅ | **PDF: text pages as text**, pages with images / drawings / number tables / scans stay a PDF | PDFs (Claude, OpenAI) | the page image of every text page (e.g. 9 of 26 pages of a real paper) | low–medium | known gap: tables made only of words become plain text; Gemini unchanged; > 50 pages unchanged |
-| 8 | **PDF / PPTX: relevant pages only** + note for the rest | PDFs, slides | depends on length | medium | same idea as code-chunk scoring |
-| 9 | **Word: section-aware trimming** instead of head/tail | DOCX as text | depends | low | keep whole relevant sections |
-| 10 | **Spreadsheet: header + summary + matching rows** + note | CSV / Excel | large on big sheets | medium | after #2 |
-| 11 | **JSON: keep structure + sample items** | JSON | large on big arrays | low | Headroom does this |
+| 6 ✅ | **Cut plain outer borders** (not content-based cropping) + note | images | e.g. 2,088 -> 1,144 tokens for a chart with wide margins (Claude 4.7+); none on Gemini 3 / 4 | low | corners must share one colour; <= 75 % removed; skipped for layout questions and computer use |
+| 7 ✅ | **PDF: text pages as text**, pages with images / drawings / number tables / scans stay a PDF | PDFs (Claude, OpenAI) | the page image of every text page (e.g. 9 of 26 pages of a real paper) | low–medium | known gap: tables made only of words become plain text; Gemini unchanged; > 50 pages unchanged; whole PDF kept when the question is about how pages look (intent safety, as in EcoDoc) |
+| 8 ✗ | ~~PDF / PPTX: relevant pages only~~ — **dropped** | – | – | high | keyword matching can miss the answering page; user PDFs cannot be re-fetched; research uses models |
+| 9 | **Word: section-aware trimming** instead of head/tail | DOCX as text | depends | low | keep whole relevant sections — **on hold (drops content, like step 8)** |
+| 10 | **Spreadsheet: header + summary + matching rows** + note | CSV / Excel | large on big sheets | medium | after #2 — **on hold (drops content, like step 8)** |
+| 11 | **JSON: keep structure + sample items** | JSON | large on big arrays | low | Headroom does this — **on hold (drops content, like step 8)** |
 | 12 | Provider controls: OpenAI `detail`, Gemini `media_resolution` | images, PDFs, video | varies | medium | per-model table; can cost more on gpt-5.4 |
 
 **Not planned:** pruning inside the model (papers), trained routers / OCR models (against the
@@ -158,8 +158,8 @@ model-free design), pixel-difference cropping (worse than baseline in ReVision).
 
 ### Order
 
-1 → 2 → 3 → 4 → 5 → 7 → 8 → 10 → 9 → 11 → 6 → 12. Steps 1, 2 and 4 carry essentially no
-quality risk.
+Done: 1, 2, 4, 5, 7, 6. Dropped: 8. On hold (team decision): 3 (thinking-block risk, with
+R10), 9–11 (they drop content), 12 (lowers picture quality).
 
 ---
 

@@ -171,3 +171,14 @@ def test_settings_from_environment(monkeypatch):
     monkeypatch.setenv("TOKENCUT_MEDIA_USER", "1")
     changed = GatewayConfig.from_env().trim
     assert not changed.resize_images and changed.media_user
+
+
+def test_a_later_zoom_request_does_not_change_an_earlier_image():
+    # cache safety: decisions use the question asked before / with the image, never a later one
+    body = claude_tool_image(picture(1920, 1080), "claude-haiku-5-5")
+    _, first = run("anthropic", body)
+    later = json.loads(json.dumps(body))
+    later["messages"] += [{"role": "assistant", "content": "The chart shows sales."},
+                          {"role": "user", "content": "Now zoom in and read the small text."}]
+    _, second = run("anthropic", later)
+    assert second["messages"][:3] == first["messages"][:3]

@@ -89,6 +89,7 @@ class GatewayConfig:
             tier=Tier(os.environ.get("TOKENCUT_TIER", TrimConfig.tier.value)),
             min_tokens=int(os.environ.get("TOKENCUT_MIN_TRIM_TOKENS", TrimConfig.min_tokens)),
             resize_images=os.environ.get("TOKENCUT_RESIZE_IMAGES", "1") != "0",
+            trim_borders=os.environ.get("TOKENCUT_TRIM_BORDERS", "1") != "0",
             media_user=os.environ.get("TOKENCUT_MEDIA_USER", "") == "1",
             pdf_text_pages=os.environ.get("TOKENCUT_PDF_TEXT_PAGES", "1") != "0",
         )

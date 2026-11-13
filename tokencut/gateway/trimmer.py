@@ -61,6 +61,7 @@ class TrimConfig:
     min_keep_tokens: int = 500  # never cut a result below this
     ccr: bool = False  # add a reference to every shortened output (it can be fetched back)
     resize_images: bool = True  # attachments step 5: shrink large images where it saves tokens
+    trim_borders: bool = True  # attachments step 6: cut plain outer borders off images
     media_user: bool = False  # also change the user's own attachments (team decision; off)
     pdf_text_pages: bool = True  # attachments step 7: PDF pages without images / drawings as text
 

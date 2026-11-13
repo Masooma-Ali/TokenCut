@@ -17,7 +17,7 @@ from tokencut.contracts import Segment, SegmentKind, ToolResultKind
 from tokencut.gateway.adapters import anthropic, gemini, openai
 from tokencut.gateway.adapters.common import lookup
 from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
-from tokencut.gateway.media import shrink_images, split_pdfs, with_media_tokens
+from tokencut.gateway.media import adjust_images, split_pdfs, with_media_tokens
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
 from tokencut.gateway.virtual import VirtualConfig, finish_tools, offers_tools, resolve
@@ -70,31 +70,25 @@ def analyse(
             )
         else:
             new_body, report = trim_request(data, segments, trim_config)
-        if trim_config.resize_images:  # attachments step 5: same bytes on every turn
-            done = {d["segment"] for d in report.trimmed}  # e.g. a duplicate is already a note
-            changes, entries = shrink_images(provider, model, data, segments,
-                                             trim_config.media_user)
-            for (block_path, block), entry in zip(changes, entries, strict=True):
-                if entry["segment"] in done:
-                    continue
-                if new_body is None:
-                    new_body = copy.deepcopy(data)
-                lookup(new_body, block_path[:-1])[block_path[-1]] = block
-                report.tokens_before += entry["before"]
-                report.tokens_after += entry["after"]
-                report.trimmed.append(entry)
-        if trim_config.pdf_text_pages:  # attachments step 7; last: one block may become two
-            done = {d["segment"] for d in report.trimmed}
-            splits, entries = split_pdfs(provider, data, segments, trim_config.media_user)
-            pending = [(p, b, e) for (p, b), e in zip(splits, entries, strict=True)
-                       if e["segment"] not in done]
-            for block_path, blocks, entry in sorted(pending, key=lambda c: tuple(c[0]),
-                                                    reverse=True):
-                if new_body is None:
-                    new_body = copy.deepcopy(data)
-                parent = lookup(new_body, block_path[:-1])
-                parent[block_path[-1]:block_path[-1] + 1] = blocks
-                report.trimmed.append(entry)
+        # Attachments (steps 5-7). Applied last and in descending path order: an image may
+        # gain a note and a PDF may become two blocks, which shifts later list positions.
+        done = {d["segment"] for d in report.trimmed}  # e.g. a duplicate is already a note
+        replacements, entries = adjust_images(provider, model, data, segments,
+                                              trim_config.media_user, trim_config.resize_images,
+                                              trim_config.trim_borders)
+        if trim_config.pdf_text_pages:
+            pdf_changes, pdf_entries = split_pdfs(provider, data, segments, trim_config.media_user)
+            replacements, entries = replacements + pdf_changes, entries + pdf_entries
+        pending = [(p, b, e) for (p, b), e in zip(replacements, entries, strict=True)
+                   if e["segment"] not in done]
+        for block_path, blocks, entry in sorted(pending, key=lambda c: tuple(c[0]), reverse=True):
+            if new_body is None:
+                new_body = copy.deepcopy(data)
+            parent = lookup(new_body, block_path[:-1])
+            parent[block_path[-1]:block_path[-1] + 1] = blocks
+            report.tokens_before += entry["before"]
+            report.tokens_after += entry["after"]
+            report.trimmed.append(entry)
         if virtual is not None:
             if ccr:  # keep every original we shortened (fallback if it leaves the request)
                 shortened = {d["segment"] for d in report.trimmed}
