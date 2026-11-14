@@ -182,3 +182,12 @@ def test_a_later_zoom_request_does_not_change_an_earlier_image():
                           {"role": "user", "content": "Now zoom in and read the small text."}]
     _, second = run("anthropic", later)
     assert second["messages"][:3] == first["messages"][:3]
+
+
+def test_a_shrunk_image_is_followed_by_a_note():
+    # The model should know the picture is smaller than the original (like the border-cut note),
+    # so it does not take small text it cannot read for missing text.
+    _, sent = run("anthropic", claude_tool_image(picture(1920, 1080), "claude-haiku-5-5"))
+    content = sent["messages"][2]["content"][0]["content"]
+    assert [b["type"] for b in content] == ["image", "text"]
+    assert content[1]["text"].startswith("[TokenCut: image scaled from 1920x1080 to 1568x882")

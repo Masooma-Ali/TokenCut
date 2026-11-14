@@ -301,3 +301,14 @@ def test_agent_context_messages_are_not_the_users_question():
     _, sent = run("anthropic", body)
     assert sent is not None
     assert [b["type"] for b in sent["messages"][3]["content"][0]["content"]] == ["text", "document"]
+
+
+def test_pdf_note_points_to_read_pdf_when_the_agent_has_it():
+    # With read_pdf (tokencut/pdftool) available, the model can get any page as a picture.
+    body = tool_pdf_request(pdf_block(make_pdf("text", "table", "text")))
+    _, sent = run("anthropic", body)
+    assert "read_pdf" not in sent["messages"][2]["content"][0]["content"][0]["text"]
+    body["tools"] = [{"name": "Read"}, {"name": "mcp__pdf__read_pdf"}]
+    _, sent = run("anthropic", body)
+    note = sent["messages"][2]["content"][0]["content"][0]["text"].split("\n")[0]
+    assert "call mcp__pdf__read_pdf with as_images=true" in note
