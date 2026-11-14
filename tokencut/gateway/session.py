@@ -28,11 +28,13 @@ def fingerprint(seg: Segment) -> str:
 
 def conversation_key(provider: str, segments: list[Segment]) -> str | None:
     """Same for every turn of one conversation, whatever model is used: system prompt +
-    first user message. None if the request has no user message."""
-    system = [s.text for s in segments if s.kind == SegmentKind.SYSTEM]
-    first_user = next((s.text for s in segments if s.kind == SegmentKind.USER_TEXT), None)
-    if first_user is None:
+    first user message. None if the request has no user message. System context the agent
+    adds later in the conversation (Claude Code's role "system" messages) is left out."""
+    first = next((k for k, s in enumerate(segments) if s.kind == SegmentKind.USER_TEXT), None)
+    if first is None:
         return None
+    system = [s.text for s in segments[:first] if s.kind == SegmentKind.SYSTEM]
+    first_user = segments[first].text
     raw = "\0".join([provider, *system, first_user[:4000]])
     return hashlib.sha1(raw.encode("utf-8", errors="replace")).hexdigest()
 

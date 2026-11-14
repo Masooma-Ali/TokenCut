@@ -96,6 +96,28 @@ def test_conversation_key_ignores_model_and_later_turns():
     assert conversation_key("anthropic", anthropic.parse(other)) != conversation_key("anthropic", anthropic.parse(a))
 
 
+def test_conversation_key_ignores_agent_context_messages():
+    # Claude Code's role "system" context (environment, skills list) is the same for every
+    # session in a folder. As "first user text" it gave two different tasks one key.
+    context = {"role": "system", "content": [{"type": "text", "text": "# Environment\ncwd: /repo"}]}
+    a, b = conversation(["bash"]), conversation(["bash"])
+    b["messages"][0]["content"] = "a different task"
+    for body in (a, b):
+        body["messages"].insert(0, copy.deepcopy(context))
+    assert conversation_key("anthropic", anthropic.parse(a)) != conversation_key("anthropic", anthropic.parse(b))
+    # Context the agent adds later in the conversation does not change its identity.
+    later = copy.deepcopy(a)
+    later["messages"].append({"role": "system", "content": "The following skills are available:"})
+    assert conversation_key("anthropic", anthropic.parse(later)) == conversation_key("anthropic", anthropic.parse(a))
+
+
+def test_openai_system_prompt_still_part_of_the_key():
+    def chat(system: str) -> dict:
+        return {"messages": [{"role": "system", "content": system}, {"role": "user", "content": "hi"}]}
+    a, b = openai.parse(chat("agent A")), openai.parse(chat("agent B"))
+    assert conversation_key("openai", a) != conversation_key("openai", b)
+
+
 # ---------- history at events ----------
 
 
