@@ -36,7 +36,10 @@ def parse(body: dict) -> list[Segment]:
     tool_names: dict[str, str] = {}  # tool_use id -> tool name (results only carry the id)
     for i, message in enumerate(body.get("messages", [])):
         role = str(message.get("role", ""))
-        text_kind = SegmentKind.ASSISTANT_TEXT if role == "assistant" else SegmentKind.USER_TEXT
+        # Claude Code sends its environment / skills list as role "system" messages: agent
+        # context, not the user's words (as role "system" / "developer" in the OpenAI adapter).
+        text_kind = {"assistant": SegmentKind.ASSISTANT_TEXT,
+                     "system": SegmentKind.SYSTEM}.get(role, SegmentKind.USER_TEXT)
         content = message.get("content")
         if isinstance(content, str):
             b.add(f"m{i}", text_kind, role, i, ["messages", i, "content"], content)

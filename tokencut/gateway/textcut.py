@@ -17,6 +17,27 @@ _ERROR = re.compile(
 TAIL_LINES = 40
 HEAD_LINES = 15
 ERROR_CONTEXT = 2  # lines kept before and after an error line
+# Tables (CSV / TSV / Markdown) are never cut with head / tail: the answer can sit in any
+# middle row (docs/ATTACHMENTS_PLAN.md, step 2).
+TABLE_SAMPLE_LINES = 40
+TABLE_MIN_LINES = 5
+TABLE_SHARE = 0.8  # share of sampled lines with the same number of delimiters
+_TABLE_DELIMITERS = (",", "\t", "|", ";")
+_READ_PREFIX = re.compile(r"^\s*\d+→")  # Claude Code's Read line numbers
+
+
+def looks_like_table(text: str) -> bool:
+    """Most lines carry the same number (>= 2) of one delimiter: CSV, TSV, Markdown table."""
+    lines = [_READ_PREFIX.sub("", line, count=1) for line in text.split("\n")]
+    lines = [line for line in lines if line.strip()][:TABLE_SAMPLE_LINES]
+    if len(lines) < TABLE_MIN_LINES:
+        return False
+    for delimiter in _TABLE_DELIMITERS:
+        counts = [line.count(delimiter) for line in lines]
+        common = max(sorted(set(counts)), key=counts.count)
+        if common >= 2 and counts.count(common) >= TABLE_SHARE * len(lines):
+            return True
+    return False
 
 
 def _priority_order(lines: list[str]) -> list[int]:

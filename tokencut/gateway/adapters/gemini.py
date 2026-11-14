@@ -87,6 +87,11 @@ def parse(body: dict) -> list[Segment]:
                         name,
                         call_id,
                     )
+                # Gemini CLI nests a tool's images / documents here on multimodal models
+                for m, nested in enumerate(response.get("parts") or []):
+                    if isinstance(nested, dict):
+                        b.add(f"{seg_id}.n{m}", SegmentKind.MEDIA, role, i,
+                              path + [fr_key, "parts", m], "")
             else:  # inlineData, fileData, executableCode, ...
                 b.add(seg_id, SegmentKind.MEDIA, role, i, path, "")
     return b.segments

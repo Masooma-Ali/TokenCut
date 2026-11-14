@@ -434,3 +434,95 @@ def test_full_output_request_across_a_line_break_is_not_matched():
     body = bash_conversation("Make the change in full.\nThe output must stay short.", "pytest -q", pytest_log())
     _, report = run(body, TrimConfig(min_tokens=300))
     assert [d["how"] for d in report.trimmed] == ["command_output"]
+
+
+def with_agent_context(body: dict, text: str) -> dict:
+    """Claude Code's environment / skills list: a role "system" message after the user's."""
+    body["messages"].insert(1, {"role": "system", "content": [{"type": "text", "text": text}]})
+    return body
+
+
+def test_agent_context_asking_for_full_output_does_not_stop_trimming():
+    # The skills list is not the user: "the full output" in it is no R8 request.
+    context = "- logs: when a command fails, read the full output before answering."
+    body = with_agent_context(bash_conversation("run the tests", "pytest -q", pytest_log()), context)
+    _, report = run(body, TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]
+
+
+def test_file_named_only_by_agent_context_is_not_protected():
+    body = with_agent_context(conversation(), "Project notes live in billing/helpers.py and README.md.")
+    _, report = run(body)
+    assert sorted(d["how"] for d in report.trimmed) == ["code", "command_output"]
+
+
+def test_pdf_text_from_read_pdf_is_not_cut():
+    # read_pdf (tokencut/pdftool) already sends only the text pages as text; head / tail would
+    # drop the middle pages, where the answer may be (seen live: 786 -> 478 tokens).
+    pages = "\n\n".join(f"--- page {n} ---\n" + "Clause text of the agreement. " * 40 for n in range(1, 9))
+    body = {"model": "claude-haiku-4-5", "max_tokens": 100, "messages": [
+        {"role": "user", "content": "What are the payment terms?"},
+        {"role": "assistant", "content": [{"type": "tool_use", "id": "p1", "name": "mcp__pdf__read_pdf",
+                                           "input": {"file_path": "/docs/agreement.pdf"}}]},
+        {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "p1",
+                                      "content": [{"type": "text", "text": pages}]}]},
+    ]}
+    assert count_tokens(pages) > 600
+    new_body, report = run(body, TrimConfig(min_tokens=300))
+    assert new_body is None and report.trimmed == []
+
+
+# ---------- attachments plan step 2: tables are never cut with head / tail ----------
+
+
+def sales_csv(rows: int = 600) -> str:
+    lines = ["region,month,product,units,revenue"]
+    lines += [f"region_{i % 7},2026-{i % 12 + 1:02d},product_{i},{i * 3},{i * 17.5}" for i in range(rows)]
+    return "\n".join(lines)
+
+
+def read_conversation(user_text: str, file_path: str, output: str) -> dict:
+    return {
+        "model": "claude-haiku-4-5",
+        "max_tokens": 100,
+        "messages": [
+            {"role": "user", "content": user_text},
+            {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "r1", "name": "Read", "input": {"file_path": file_path}}]},
+            {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "r1", "content": output}]},
+        ],
+    }
+
+
+def test_csv_file_read_is_not_cut():
+    # head + tail would drop the middle rows, where the answer may be
+    body = read_conversation("which product sold most in region_3?", "data/sales.csv",
+                             numbered(sales_csv()))
+    assert count_tokens(numbered(sales_csv())) > 2000
+    new_body, report = run(body)
+    assert new_body is None and report.trimmed == []
+
+
+def test_table_printed_by_a_command_is_not_cut():
+    body = bash_conversation("summarise the sales", "head -n 700 sales.txt", sales_csv())
+    new_body, report = run(body, TrimConfig(min_tokens=300))
+    assert new_body is None and report.trimmed == []
+
+
+def test_markdown_and_tab_tables_are_not_cut():
+    md = "\n".join(["| id | name | score |", "|---|---|---|"] +
+                   [f"| {i} | user_{i} | {i % 97} |" for i in range(500)])
+    tsv = "\n".join(["id\tname\tscore"] + [f"{i}\tuser_{i}\t{i % 97}" for i in range(500)])
+    for output in (md, tsv):
+        new_body, report = run(bash_conversation("show the scores", "python report.py", output),
+                               TrimConfig(min_tokens=300))
+        assert new_body is None and report.trimmed == []
+
+
+def test_log_with_commas_is_still_trimmed():
+    log = "\n".join(f"2026-11-12 10:{i // 60:02d}:{i % 60:02d},{i:03d} INFO request {i} served"
+                    for i in range(600))
+    _, report = run(bash_conversation("check the server log", "cat server.log", log),
+                    TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]
