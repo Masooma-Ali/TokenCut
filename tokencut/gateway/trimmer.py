@@ -44,6 +44,7 @@ _SHOW_FILE = re.compile(
 # R8: a diff is code, not a log (every line matters), so it is never trimmed on arrival.
 _DIFF = re.compile(r"^(?:diff --git |@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@)", re.MULTILINE)
 _TABLE_FILE = re.compile(r"\.(?:csv|tsv)\b", re.IGNORECASE)
+_PDF_FILE = re.compile(r"\.pdf\b", re.IGNORECASE)
 # R8: "show me the full diff / file / output ..." -> the user wants that output whole.
 # "the whole test suite" does not match: the word must refer to an output-like noun, in the
 # same phrase (only spaces between): "wait for it to complete, see its output" is no request.
@@ -228,6 +229,10 @@ def _trim_result(seg: Segment, ctx: _Context, config: TrimConfig) -> tuple[str |
     if seg.result_kind in (ToolResultKind.FILE_READ, ToolResultKind.COMMAND_OUTPUT) and (
         _TABLE_FILE.search(path or call_input) or looks_like_table(seg.text)
     ):
+        return None, "protected"
+    # PDF text (read_pdf, tokencut/pdftool): only the text pages, already chosen; head / tail
+    # would drop middle pages.
+    if seg.result_kind == ToolResultKind.FILE_READ and _PDF_FILE.search(path or call_input):
         return None, "protected"
 
     if path.endswith(".py") and seg.result_kind in (

@@ -656,21 +656,27 @@ def _number_table_rows(page: Any) -> int:
     return rows
 
 
+def pdf_page_kind(page: Any) -> tuple[str, str]:
+    """("text" / "visual", page text). A page is "text" only with enough text, no raster
+    images, almost no drawings and no number-table rows; scans, figures, charts and tables
+    stay "visual". Raises one of _PDF_ERRORS on an unreadable page."""
+    text = (page.extract_text() or "").strip()
+    visual = (len(page.images) > 0 or len(text) < PDF_MIN_TEXT_CHARS
+              or _draw_ops(page) > PDF_MAX_DRAW_OPS
+              or _number_table_rows(page) >= PDF_TABLE_ROWS)
+    return ("visual" if visual else "text"), text
+
+
 def _analyse_pdf(raw: bytes) -> tuple[Any, list[str], list[str]] | None:
-    """(reader, per-page "text" / "visual", per-page text), or None if unreadable / too long.
-    A page is "text" only with enough text, no raster images, almost no drawings and no
-    number-table rows; scans, figures, charts and tables stay "visual"."""
+    """(reader, per-page "text" / "visual", per-page text), or None if unreadable / too long."""
     try:
         reader = PdfReader(io.BytesIO(raw))
         if reader.is_encrypted or len(reader.pages) > PDF_MAX_PAGES:
             return None
         kinds, texts = [], []
         for page in reader.pages:
-            text = (page.extract_text() or "").strip()
-            visual = (len(page.images) > 0 or len(text) < PDF_MIN_TEXT_CHARS
-                      or _draw_ops(page) > PDF_MAX_DRAW_OPS
-                      or _number_table_rows(page) >= PDF_TABLE_ROWS)
-            kinds.append("visual" if visual else "text")
+            kind, text = pdf_page_kind(page)
+            kinds.append(kind)
             texts.append(text)
         return reader, kinds, texts
     except _PDF_ERRORS:

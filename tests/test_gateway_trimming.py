@@ -456,6 +456,22 @@ def test_file_named_only_by_agent_context_is_not_protected():
     assert sorted(d["how"] for d in report.trimmed) == ["code", "command_output"]
 
 
+def test_pdf_text_from_read_pdf_is_not_cut():
+    # read_pdf (tokencut/pdftool) already sends only the text pages as text; head / tail would
+    # drop the middle pages, where the answer may be (seen live: 786 -> 478 tokens).
+    pages = "\n\n".join(f"--- page {n} ---\n" + "Clause text of the agreement. " * 40 for n in range(1, 9))
+    body = {"model": "claude-haiku-4-5", "max_tokens": 100, "messages": [
+        {"role": "user", "content": "What are the payment terms?"},
+        {"role": "assistant", "content": [{"type": "tool_use", "id": "p1", "name": "mcp__pdf__read_pdf",
+                                           "input": {"file_path": "/docs/agreement.pdf"}}]},
+        {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "p1",
+                                      "content": [{"type": "text", "text": pages}]}]},
+    ]}
+    assert count_tokens(pages) > 600
+    new_body, report = run(body, TrimConfig(min_tokens=300))
+    assert new_body is None and report.trimmed == []
+
+
 # ---------- attachments plan step 2: tables are never cut with head / tail ----------
 
 
