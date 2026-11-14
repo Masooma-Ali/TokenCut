@@ -142,6 +142,20 @@ OPENAI_BODY = {
 }
 
 
+def test_anthropic_system_role_messages_are_system_context():
+    # Claude Code sends its environment / skills list as role "system" messages inside
+    # `messages` (seen live, 2026-11-13). That is agent context, not text the user wrote,
+    # like role "system" / "developer" messages in the OpenAI adapter.
+    body = {"system": "You are a coding agent.", "messages": [
+        {"role": "system", "content": [{"type": "text", "text": "# Environment\n- skills: ..."}]},
+        {"role": "user", "content": "fix the bug"},
+        {"role": "system", "content": "The following skills are available: ..."},
+    ]}
+    kinds = [(s.role, s.kind) for s in anthropic.parse(body)]
+    assert kinds == [("system", SegmentKind.SYSTEM), ("system", SegmentKind.SYSTEM),
+                     ("user", SegmentKind.USER_TEXT), ("system", SegmentKind.SYSTEM)]
+
+
 def test_openai_segments():
     s = by_id(openai.parse(OPENAI_BODY))
     assert s["tools"].kind == SegmentKind.TOOLS

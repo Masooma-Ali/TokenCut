@@ -436,6 +436,26 @@ def test_full_output_request_across_a_line_break_is_not_matched():
     assert [d["how"] for d in report.trimmed] == ["command_output"]
 
 
+def with_agent_context(body: dict, text: str) -> dict:
+    """Claude Code's environment / skills list: a role "system" message after the user's."""
+    body["messages"].insert(1, {"role": "system", "content": [{"type": "text", "text": text}]})
+    return body
+
+
+def test_agent_context_asking_for_full_output_does_not_stop_trimming():
+    # The skills list is not the user: "the full output" in it is no R8 request.
+    context = "- logs: when a command fails, read the full output before answering."
+    body = with_agent_context(bash_conversation("run the tests", "pytest -q", pytest_log()), context)
+    _, report = run(body, TrimConfig(min_tokens=300))
+    assert [d["how"] for d in report.trimmed] == ["command_output"]
+
+
+def test_file_named_only_by_agent_context_is_not_protected():
+    body = with_agent_context(conversation(), "Project notes live in billing/helpers.py and README.md.")
+    _, report = run(body)
+    assert sorted(d["how"] for d in report.trimmed) == ["code", "command_output"]
+
+
 # ---------- attachments plan step 2: tables are never cut with head / tail ----------
 
 
