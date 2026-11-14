@@ -1089,3 +1089,39 @@ nothing here is taken from papers or documentation alone.
   ~4,000 tokens) as tool results, which TokenCut can trim, and public logs exist for the same
   sympy tasks. Not yet checked: whether its agents actually call `view` without a range in these
   logs, and which editor version those runs used (needs one sample log).
+
+## 10. Prompt hints and gateway code trimming (offline, 2026-11-14)
+
+Question for prompt enhancement: does naming the needed code in the prompt help the gateway keep
+it? `python -m eval.prompt_hint_eval all` (free, real `trim_request`, moderate tier; results in
+`eval/results/prompt_hints/`). Gold = functions the real fix edits; kept = every line survives.
+
+**Offline, 81 held-out tasks, 68 gold files ≥ 2,000 tokens read whole:**
+
+| Prompt | Gold kept | Tokens sent |
+|---|---|---|
+| vague ("Fix the bug described in the issue.") | 29 % | 43 % |
+| vague + right function names | **80 %** | 44 % |
+| vague + wrong names (same file) | 25 % | 44 % |
+| issue text | 69 % | 66 % |
+| issue + right names | 82 % | 66 % |
+| issue + file path | 100 % (file left whole: edit safety) | 100 % |
+
+**Step D replay (real Claude Code, arm A, 29 sympy bugs):** of 9 reads that showed gold code,
+8 were line ranges (`offset` / `limit`) and only 2 reached 2,000 tokens; the model wrote no text
+before the call in 8 of 9 (thinking text is not readable). Both trimmable reads lost the gold
+function today, with the model's words added, and with the right names added.
+
+What it shows:
+- Right names in **user** text raise gold kept 29 % → 80 % at the same size; wrong names lower it;
+  a file path switches trimming off for that file. Names in system text are ignored (system-role
+  fix, 2026-11-14), so they neither help nor switch protections on.
+- With Claude Code the exposure is small: it reads the needed code in ranges below the threshold.
+- About 20 % of gold is lost even with the right names (offline 20 functions: 9 removed,
+  8 signature only, 3 partly kept; 15 of 18 files had room for it): the packer can keep a named
+  function as a skeleton while keeping its callees whole (R3 family). Prompting cannot fix this.
+- Research agrees that a stated focus helps pruning (SWE-Pruner goal hint; LongLLMLingua) and
+  that extra instructions are followed less reliably as they pile up (IFScale, NeurIPS 2025).
+
+Limits: right names are taken from the real fix (upper bound); moderate tier only; offline (no
+agent reaction); step D has only 2 trimmable gold reads.

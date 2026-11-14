@@ -1,0 +1,4792 @@
+[
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1661,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1669,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1745,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1529,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1592,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-12907",
+  "file": "astropy/modeling/separable.py",
+  "tokens": 3750,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3750,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "issue",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "vague",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "vague+right",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "issue+right",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "vague+wrong",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14182",
+  "file": "astropy/io/ascii/rst.py",
+  "tokens": 688,
+  "variant": "issue+file",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 688,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 2952,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 2973,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 2970,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 2970,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 2973,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14365",
+  "file": "astropy/io/ascii/qdp.py",
+  "tokens": 7764,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 7764,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3711,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3778,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3732,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3711,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3761,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-14995",
+  "file": "astropy/nddata/mixins/ndarithmetic.py",
+  "tokens": 9364,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 9364,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 17425,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7157,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7885,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 17425,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7417,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-6938",
+  "file": "astropy/io/fits/fitsrec.py",
+  "tokens": 17425,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 17425,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 45031,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 18544,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 18544,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 45031,
+  "trimmed": false
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 18544,
+  "trimmed": true
+ },
+ {
+  "task": "astropy__astropy-7746",
+  "file": "astropy/wcs/wcs.py",
+  "tokens": 45031,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 45031,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8385,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8234,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7807,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7832,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 8372,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13315",
+  "file": "django/forms/models.py",
+  "tokens": 18027,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18027,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 4422,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 2792,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 3037,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 4422,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 2808,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13321",
+  "file": "django/contrib/sessions/backends/base.py",
+  "tokens": 4422,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 4422,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 16352,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 16327,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 15475,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 16265,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 18246,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13401",
+  "file": "django/db/models/fields/__init__.py",
+  "tokens": 29533,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 29533,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3306,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3271,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3216,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3306,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3199,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13447",
+  "file": "django/contrib/admin/sites.py",
+  "tokens": 6765,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6765,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3677,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1676,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1872,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3677,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1676,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13448",
+  "file": "django/db/backends/base/creation.py",
+  "tokens": 3677,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3677,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13551",
+  "file": "django/contrib/auth/tokens.py",
+  "tokens": 1314,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1314,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 16263,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 14975,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 15448,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 16066,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 15934,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13590",
+  "file": "django/db/models/sql/query.py",
+  "tokens": 34155,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 34155,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2058,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1880,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1887,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2058,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1880,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13658",
+  "file": "django/core/management/__init__.py",
+  "tokens": 5212,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5212,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13660",
+  "file": "django/core/management/commands/shell.py",
+  "tokens": 1261,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1261,
+  "trimmed": false
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 14763,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 12872,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12789,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 14763,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 13117,
+  "trimmed": true
+ },
+ {
+  "task": "django__django-13710",
+  "file": "django/contrib/admin/options.py",
+  "tokens": 29157,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 29157,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 8022,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7371,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7391,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7643,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7781,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-18869",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 17671,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 17671,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 51726,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 23493,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 23002,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 51726,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 24567,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22711",
+  "file": "lib/matplotlib/widgets.py",
+  "tokens": 51726,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 51726,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 21637,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 9904,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 10793,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 21637,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 10184,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-22835",
+  "file": "lib/matplotlib/artist.py",
+  "tokens": 21637,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 21637,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8269,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7712,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8200,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8269,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 8178,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23299",
+  "file": "lib/matplotlib/__init__.py",
+  "tokens": 18512,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18512,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 19085,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 17553,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 17862,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 19085,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 17605,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23314",
+  "file": "lib/mpl_toolkits/mplot3d/axes3d.py",
+  "tokens": 45626,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 45626,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 44990,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18630,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18678,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 44990,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 18958,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23476",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 44990,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 44990,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague",
+  "gold": 4,
+  "gold_kept": 2,
+  "tokens_sent": 6004,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague+right",
+  "gold": 4,
+  "gold_kept": 3,
+  "tokens_sent": 5858,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue+right",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague+wrong",
+  "gold": 4,
+  "gold_kept": 2,
+  "tokens_sent": 6602,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23562",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue+file",
+  "gold": 4,
+  "gold_kept": 4,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6004,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6353,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5900,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23563",
+  "file": "lib/mpl_toolkits/mplot3d/art3d.py",
+  "tokens": 12035,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12035,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5885,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6664,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6970,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5885,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7251,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23913",
+  "file": "lib/matplotlib/legend.py",
+  "tokens": 16485,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 16485,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18387,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7752,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7789,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18387,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 8167,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23964",
+  "file": "lib/matplotlib/backends/backend_ps.py",
+  "tokens": 18387,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18387,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 19956,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 19090,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 19144,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 19731,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 19129,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-23987",
+  "file": "lib/matplotlib/figure.py",
+  "tokens": 46246,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 46246,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 116632,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 42616,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 42869,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 116632,
+  "trimmed": false
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 42741,
+  "trimmed": true
+ },
+ {
+  "task": "matplotlib__matplotlib-24149",
+  "file": "lib/matplotlib/axes/_axes.py",
+  "tokens": 116632,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 116632,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8671,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8511,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8647,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8671,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8545,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-2848",
+  "file": "seaborn/_oldcore.py",
+  "tokens": 21567,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 21567,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3010",
+  "file": "seaborn/_stats/regression.py",
+  "tokens": 507,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 507,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 11099,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4685,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5542,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 11099,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5520,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3190",
+  "file": "seaborn/_core/scales.py",
+  "tokens": 11099,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 11099,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 31192,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12259,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12636,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 31192,
+  "trimmed": false
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 12257,
+  "trimmed": true
+ },
+ {
+  "task": "mwaskom__seaborn-3407",
+  "file": "seaborn/axisgrid.py",
+  "tokens": 31192,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 31192,
+  "trimmed": false
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1898,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1789,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1920,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1898,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1789,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-3364",
+  "file": "xarray/core/concat.py",
+  "tokens": 5174,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5174,
+  "trimmed": false
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 22421,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 21618,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 22051,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 22421,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 22017,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4094",
+  "file": "xarray/core/dataarray.py",
+  "tokens": 50783,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 50783,
+  "trimmed": false
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4265,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4038,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 4336,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 4063,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4170,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4248",
+  "file": "xarray/core/formatting.py",
+  "tokens": 8137,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 8137,
+  "trimmed": false
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 17084,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 14272,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 14635,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 16936,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 14574,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-4493",
+  "file": "xarray/core/variable.py",
+  "tokens": 36274,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 36274,
+  "trimmed": false
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5456,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5099,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5254,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5485,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 5284,
+  "trimmed": true
+ },
+ {
+  "task": "pydata__xarray-5131",
+  "file": "xarray/core/groupby.py",
+  "tokens": 12196,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 12196,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1552,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1530,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1552,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1552,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1328,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-5859",
+  "file": "pylint/checkers/misc.py",
+  "tokens": 2597,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2597,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "file": "pylint/config/config_initialization.py",
+  "tokens": 1340,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1340,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "file": "pylint/config/config_initialization.py",
+  "tokens": 1340,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1340,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "file": "pylint/config/config_initialization.py",
+  "tokens": 1340,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1340,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "file": "pylint/config/config_initialization.py",
+  "tokens": 1340,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1340,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-6506",
+  "file": "pylint/config/config_initialization.py",
+  "tokens": 1340,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1340,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7080",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1923,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1923,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7114",
+  "file": "pylint/lint/expand_modules.py",
+  "tokens": 1936,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1936,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2424,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2265,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2218,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2356,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2383,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7228",
+  "file": "pylint/config/argument.py",
+  "tokens": 5163,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5163,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3825,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2027,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2012,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3825,
+  "trimmed": false
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2171,
+  "trimmed": true
+ },
+ {
+  "task": "pylint-dev__pylint-7993",
+  "file": "pylint/reporters/text.py",
+  "tokens": 3825,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3825,
+  "trimmed": false
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1971,
+  "trimmed": true
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1779,
+  "trimmed": true
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1971,
+  "trimmed": true
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1971,
+  "trimmed": true
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1779,
+  "trimmed": true
+ },
+ {
+  "task": "pytest-dev__pytest-9359",
+  "file": "src/_pytest/_code/source.py",
+  "tokens": 2537,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2537,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 7718,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 7068,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 7487,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 7589,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 7343,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10297",
+  "file": "sklearn/linear_model/ridge.py",
+  "tokens": 18857,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 18857,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 10055,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 4051,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 3941,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 10055,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 3755,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10508",
+  "file": "sklearn/preprocessing/label.py",
+  "tokens": 10055,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 10055,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4658,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4554,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4658,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 4655,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-10949",
+  "file": "sklearn/utils/validation.py",
+  "tokens": 11872,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 11872,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 3693,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 3689,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 3693,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 3693,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 3796,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11040",
+  "file": "sklearn/neighbors/base.py",
+  "tokens": 10162,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 10162,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2728,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2527,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2659,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2728,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2412,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-11281",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 5705,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5705,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2985,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2985,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2985,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2985,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2985,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-12471",
+  "file": "sklearn/preprocessing/_encoders.py",
+  "tokens": 10534,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 10534,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 2947,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 2629,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 2951,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 2919,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 2746,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13142",
+  "file": "sklearn/mixture/base.py",
+  "tokens": 6143,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 6143,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 227,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 227,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 227,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 227,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 227,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13241",
+  "file": "sklearn/decomposition/kernel_pca.py",
+  "tokens": 4006,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 4006,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 4750,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 5298,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 5241,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 4715,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 4062,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13439",
+  "file": "sklearn/pipeline.py",
+  "tokens": 11181,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 11181,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 783,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 783,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 783,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 783,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 783,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13496",
+  "file": "sklearn/ensemble/iforest.py",
+  "tokens": 6445,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 6445,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1627,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2031,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2031,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1627,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 1627,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13497",
+  "file": "sklearn/feature_selection/mutual_info_.py",
+  "tokens": 5855,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5855,
+  "trimmed": false
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1642,
+  "trimmed": true
+ },
+ {
+  "task": "scikit-learn__scikit-learn-13584",
+  "file": "sklearn/utils/_pprint.py",
+  "tokens": 5910,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5910,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 16612,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 17449,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 18244,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 16236,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 18768,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10325",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 38586,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 38586,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 1340,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 1340,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 1581,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 1417,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 1340,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-10451",
+  "file": "sphinx/ext/autodoc/typehints.py",
+  "tokens": 2417,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 2417,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-11445",
+  "file": "sphinx/util/rst.py",
+  "tokens": 1321,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1321,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2965,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2849,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2849,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2965,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2910,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7686",
+  "file": "sphinx/ext/autosummary/generate.py",
+  "tokens": 7174,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 7174,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6671,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6875,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6868,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6689,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7149,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7738",
+  "file": "sphinx/ext/napoleon/docstring.py",
+  "tokens": 13179,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 13179,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 409,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 409,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 409,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 409,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 409,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-7975",
+  "file": "sphinx/environment/adapters/indexentries.py",
+  "tokens": 2394,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2394,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8273",
+  "file": "sphinx/builders/manpage.py",
+  "tokens": 1436,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1436,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 14767,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 14175,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 14258,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 14791,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 0,
+  "tokens_sent": 14604,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8282",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 30376,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 30376,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 15507,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 13858,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 15021,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 15259,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 14811,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8435",
+  "file": "sphinx/ext/autodoc/__init__.py",
+  "tokens": 31170,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 31170,
+  "trimmed": false
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6781,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 6881,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6720,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 6879,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 7103,
+  "trimmed": true
+ },
+ {
+  "task": "sphinx-doc__sphinx-8474",
+  "file": "sphinx/domains/std.py",
+  "tokens": 15300,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 15300,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "issue",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 2576,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "vague",
+  "gold": 3,
+  "gold_kept": 1,
+  "tokens_sent": 2220,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "vague+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 2284,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "issue+right",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 2411,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "vague+wrong",
+  "gold": 3,
+  "gold_kept": 2,
+  "tokens_sent": 2285,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11400",
+  "file": "sympy/printing/ccode.py",
+  "tokens": 5111,
+  "variant": "issue+file",
+  "gold": 3,
+  "gold_kept": 3,
+  "tokens_sent": 5111,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "issue",
+  "gold": 5,
+  "gold_kept": 4,
+  "tokens_sent": 22358,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "vague",
+  "gold": 5,
+  "gold_kept": 3,
+  "tokens_sent": 21502,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "vague+right",
+  "gold": 5,
+  "gold_kept": 4,
+  "tokens_sent": 19553,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "issue+right",
+  "gold": 5,
+  "gold_kept": 4,
+  "tokens_sent": 19956,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "vague+wrong",
+  "gold": 5,
+  "gold_kept": 3,
+  "tokens_sent": 22271,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11870",
+  "file": "sympy/functions/elementary/trigonometric.py",
+  "tokens": 37138,
+  "variant": "issue+file",
+  "gold": 5,
+  "gold_kept": 5,
+  "tokens_sent": 37138,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18546,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18523,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18960,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18852,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 18651,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-11897",
+  "file": "sympy/printing/latex.py",
+  "tokens": 31352,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 31352,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12171",
+  "file": "sympy/printing/mathematica.py",
+  "tokens": 1648,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 1648,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12236",
+  "file": "sympy/polys/domains/polynomialring.py",
+  "tokens": 1787,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1787,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 4876,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 4481,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 4607,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 4846,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 4487,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12419",
+  "file": "sympy/matrices/expressions/matexpr.py",
+  "tokens": 6088,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 6088,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 71574,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 31203,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 31053,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 71574,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 31428,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12454",
+  "file": "sympy/matrices/matrices.py",
+  "tokens": 71574,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 71574,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 15022,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 14768,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 14644,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 15047,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 14724,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-12481",
+  "file": "sympy/combinatorics/permutations.py",
+  "tokens": 36002,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 36002,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "issue",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 7289,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "vague",
+  "gold": 2,
+  "gold_kept": 0,
+  "tokens_sent": 6950,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "vague+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 7567,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "issue+right",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 7308,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "vague+wrong",
+  "gold": 2,
+  "gold_kept": 1,
+  "tokens_sent": 7550,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13031",
+  "file": "sympy/matrices/sparse.py",
+  "tokens": 16071,
+  "variant": "issue+file",
+  "gold": 2,
+  "gold_kept": 2,
+  "tokens_sent": 16071,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3962,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3637,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 4064,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 3962,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 3879,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13043",
+  "file": "sympy/integrals/intpoly.py",
+  "tokens": 10301,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 10301,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2161,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2325,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2281,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 2161,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 2038,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13146",
+  "file": "sympy/core/operations.py",
+  "tokens": 5772,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 5772,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13177",
+  "file": "sympy/core/mod.py",
+  "tokens": 1751,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 1751,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 9671,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 9787,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 9043,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 9304,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 9088,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13437",
+  "file": "sympy/functions/combinatorial/numbers.py",
+  "tokens": 22207,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 22207,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "issue",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 48632,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "vague",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 26649,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "vague+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 27072,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "issue+right",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 48632,
+  "trimmed": false
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "vague+wrong",
+  "gold": 1,
+  "gold_kept": 0,
+  "tokens_sent": 27705,
+  "trimmed": true
+ },
+ {
+  "task": "sympy__sympy-13471",
+  "file": "sympy/core/numbers.py",
+  "tokens": 48632,
+  "variant": "issue+file",
+  "gold": 1,
+  "gold_kept": 1,
+  "tokens_sent": 48632,
+  "trimmed": false
+ }
+]
