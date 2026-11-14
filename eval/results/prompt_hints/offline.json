@@ -126,7 +126,7 @@
   "variant": "issue",
   "gold": 2,
   "gold_kept": 1,
-  "tokens_sent": 2952,
+  "tokens_sent": 4676,
   "trimmed": true
  },
  {
@@ -156,7 +156,7 @@
   "variant": "issue+right",
   "gold": 2,
   "gold_kept": 2,
-  "tokens_sent": 2970,
+  "tokens_sent": 4694,
   "trimmed": true
  },
  {
@@ -166,7 +166,7 @@
   "variant": "vague+wrong",
   "gold": 2,
   "gold_kept": 1,
-  "tokens_sent": 2973,
+  "tokens_sent": 3213,
   "trimmed": true
  },
  {
@@ -226,7 +226,7 @@
   "variant": "vague+wrong",
   "gold": 1,
   "gold_kept": 0,
-  "tokens_sent": 3761,
+  "tokens_sent": 6094,
   "trimmed": true
  },
  {
@@ -325,8 +325,8 @@
   "tokens": 45031,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 18544,
+  "gold_kept": 1,
+  "tokens_sent": 19491,
   "trimmed": true
  },
  {
@@ -1445,8 +1445,8 @@
   "tokens": 16485,
   "variant": "issue",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 5885,
+  "gold_kept": 1,
+  "tokens_sent": 11583,
   "trimmed": true
  },
  {
@@ -1465,8 +1465,8 @@
   "tokens": 16485,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 6970,
+  "gold_kept": 1,
+  "tokens_sent": 10605,
   "trimmed": true
  },
  {
@@ -1475,8 +1475,8 @@
   "tokens": 16485,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 5885,
+  "gold_kept": 1,
+  "tokens_sent": 11583,
   "trimmed": true
  },
  {
@@ -1926,7 +1926,7 @@
   "variant": "issue",
   "gold": 1,
   "gold_kept": 0,
-  "tokens_sent": 1898,
+  "tokens_sent": 3543,
   "trimmed": true
  },
  {
@@ -1945,8 +1945,8 @@
   "tokens": 5174,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 1920,
+  "gold_kept": 1,
+  "tokens_sent": 3329,
   "trimmed": true
  },
  {
@@ -1955,8 +1955,8 @@
   "tokens": 5174,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 1898,
+  "gold_kept": 1,
+  "tokens_sent": 4952,
   "trimmed": true
  },
  {
@@ -2456,7 +2456,7 @@
   "variant": "issue",
   "gold": 1,
   "gold_kept": 1,
-  "tokens_sent": 2424,
+  "tokens_sent": 4695,
   "trimmed": true
  },
  {
@@ -2486,7 +2486,7 @@
   "variant": "issue+right",
   "gold": 1,
   "gold_kept": 1,
-  "tokens_sent": 2356,
+  "tokens_sent": 4759,
   "trimmed": true
  },
  {
@@ -2636,7 +2636,7 @@
   "variant": "issue",
   "gold": 3,
   "gold_kept": 3,
-  "tokens_sent": 7718,
+  "tokens_sent": 9404,
   "trimmed": true
  },
  {
@@ -2665,8 +2665,8 @@
   "tokens": 18857,
   "variant": "issue+right",
   "gold": 3,
-  "gold_kept": 2,
-  "tokens_sent": 7589,
+  "gold_kept": 3,
+  "tokens_sent": 9566,
   "trimmed": true
  },
  {
@@ -2755,8 +2755,8 @@
   "tokens": 11872,
   "variant": "issue",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 4658,
+  "gold_kept": 1,
+  "tokens_sent": 7830,
   "trimmed": true
  },
  {
@@ -2775,8 +2775,8 @@
   "tokens": 11872,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 4554,
+  "gold_kept": 1,
+  "tokens_sent": 7726,
   "trimmed": true
  },
  {
@@ -2785,8 +2785,8 @@
   "tokens": 11872,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 4658,
+  "gold_kept": 1,
+  "tokens_sent": 7830,
   "trimmed": true
  },
  {
@@ -2816,7 +2816,7 @@
   "variant": "issue",
   "gold": 3,
   "gold_kept": 1,
-  "tokens_sent": 3693,
+  "tokens_sent": 4196,
   "trimmed": true
  },
  {
@@ -2835,8 +2835,8 @@
   "tokens": 10162,
   "variant": "vague+right",
   "gold": 3,
-  "gold_kept": 1,
-  "tokens_sent": 3693,
+  "gold_kept": 2,
+  "tokens_sent": 4957,
   "trimmed": true
  },
  {
@@ -2845,8 +2845,8 @@
   "tokens": 10162,
   "variant": "issue+right",
   "gold": 3,
-  "gold_kept": 1,
-  "tokens_sent": 3693,
+  "gold_kept": 2,
+  "tokens_sent": 5460,
   "trimmed": true
  },
  {
@@ -2936,7 +2936,7 @@
   "variant": "issue",
   "gold": 1,
   "gold_kept": 1,
-  "tokens_sent": 2985,
+  "tokens_sent": 6143,
   "trimmed": true
  },
  {
@@ -2966,7 +2966,7 @@
   "variant": "issue+right",
   "gold": 1,
   "gold_kept": 1,
-  "tokens_sent": 2985,
+  "tokens_sent": 6143,
   "trimmed": true
  },
  {
@@ -2976,7 +2976,7 @@
   "variant": "vague+wrong",
   "gold": 1,
   "gold_kept": 1,
-  "tokens_sent": 2985,
+  "tokens_sent": 3144,
   "trimmed": true
  },
  {
@@ -3056,7 +3056,7 @@
   "variant": "issue",
   "gold": 1,
   "gold_kept": 0,
-  "tokens_sent": 227,
+  "tokens_sent": 2355,
   "trimmed": true
  },
  {
@@ -3075,8 +3075,8 @@
   "tokens": 4006,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 227,
+  "gold_kept": 1,
+  "tokens_sent": 852,
   "trimmed": true
  },
  {
@@ -3085,8 +3085,8 @@
   "tokens": 4006,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 227,
+  "gold_kept": 1,
+  "tokens_sent": 2893,
   "trimmed": true
  },
  {
@@ -3096,7 +3096,7 @@
   "variant": "vague+wrong",
   "gold": 1,
   "gold_kept": 0,
-  "tokens_sent": 227,
+  "tokens_sent": 600,
   "trimmed": true
  },
  {
@@ -3175,8 +3175,8 @@
   "tokens": 6445,
   "variant": "issue",
   "gold": 2,
-  "gold_kept": 0,
-  "tokens_sent": 783,
+  "gold_kept": 1,
+  "tokens_sent": 4565,
   "trimmed": true
  },
  {
@@ -3195,8 +3195,8 @@
   "tokens": 6445,
   "variant": "vague+right",
   "gold": 2,
-  "gold_kept": 0,
-  "tokens_sent": 783,
+  "gold_kept": 1,
+  "tokens_sent": 3322,
   "trimmed": true
  },
  {
@@ -3205,8 +3205,8 @@
   "tokens": 6445,
   "variant": "issue+right",
   "gold": 2,
-  "gold_kept": 0,
-  "tokens_sent": 783,
+  "gold_kept": 1,
+  "tokens_sent": 4565,
   "trimmed": true
  },
  {
@@ -3216,7 +3216,7 @@
   "variant": "vague+wrong",
   "gold": 2,
   "gold_kept": 0,
-  "tokens_sent": 783,
+  "tokens_sent": 1555,
   "trimmed": true
  },
  {
@@ -3235,8 +3235,8 @@
   "tokens": 5855,
   "variant": "issue",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 1627,
+  "gold_kept": 1,
+  "tokens_sent": 2880,
   "trimmed": true
  },
  {
@@ -3255,8 +3255,8 @@
   "tokens": 5855,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 2031,
+  "gold_kept": 1,
+  "tokens_sent": 3284,
   "trimmed": true
  },
  {
@@ -3265,8 +3265,8 @@
   "tokens": 5855,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 1627,
+  "gold_kept": 1,
+  "tokens_sent": 2880,
   "trimmed": true
  },
  {
@@ -3435,8 +3435,8 @@
   "tokens": 2417,
   "variant": "vague+right",
   "gold": 2,
-  "gold_kept": 1,
-  "tokens_sent": 1581,
+  "gold_kept": 2,
+  "tokens_sent": 2173,
   "trimmed": true
  },
  {
@@ -3445,8 +3445,8 @@
   "tokens": 2417,
   "variant": "issue+right",
   "gold": 2,
-  "gold_kept": 1,
-  "tokens_sent": 1417,
+  "gold_kept": 2,
+  "tokens_sent": 2009,
   "trimmed": true
  },
  {
@@ -3555,8 +3555,8 @@
   "tokens": 7174,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 2849,
+  "gold_kept": 1,
+  "tokens_sent": 4286,
   "trimmed": true
  },
  {
@@ -3565,8 +3565,8 @@
   "tokens": 7174,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 2965,
+  "gold_kept": 1,
+  "tokens_sent": 4402,
   "trimmed": true
  },
  {
@@ -3675,9 +3675,9 @@
   "tokens": 2394,
   "variant": "vague+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 409,
-  "trimmed": true
+  "gold_kept": 1,
+  "tokens_sent": 2394,
+  "trimmed": false
  },
  {
   "task": "sphinx-doc__sphinx-7975",
@@ -3685,9 +3685,9 @@
   "tokens": 2394,
   "variant": "issue+right",
   "gold": 1,
-  "gold_kept": 0,
-  "tokens_sent": 409,
-  "trimmed": true
+  "gold_kept": 1,
+  "tokens_sent": 2394,
+  "trimmed": false
  },
  {
   "task": "sphinx-doc__sphinx-7975",
@@ -3956,7 +3956,7 @@
   "variant": "issue",
   "gold": 3,
   "gold_kept": 1,
-  "tokens_sent": 2576,
+  "tokens_sent": 4221,
   "trimmed": true
  },
  {
@@ -3986,7 +3986,7 @@
   "variant": "issue+right",
   "gold": 3,
   "gold_kept": 2,
-  "tokens_sent": 2411,
+  "tokens_sent": 4056,
   "trimmed": true
  },
  {

@@ -1125,3 +1125,32 @@ What it shows:
 
 Limits: right names are taken from the real fix (upper bound); moderate tier only; offline (no
 agent reaction); step D has only 2 trimmable gold reads.
+
+### 10.1 After the fix: named code is kept whole (2026-11-14)
+
+The losses above were a packing weakness, now fixed in the gateway only (`codeview.select_lines`,
+DECISIONS 2026-11-14): a function / class / method the query names, or a traceback points into,
+is always kept whole. In step D the named function was not a skeleton but **dropped**: it was
+bigger than the moderate budget (1,248 and 1,573 tokens vs 1,000), and the packer skips a chunk
+that does not fit and fills the space with smaller, lower-ranked ones. Both functions were named
+in the issue text the user gave.
+
+| Prompt | Gold kept before | after | Tokens sent before | after |
+|---|---|---|---|---|
+| vague | 29 % | 29 % | 43 % | 43 % |
+| vague + right names | 80 % | **91 %** | 44 % | 45 % |
+| vague + wrong names | 25 % | 25 % | 44 % | 45 % |
+| issue text | 69 % | **73 %** | 66 % | 69 % |
+| issue + right names | 82 % | **93 %** | 66 % | 69 % |
+| issue + file path | 100 % | 100 % | 100 % | 100 % |
+
+Step D trimmable gold reads: 0 / 2 → **2 / 2** (also with today's query, because the issue names
+the function). The 9 named chunks still counted as lost are all classes (e.g.
+`IsolationForest`, `SessionBase`) whose edited lines are all kept; the metric counts a class only
+if every method survives. So with the right names every edited line now survives, for 1-3 points
+more tokens sent.
+
+Limits: same as above; a common method name (e.g. `save`) names every method with that name in
+the file, which keeps more than needed (costs tokens, never correctness). Without any name
+(vague prompt) nothing changes: the packer's "skip what does not fit" rule still drops a large
+top-ranked function; a fix for that needs a ranking signal, not a name.

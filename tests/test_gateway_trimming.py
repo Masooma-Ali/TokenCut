@@ -135,6 +135,43 @@ def test_offset_read_reports_real_line_numbers():
     assert first > 100  # numbering follows the listing, not 1
 
 
+def big_named_module() -> str:
+    """One large function (bigger than the moderate budget) and small unrelated helpers."""
+    parts = ["import math", "", "", "class Partitioner:", '    """Splits things."""', ""]
+    parts.append("    def partitions(self, n, k=None):")
+    parts.extend(f"        n = n * {j} + math.sqrt({j}) - math.floor(n / {j + 1})" for j in range(150))
+    parts.append("        return n")
+    parts.append("")
+    for i in range(30):
+        parts.append(f"def other_{i}(value):")
+        parts.extend(f"    value = value + {j} * {i}" for j in range(12))
+        parts.append("    return value")
+        parts.append("")
+    return "\n".join(parts) + "\n"
+
+
+def test_function_the_query_names_is_kept_whole_even_if_larger_than_the_budget():
+    # Step D: a named function bigger than the tier budget used to be dropped for smaller,
+    # lower-ranked ones; a named function is now always kept whole (like edit safety).
+    listing = numbered(big_named_module())
+    out = trim_file_listing(listing, "parts.py", "look at Partitioner.partitions", Tier.MODERATE)
+    assert out is not None
+    kept = set(out.split("\n"))
+    lines = listing.split("\n")
+    start = next(i for i, line in enumerate(lines) if "def partitions(" in line)
+    end = next(i for i, line in enumerate(lines) if line.rstrip().endswith("return n"))
+    assert all(line in kept for line in lines[start : end + 1])
+    assert any("class Partitioner:" in line for line in kept)  # its class line too
+    assert sum("def other_" in line for line in kept) < 30  # code nobody named is still cut
+
+
+def test_traceback_function_is_kept_whole():
+    listing = numbered(big_named_module())
+    query = 'Traceback:\n  File "parts.py", line 10, in partitions\nValueError'
+    out = trim_file_listing(listing, "parts.py", query, Tier.MODERATE)
+    assert out is not None and "def partitions(" in out and "math.sqrt(149)" in out
+
+
 # ---------- command output ----------
 
 

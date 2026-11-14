@@ -39,9 +39,9 @@
   "tokens": 2046,
   "ranged": true,
   "model_words": 0,
-  "today": 0,
-  "+model_words": 0,
-  "+right": 0
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
  },
  {
   "task": "sympy__sympy-20442",
@@ -72,9 +72,9 @@
   "tokens": 2244,
   "ranged": true,
   "model_words": 0,
-  "today": 0,
-  "+model_words": 0,
-  "+right": 0
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
  },
  {
   "task": "sympy__sympy-24066",
