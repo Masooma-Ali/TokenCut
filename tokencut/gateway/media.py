@@ -552,6 +552,11 @@ def _image_note(w: int, h: int, box: tuple[int, int, int, int], size: tuple[int,
             "image as sent]")
 
 
+def _scaled_note(w: int, h: int, size: tuple[int, int]) -> str:
+    return (f"[TokenCut: image scaled from {w}x{h} to {size[0]}x{size[1]} to save tokens; "
+            "positions refer to the image as sent]")
+
+
 def adjust_images(provider: str, model: str, body: dict, segments: list[Segment],
                   include_user: bool = False, resize: bool = True, trim: bool = True
                   ) -> tuple[list[tuple[list[str | int], list[dict]]], list[dict]]:
@@ -601,6 +606,8 @@ def adjust_images(provider: str, model: str, body: dict, segments: list[Segment]
         blocks = [_with_image_data(block, encoded)]
         if box is not None:
             blocks.append(note_block(seg.path, _image_note(w, h, box, target)))
+        elif can_note:
+            blocks.append(note_block(seg.path, _scaled_note(w, h, target)))
         how = ("border_trimmed_resized" if target != (cw, ch) else "border_trimmed") \
             if box is not None else "resized"
         changes.append((seg.path, blocks))
@@ -719,12 +726,26 @@ def _split_pdf(data: str) -> tuple[str, str | None, list[int], int] | None:
     return result
 
 
-def _pdf_note(name: str, text_pages: list[int], total: int, visual_left: bool) -> str:
+def _read_pdf_tool(body: dict) -> str:
+    """Name of the agent's read_pdf tool (tokencut/pdftool), or "". The tool list starts the
+    cached prefix, so a note based on it never changes an earlier turn on its own."""
+    for tool in body.get("tools") or []:
+        if isinstance(tool, dict):
+            name = str(tool.get("name") or (tool.get("function") or {}).get("name") or "")
+            if name.endswith("read_pdf"):
+                return name
+    return ""
+
+
+def _pdf_note(name: str, text_pages: list[int], total: int, visual_left: bool,
+              reader: str = "") -> str:
     pages = ", ".join(str(n) for n in text_pages)
     rest = "the other pages follow as PDF" if visual_left else "no page images sent"
     label = f" '{name}'" if name else ""
+    ask = (f"; to see one of these pages as a picture, call {reader} with as_images=true"
+           if reader else "")
     return (f"[TokenCut: PDF{label}, pages {pages} of {total} sent as text (no images or "
-            f"drawings found on them); {rest}]")
+            f"drawings found on them); {rest}{ask}]")
 
 
 def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user: bool = False
@@ -735,6 +756,7 @@ def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user:
         return [], []  # Gemini: its docs conflict on whether PDF text is billed
     changes, entries = [], []
     questions = attachment_questions(segments)
+    reader = _read_pdf_tool(body)
     for seg in segments:
         if seg.kind != SegmentKind.MEDIA:
             continue
@@ -761,7 +783,7 @@ def split_pdfs(provider: str, body: dict, segments: list[Segment], include_user:
         if split is None:
             continue
         text, subset, text_pages, total = split
-        note = _pdf_note(name, text_pages, total, subset is not None)
+        note = _pdf_note(name, text_pages, total, subset is not None, reader)
         blocks = [{"type": "text", "text": f"{note}\n\n{text}"}]
         if subset is not None:
             rest = copy.deepcopy(block)
