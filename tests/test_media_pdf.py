@@ -265,6 +265,31 @@ def test_answer_format_instructions_are_not_visual_questions():
     assert sent is None  # real formatting questions still keep the whole PDF
 
 
+def test_cache_control_kept_on_a_text_only_split():
+    # A PDF with no visual pages left splits into exactly one text block; the provider's
+    # prompt-cache breakpoint on the original block must survive onto it.
+    block = pdf_block(make_pdf("text", "text"))
+    block["cache_control"] = {"type": "ephemeral"}
+    _, sent = run("anthropic", tool_pdf_request(block))
+    content = sent["messages"][2]["content"][0]["content"]
+    assert [b["type"] for b in content] == ["text"]
+    assert content[0].get("cache_control") == {"type": "ephemeral"}
+
+
+def test_cache_control_kept_on_a_text_plus_visual_split():
+    # The common case: text pages plus a visual-pages subset (two blocks). The cache-control
+    # breakpoint on the original block must still reach the request, on whichever block the
+    # provider expects to carry it (the last block, matching Anthropic's own cache placement:
+    # the breakpoint marks everything up to and including that block as cacheable).
+    block = pdf_block(make_pdf("text", "table", "text"))
+    block["cache_control"] = {"type": "ephemeral"}
+    _, sent = run("anthropic", tool_pdf_request(block))
+    content = sent["messages"][2]["content"][0]["content"]
+    assert [b["type"] for b in content] == ["text", "document"]
+    assert content[-1].get("cache_control") == {"type": "ephemeral"}, (
+        "the PDF split must not silently drop the provider's prompt-cache breakpoint")
+
+
 def test_agent_context_messages_are_not_the_users_question():
     # Found live: Claude Code sends its environment / skills context as role "system" messages
     # in the conversation ("... whenever you create any chart, graph, plot, image ..."). That is

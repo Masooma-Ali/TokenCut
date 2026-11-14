@@ -96,3 +96,16 @@ Live runs: a fresh gateway per run, A / B order alternating, a warm-up call when
 may be cold, finished runs skipped on a rerun, a usage-limit reply stops the run (rerun later to
 resume). Claude Code works in `D:\tokencut_bench_work` (outside the repo, so this project's
 CLAUDE.md is not part of the benchmark requests); `TOKENCUT_BENCH_WORK` changes it.
+
+## 6. Read-only snapshot of a real run (no setup needed)
+
+`logs/attachments_bench/real/` is gitignored (it holds the attachments themselves), so pulling
+this branch alone does not give you the results — you'd have to rerun section 5 yourself.
+
+A static, read-only snapshot of one real run (the one `FINDINGS.md` above was written from) is
+published here, with thumbnails instead of full files:
+
+**<https://claude.ai/artifact/QTup77w4q6TkotBKUzR2vf>**
+
+If you can't open it, ask Fatima to re-share it (artifacts are private until the owner shares
+them). To see a live, editable copy instead of this snapshot, use option 2 or 3 above.
