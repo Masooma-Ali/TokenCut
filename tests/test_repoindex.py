@@ -66,8 +66,9 @@ def test_refresh_reparses_only_changed_files(repo, index, tmp_path):
 
 
 def test_touching_a_file_without_changing_it_reparses_nothing(repo, index):
+    # Same bytes back (write_text would turn \n into \r\n on Windows: a real change).
     cart = repo / "shop" / "cart.py"
-    cart.write_text(cart.read_text())
+    cart.write_bytes(cart.read_bytes())
     assert index.refresh() == []
 
 
