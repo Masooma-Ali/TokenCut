@@ -101,6 +101,7 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest tool output masked at a new task |
 | `TOKENCUT_CCR` | off | `1` = every shortened output gets a reference; the gateway offers `tokencut_retrieve` and answers it with the exact original lines |
 | `TOKENCUT_LAZY_TOOLS` | off | `1` = every request carries only core / used tools + a catalog tool `tokencut_enable_tools` for the rest |
+| `TOKENCUT_SYSTEM_NOTE` | off | `1` = trim mode adds a fixed ~125-token note to the system prompt: how to treat `[TokenCut: …]` markers (re-read only the omitted lines, do not re-run commands for cut log lines, keep test output short) |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become

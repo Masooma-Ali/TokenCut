@@ -151,6 +151,7 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_TASK_MASK_TOKENS` | `300` | smallest output masked at a new task |
 | `TOKENCUT_CCR` | off | `1` = shortened outputs carry a `tc_…` reference; gateway offers and answers `tokencut_retrieve` (P1) |
 | `TOKENCUT_LAZY_TOOLS` | off | `1` = only core / used tools sent + catalog tool `tokencut_enable_tools` (P1) |
+| `TOKENCUT_SYSTEM_NOTE` | off | `1` = fixed ~125-token note on TokenCut's markers at the end of the system prompt (agent requests, trim mode only; prompt enhancement, not yet A/B tested) |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
