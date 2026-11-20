@@ -92,3 +92,13 @@ def test_jsonl_with_unicode_line_separators_in_text(tmp_path):
     path = tmp_path / "p.jsonl"
     path.write_text(json.dumps({"id": "1", "text": "a b\u0085c"}, ensure_ascii=False) + "\n")
     assert load_jsonl(path) == [{"id": "1", "text": "a b\u0085c"}]
+
+
+def test_ccsbench_prefix_and_trailers_are_removed():
+    from eval.prompt_router.ccsbench import message_text, usable
+    text = message_text("refactor(parser)!: split the tokenizer into its own module\n\n"
+                        "Signed-off-by: A <a@b.c>")
+    assert text == "split the tokenizer into its own module" and usable(text)
+    assert message_text("docs: describe the --verbose flag in the README") == \
+        "describe the --verbose flag in the README"
+    assert not usable(message_text("chore: bump version to v1.2.3"))
