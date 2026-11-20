@@ -1,0 +1,700 @@
+{"index": 1, "id": "679b13fe77ef", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 2, "id": "25748ebd5432", "label": "ambiguous", "labeler": "claude", "note": "game description, no request"}
+{"index": 3, "id": "8d4bd17d9cb0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 4, "id": "1920d5caee83", "label": "ambiguous", "labeler": "claude", "note": "social-media prose, not dev writing"}
+{"index": 5, "id": "5420f37fe6a0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 6, "id": "6c909f2e4752", "label": "run_action", "labeler": "claude", "note": "how-to for operating docker"}
+{"index": 7, "id": "b0e6f364c032", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 8, "id": "30a240089f0e", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 9, "id": "0ff00b3f4523", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 10, "id": "da81d26bf5df", "label": "bugfix", "labeler": "claude", "note": "error mentioned but not shown"}
+{"index": 11, "id": "08def74e86dc", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 12, "id": "1b63b3087163", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 13, "id": "5f9d686896d6", "label": "feature", "labeler": "claude", "note": "data-visualisation implementation from XML"}
+{"index": 14, "id": "f98b49c10b92", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 15, "id": "1102d606f2b0", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 16, "id": "1fb6dff2ca36", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 17, "id": "10552e0bb008", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 18, "id": "26ce7fbd9dcd", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 19, "id": "072d6d3b0293", "label": "ambiguous", "labeler": "claude", "note": "statistics, not coding"}
+{"index": 20, "id": "40230e8af93c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 21, "id": "cd6c0a8d8826", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 22, "id": "2b57c568c29f", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 23, "id": "5becb57dd950", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 24, "id": "e58d1ea08d84", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 25, "id": "0859c7c9cdc7", "label": "feature", "labeler": "claude", "note": "spec + asks for examples first; could be design"}
+{"index": 26, "id": "4df15f3ce64d", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 27, "id": "d3759dbac2fc", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 28, "id": "c5ebfea75ef2", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 29, "id": "53b4cd4523ab", "label": "review", "labeler": "claude", "note": ""}
+{"index": 30, "id": "0f3d1ae7a4f9", "label": "review", "labeler": "claude", "note": ""}
+{"index": 31, "id": "bc17804bedb4", "label": "bugfix", "labeler": "claude", "note": "error + how to install; could be run_action"}
+{"index": 32, "id": "cc506f7a9c85", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 33, "id": "e64fae4f948d", "label": "tests", "labeler": "claude", "note": "test helper decorator"}
+{"index": 34, "id": "3938d70c6e2c", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 35, "id": "ca3e3e144fbe", "label": "ambiguous", "labeler": "claude", "note": "script pasted, no request"}
+{"index": 36, "id": "7f48875bffaf", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 37, "id": "54aed8566590", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 38, "id": "c4c0ed9e9868", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 39, "id": "30d32532f7e2", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 40, "id": "336451f61b44", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 41, "id": "28313ef3e667", "label": "design", "labeler": "claude", "note": ""}
+{"index": 42, "id": "10ec183fdd13", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 43, "id": "d0cdeca883f3", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 44, "id": "c318688b29cd", "label": "refactor", "labeler": "claude", "note": "explain + simpler rewrite: change beats explain"}
+{"index": 45, "id": "0eb2c08f2bb1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 46, "id": "1e96a1fc1d7e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 47, "id": "52c1e7639eac", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 48, "id": "c55447bed0f1", "label": "refactor", "labeler": "claude", "note": "switch HTTP client to OkHttp, same behaviour"}
+{"index": 49, "id": "50d3ab5db78a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 50, "id": "9cc132b39fcb", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 51, "id": "2eae764c54ba", "label": "design", "labeler": "claude", "note": "list open questions before a PR = planning"}
+{"index": 52, "id": "d5094168949f", "label": "explain", "labeler": "claude", "note": "error + \"what is the problem\", no fix asked; close to bugfix"}
+{"index": 53, "id": "5281f4bad1a0", "label": "design", "labeler": "claude", "note": "asks for the correct process"}
+{"index": 54, "id": "8886bfd22f9a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 55, "id": "19c35751c4b1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 56, "id": "7e24e02ee914", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 57, "id": "3932fca5b227", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 58, "id": "a14c478e140f", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 59, "id": "f9f2ebd4ab70", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 60, "id": "b874edf2d5ed", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 61, "id": "8126e871c705", "label": "review", "labeler": "claude", "note": ""}
+{"index": 62, "id": "9068bb8fcab8", "label": "bugfix", "labeler": "claude", "note": "error not shown; asks how to fix"}
+{"index": 63, "id": "10bade209b5d", "label": "tests", "labeler": "claude", "note": "rewrite a test fixture"}
+{"index": 64, "id": "5e586e70950d", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 65, "id": "0a837bef9e95", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 66, "id": "335c65f92a58", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 67, "id": "5bb0d0a4b62d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 68, "id": "1b962f8a5421", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 69, "id": "5d0c7b2ad751", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 70, "id": "58161ee7dd3f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 71, "id": "b7df658917c5", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 72, "id": "b16385f5cf42", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 73, "id": "0e7f44182fdf", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 74, "id": "b9900ff3f418", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 75, "id": "699533f34389", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 76, "id": "563394398a68", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 77, "id": "90c01404694e", "label": "feature", "labeler": "claude", "note": "generate a FHIR JSON artifact"}
+{"index": 78, "id": "42b52a4ea3d7", "label": "ambiguous", "labeler": "claude", "note": "not English (a rewrite request in Japanese)"}
+{"index": 79, "id": "3052a1749b47", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 80, "id": "d816b4410f87", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 81, "id": "b57f64a22c7d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 82, "id": "ec340e8d36c6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 83, "id": "fcdce10b618e", "label": "design", "labeler": "claude", "note": ""}
+{"index": 84, "id": "635310ab36cd", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 85, "id": "4c9d77445042", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 86, "id": "b191a9db816a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 87, "id": "9226f32923bf", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 88, "id": "6286c121e046", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 89, "id": "d4c0718eb7e1", "label": "design", "labeler": "claude", "note": "choose a column type"}
+{"index": 90, "id": "f37b84aa92a2", "label": "design", "labeler": "claude", "note": ""}
+{"index": 91, "id": "af00e65caabe", "label": "design", "labeler": "claude", "note": "how to build semantic search"}
+{"index": 92, "id": "42095f7f24da", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 93, "id": "7a74bae1ceb3", "label": "feature", "labeler": "claude", "note": "labelled \"fix\" but it is a UI spacing change"}
+{"index": 94, "id": "4ee7c3b19637", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 95, "id": "73fe5646abd8", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 96, "id": "931972df7739", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 97, "id": "11db95a306f8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 98, "id": "f46637fa81cb", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 99, "id": "b90206718444", "label": "design", "labeler": "claude", "note": ""}
+{"index": 100, "id": "bf7fef8f4e51", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 101, "id": "1a8af748120a", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 102, "id": "beb7a4089c9a", "label": "design", "labeler": "claude", "note": ""}
+{"index": 103, "id": "0d4557384a4c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 104, "id": "2e89755869e1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 105, "id": "6bf755417ace", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 106, "id": "38a27604c832", "label": "feature", "labeler": "claude", "note": "data analysis with code"}
+{"index": 107, "id": "2175dc2f60d3", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 108, "id": "f16a6c477afe", "label": "explain", "labeler": "claude", "note": "data-interchange standard; borderline ambiguous"}
+{"index": 109, "id": "9e0897b08976", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 110, "id": "5b7b1647def9", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 111, "id": "043a24e09bd0", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 112, "id": "467c39cfd094", "label": "ambiguous", "labeler": "claude", "note": "naming brainstorm"}
+{"index": 113, "id": "ca01bb0f1b9e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 114, "id": "aa41c064c3c9", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 115, "id": "bf706a78e0e8", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 116, "id": "ba8929568e5c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 117, "id": "11b0c72e6b31", "label": "feature", "labeler": "claude", "note": "data task: parse file and predict; borderline ambiguous"}
+{"index": 118, "id": "9426814f914b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 119, "id": "0b4d23ea72e1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 120, "id": "b72ae4fc233d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 121, "id": "1ec7a47ea827", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 122, "id": "8014f49c457c", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 123, "id": "19a85d43503a", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 124, "id": "a9bb3c2d79fc", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 125, "id": "48b68edd5d08", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 126, "id": "ca7ab2e85e39", "label": "refactor", "labeler": "claude", "note": "port MATLAB to Julia, same behaviour"}
+{"index": 127, "id": "f86755e68dca", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 128, "id": "351a93ad795f", "label": "design", "labeler": "claude", "note": ""}
+{"index": 129, "id": "debd55f48621", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 130, "id": "ee52eb40af0b", "label": "refactor", "labeler": "claude", "note": "\"improve this\""}
+{"index": 131, "id": "8753259ffcdf", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 132, "id": "5a8fe49b0841", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 133, "id": "161c5c1954ce", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 134, "id": "165efbec623e", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 135, "id": "06f0ac99cd29", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 136, "id": "f4100324070b", "label": "explain", "labeler": "claude", "note": "error pasted, no request"}
+{"index": 137, "id": "59c5ef8370a3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 138, "id": "4c49f538a317", "label": "feature", "labeler": "claude", "note": "marked \"Refactor!\" but adds behaviour"}
+{"index": 139, "id": "e3736863892e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 140, "id": "64d75609d645", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 141, "id": "79ff98f1eebf", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 142, "id": "3136fb48e1c1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 143, "id": "fabfae050f8b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 144, "id": "e31255b8c602", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 145, "id": "1d67a7e784a4", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 146, "id": "e24fac120f01", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 147, "id": "99d7920e144c", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 148, "id": "9b3c4e8e320f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 149, "id": "a50fa3b702ab", "label": "ambiguous", "labeler": "claude", "note": "creative writing"}
+{"index": 150, "id": "24191e821378", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 151, "id": "49552aaed92d", "label": "ambiguous", "labeler": "claude", "note": "non-code data lookup in a CSV"}
+{"index": 152, "id": "8e59344bf5b9", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 153, "id": "4101c503e443", "label": "design", "labeler": "claude", "note": ""}
+{"index": 154, "id": "1579469f2705", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 155, "id": "240edc7444ab", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 156, "id": "3232dbc167fa", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 157, "id": "f7a77b2b10ec", "label": "refactor", "labeler": "claude", "note": "remove redundant components"}
+{"index": 158, "id": "39ac9019c7cd", "label": "design", "labeler": "claude", "note": "library choice"}
+{"index": 159, "id": "bd3064d57998", "label": "feature", "labeler": "claude", "note": "EDA request, underspecified"}
+{"index": 160, "id": "e1c9e2c328d9", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 161, "id": "af017d78cf5e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 162, "id": "bb84634f1119", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 163, "id": "d68f02e121f2", "label": "ambiguous", "labeler": "claude", "note": "article text with an embedded prompt-injection attempt"}
+{"index": 164, "id": "9e6cc304672b", "label": "explain", "labeler": "claude", "note": "compare two implementations"}
+{"index": 165, "id": "9c79302465b9", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 166, "id": "2fcebda55cd8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 167, "id": "56924066921d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 168, "id": "39c3b4b540ad", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 169, "id": "d63ca29ea667", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 170, "id": "0eac89a319d3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 171, "id": "0115ad3faa6d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 172, "id": "e6454495d573", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 173, "id": "74f747706fe6", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 174, "id": "925da319dea6", "label": "write_text", "labeler": "claude", "note": "restructure docs folder + pick doc tools; borderline design"}
+{"index": 175, "id": "3beb0f9f5489", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 176, "id": "2ebc86813887", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 177, "id": "aeeb227ca45a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 178, "id": "f1e383dd95cf", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 179, "id": "7b1984c38e16", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 180, "id": "3915e8966029", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 181, "id": "81ec52e97ff6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 182, "id": "158e3e2ba585", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 183, "id": "a5c14605dd5b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 184, "id": "1c627d703d42", "label": "design", "labeler": "claude", "note": ""}
+{"index": 185, "id": "00447ab346ec", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 186, "id": "1c0637451fa4", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 187, "id": "e0d8af2b57fb", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 188, "id": "1aff3cfaf399", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 189, "id": "7e809bb9a0f0", "label": "bugfix", "labeler": "claude", "note": "wrong return type, asks how to make it right"}
+{"index": 190, "id": "0efee32d5af9", "label": "run_action", "labeler": "claude", "note": "set up an integration"}
+{"index": 191, "id": "8a5a648ab6c7", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 192, "id": "a34bcd16d899", "label": "design", "labeler": "claude", "note": ""}
+{"index": 193, "id": "0472915ad48b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 194, "id": "3853cf5fa995", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 195, "id": "0e2d2d864e3f", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 196, "id": "23dfe144c335", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 197, "id": "9b188d1d2c4c", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 198, "id": "82f11d95e70f", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 199, "id": "bdc10783a100", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 200, "id": "116597a70086", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 201, "id": "707d175a27dd", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 202, "id": "673e8858f7d5", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 203, "id": "e87914109d83", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 204, "id": "f9d81710e996", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 205, "id": "570bcda1ec1e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 206, "id": "b02335cc16a1", "label": "design", "labeler": "claude", "note": "critique of a proposed architecture"}
+{"index": 207, "id": "4f5e149ace4e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 208, "id": "5482b8dc05c2", "label": "feature", "labeler": "claude", "note": "design typed interfaces"}
+{"index": 209, "id": "27ea8129d078", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 210, "id": "b2636500c8e2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 211, "id": "f1695e8752c7", "label": "design", "labeler": "claude", "note": ""}
+{"index": 212, "id": "bfb7dfb3ab4e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 213, "id": "aa02bc89839d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 214, "id": "cd3a5671bd98", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 215, "id": "aa51ff7d3ca4", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 216, "id": "467a67b17699", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 217, "id": "75d795f192d5", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 218, "id": "fd3ecbada621", "label": "refactor", "labeler": "claude", "note": "small cleanup: add class, remove comment and props"}
+{"index": 219, "id": "6276e5b1f368", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 220, "id": "f9f6414881b1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 221, "id": "84f23237c6f0", "label": "design", "labeler": "claude", "note": "naming-convention decision"}
+{"index": 222, "id": "da2455988f3c", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 223, "id": "f5c44debd68f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 224, "id": "6edcab0c877f", "label": "write_text", "labeler": "claude", "note": "press release"}
+{"index": 225, "id": "5c81284d2dbb", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 226, "id": "48087cfe1e21", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 227, "id": "991420405b37", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 228, "id": "0a4c7c7754a0", "label": "review", "labeler": "claude", "note": ""}
+{"index": 229, "id": "9cc4b6caae5f", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 230, "id": "c9cd07d73339", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 231, "id": "2a761cf867e8", "label": "explain", "labeler": "claude", "note": "\"why does this not work\", no fix asked"}
+{"index": 232, "id": "d720d05ab4c2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 233, "id": "3026f451c8b5", "label": "explain", "labeler": "claude", "note": "diagnosis report only, no fix"}
+{"index": 234, "id": "3a2fcfa0563a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 235, "id": "6067d5c8b670", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 236, "id": "a76dc1ae56a2", "label": "ambiguous", "labeler": "claude", "note": "CSS pasted, no request"}
+{"index": 237, "id": "fcd1d5cfd3fb", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 238, "id": "4f30c5ee68ef", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 239, "id": "4ccb8726cb7b", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 240, "id": "f55d809cb7f9", "label": "run_action", "labeler": "claude", "note": "gitignore + untrack files"}
+{"index": 241, "id": "9e3646c9e612", "label": "review", "labeler": "claude", "note": ""}
+{"index": 242, "id": "a125e2001fd2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 243, "id": "11a03ceefa63", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 244, "id": "8dcb07d51aa5", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 245, "id": "19ec19a3845b", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 246, "id": "290a5f5156cd", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 247, "id": "59e230c589f5", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 248, "id": "220a41d742d8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 249, "id": "e5a2b01942f1", "label": "explain", "labeler": "claude", "note": "\"throwing error, why?\", no fix asked"}
+{"index": 250, "id": "20e9081fea39", "label": "ambiguous", "labeler": "claude", "note": "request in Japanese"}
+{"index": 251, "id": "ce48803ba715", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 252, "id": "a112663a7a01", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 253, "id": "adc18929f59a", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 254, "id": "50083a120bc1", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 255, "id": "7bce247832ec", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 256, "id": "270f44d0a050", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 257, "id": "c1467c895cf5", "label": "explain", "labeler": "claude", "note": "extract a table from CSS; borderline ambiguous"}
+{"index": 258, "id": "4fa22931be78", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 259, "id": "df6dacd7dcbc", "label": "ambiguous", "labeler": "claude", "note": "naming brainstorm"}
+{"index": 260, "id": "277d5de4650f", "label": "feature", "labeler": "claude", "note": "several course tasks; main one is a code change"}
+{"index": 261, "id": "ee08d4c1446e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 262, "id": "babb7053022b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 263, "id": "54df173c9dd2", "label": "review", "labeler": "claude", "note": ""}
+{"index": 264, "id": "c03745205b4f", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 265, "id": "60ac8fdccd65", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 266, "id": "6e4820c478ff", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 267, "id": "2eab39abe395", "label": "write_text", "labeler": "claude", "note": "rewrite a system prompt text"}
+{"index": 268, "id": "9d63a93ae3c2", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 269, "id": "126fa3bd15f4", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 270, "id": "b71c5822edd1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 271, "id": "de815a2ce49f", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 272, "id": "b59d04941e16", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 273, "id": "2e86eb0e382d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 274, "id": "9d6cd2e0f529", "label": "write_text", "labeler": "claude", "note": "marketing description"}
+{"index": 275, "id": "8c04a9a420c1", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 276, "id": "9296395f379c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 277, "id": "37e4aba70262", "label": "design", "labeler": "claude", "note": ""}
+{"index": 278, "id": "9c4d9026705d", "label": "review", "labeler": "claude", "note": ""}
+{"index": 279, "id": "bc24dfe76458", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 280, "id": "a02e2751729e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 281, "id": "c95cf55c61f8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 282, "id": "aa0adb43a44a", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 283, "id": "c74b9ee5c873", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 284, "id": "2a34e7827c05", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 285, "id": "b9877ba971fd", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 286, "id": "6a8c7dcb54aa", "label": "bugfix", "labeler": "claude", "note": "prompt cut off after \"However\" (answer wrong)"}
+{"index": 287, "id": "98a47d46c5c9", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 288, "id": "191b59eade41", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 289, "id": "b6c4561bccc0", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 290, "id": "ef980e965695", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 291, "id": "20d75397df6f", "label": "design", "labeler": "claude", "note": ""}
+{"index": 292, "id": "104b34a1f872", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 293, "id": "1439e62174a8", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 294, "id": "536c53a07cd7", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 295, "id": "5a8ae23fbcb8", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 296, "id": "a6223dbc1043", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 297, "id": "379410515aee", "label": "ambiguous", "labeler": "claude", "note": "tech history, not a code task"}
+{"index": 298, "id": "b45e88ef8da4", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 299, "id": "2fc99dba8b0e", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 300, "id": "404d0a78b326", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 301, "id": "016ecb97117d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 302, "id": "a1c3963b90fc", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 303, "id": "f402c779474d", "label": "tests", "labeler": "claude", "note": "acceptance criteria in Cucumber"}
+{"index": 304, "id": "f7bdcb7fbeb8", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 305, "id": "8a5bcae6970a", "label": "tests", "labeler": "claude", "note": ""}
+{"index": 306, "id": "76b34519eeaf", "label": "refactor", "labeler": "claude", "note": "dependency updates"}
+{"index": 307, "id": "65429cfe6878", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 308, "id": "757062e61d59", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 309, "id": "705946f27bf8", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 310, "id": "a2df27d96a2e", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 311, "id": "8adcdb439a75", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 312, "id": "5a43700b71ad", "label": "write_text", "labeler": "claude", "note": "translate prose"}
+{"index": 313, "id": "592b2794ec01", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 314, "id": "93e217fc73d2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 315, "id": "0dd686628cc6", "label": "run_action", "labeler": "claude", "note": "fetch a diff via the API"}
+{"index": 316, "id": "09647e727f12", "label": "design", "labeler": "claude", "note": ""}
+{"index": 317, "id": "571a618bf707", "label": "feature", "labeler": "claude", "note": "build an image with packages preinstalled"}
+{"index": 318, "id": "4ce780153a51", "label": "ambiguous", "labeler": "claude", "note": "text reformatting, not code"}
+{"index": 319, "id": "cf373cf12c89", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 320, "id": "c0070d52b181", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 321, "id": "9c485f598e05", "label": "design", "labeler": "claude", "note": ""}
+{"index": 322, "id": "25b46295d52b", "label": "refactor", "labeler": "claude", "note": "port C++ to JavaScript"}
+{"index": 323, "id": "080ced3e8de5", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 324, "id": "0edbd6e68572", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 325, "id": "a8a7d43e8229", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 326, "id": "52b32cc0d8ab", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 327, "id": "976e5d27291a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 328, "id": "e5ce76be5775", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 329, "id": "776bc43ad471", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 330, "id": "81b3d8d6954c", "label": "tests", "labeler": "claude", "note": ""}
+{"index": 331, "id": "5e629a53a28f", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 332, "id": "dc4918b74eb6", "label": "explain", "labeler": "claude", "note": "asks what the link symbols are and why; no fix asked"}
+{"index": 333, "id": "0423798689d3", "label": "design", "labeler": "claude", "note": ""}
+{"index": 334, "id": "0a651ae75310", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 335, "id": "8159f2385ba8", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 336, "id": "ad52d4bbae60", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 337, "id": "fbcd1207f658", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 338, "id": "1f295de9725b", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 339, "id": "992369594aec", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 340, "id": "aae33beb888d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 341, "id": "1ec4d8b66968", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 342, "id": "1a90dc3a2d29", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 343, "id": "f3dc723e5f62", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 344, "id": "a167477e81da", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 345, "id": "755492b2285a", "label": "feature", "labeler": "claude", "note": "curl -> fetch code, as #210"}
+{"index": 346, "id": "810575821ab5", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 347, "id": "5a92ef9b3278", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 348, "id": "31c61f5b07ab", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 349, "id": "374a6d49e7a6", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 350, "id": "d861f4a4e49d", "label": "design", "labeler": "claude", "note": ""}
+{"index": 351, "id": "33e5076ea2c0", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 352, "id": "ade7aa069736", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 353, "id": "7b03e883c7f8", "label": "feature", "labeler": "claude", "note": "visible styling change"}
+{"index": 354, "id": "3a3321d8cd50", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 355, "id": "f8e39e18c40f", "label": "tests", "labeler": "claude", "note": ""}
+{"index": 356, "id": "da195e4b4380", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 357, "id": "654069fab06a", "label": "run_action", "labeler": "claude", "note": "delete files"}
+{"index": 358, "id": "c8b30aaf1ee3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 359, "id": "4441f649742b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 360, "id": "9706a7e6572f", "label": "feature", "labeler": "claude", "note": "move code + new newline handling (feature beats refactor)"}
+{"index": 361, "id": "efb7a0e3dece", "label": "feature", "labeler": "claude", "note": "data analysis"}
+{"index": 362, "id": "c09b82184907", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 363, "id": "99578882770b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 364, "id": "44a843a34e5d", "label": "ambiguous", "labeler": "claude", "note": "no context"}
+{"index": 365, "id": "99e4aaea072e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 366, "id": "0912905170ed", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 367, "id": "426300ad892d", "label": "design", "labeler": "claude", "note": ""}
+{"index": 368, "id": "d84b6e5a424b", "label": "ambiguous", "labeler": "claude", "note": "SQL puzzle game"}
+{"index": 369, "id": "58ef527ae1a0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 370, "id": "15ff04cffa61", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 371, "id": "9cf8691064ea", "label": "explain", "labeler": "claude", "note": "\"why do I get that error\", no fix asked"}
+{"index": 372, "id": "572fab7a33ce", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 373, "id": "5aeab1b9c65b", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 374, "id": "db65219e3dd2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 375, "id": "4dc31f450b16", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 376, "id": "db6b6c402d8a", "label": "design", "labeler": "claude", "note": "how to store large JSON"}
+{"index": 377, "id": "62a1287b7962", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 378, "id": "c7132e4b8da1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 379, "id": "0110b07909c2", "label": "design", "labeler": "claude", "note": ""}
+{"index": 380, "id": "fe2b1e5bd9d7", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 381, "id": "89338880f344", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 382, "id": "30cae2d6d543", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 383, "id": "e8f181ac4033", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 384, "id": "7bfb8a5826ba", "label": "write_text", "labeler": "claude", "note": "document use cases"}
+{"index": 385, "id": "5f4e82892c1a", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 386, "id": "8185b9b4583a", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 387, "id": "5ccffb407d76", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 388, "id": "1251aca203fc", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 389, "id": "dcd34c1a15ae", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 390, "id": "f8ef49b775ca", "label": "ambiguous", "labeler": "claude", "note": "essay, no request"}
+{"index": 391, "id": "654697e36515", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 392, "id": "761243c7248d", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 393, "id": "ed1bd4e2880d", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 394, "id": "b09be960cafd", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 395, "id": "afe9259575a1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 396, "id": "83269421db75", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 397, "id": "cbbb3249d030", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 398, "id": "96666b61e64d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 399, "id": "fa5243a06e36", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 400, "id": "579a6f0721f2", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 401, "id": "35da1794c648", "label": "ambiguous", "labeler": "claude", "note": "maths"}
+{"index": 402, "id": "6acdd342b0fe", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 403, "id": "512923b12a4f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 404, "id": "8165b3ea6713", "label": "explain", "labeler": "claude", "note": "getting-started instructions"}
+{"index": 405, "id": "4dc1c55feb46", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 406, "id": "749e8e1d066c", "label": "design", "labeler": "claude", "note": "unsure what to build; borderline ambiguous"}
+{"index": 407, "id": "7e4df7e87ce6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 408, "id": "e95740647e04", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 409, "id": "881f058cc6f9", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 410, "id": "1cc237cf4c11", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 411, "id": "5691d9a9da57", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 412, "id": "a2d8f17b7f79", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 413, "id": "fe9d51976871", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 414, "id": "ac120ab312d5", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 415, "id": "e31ed675a8dd", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 416, "id": "b4dde1b34ea3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 417, "id": "120b5366f8f5", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 418, "id": "e20913679f95", "label": "feature", "labeler": "claude", "note": "curve fitting code"}
+{"index": 419, "id": "47e73d9b0297", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 420, "id": "f3c6074dcef4", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 421, "id": "011418e93bee", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 422, "id": "6d11b4e24177", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 423, "id": "834a029db3e1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 424, "id": "402f4fb36947", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 425, "id": "2bdb3bc591c6", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 426, "id": "6fd9f39a1b77", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 427, "id": "48a268cc6e8f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 428, "id": "00549afa93ed", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 429, "id": "7f42fc599d58", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 430, "id": "b3f4e7096d49", "label": "explain", "labeler": "claude", "note": "complexity question"}
+{"index": 431, "id": "3bffa68f4a0c", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 432, "id": "2abcd0553516", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 433, "id": "9a82d203ad33", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 434, "id": "00a1e9e61a26", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 435, "id": "486bc1ec69d4", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 436, "id": "a9481f3dfeef", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 437, "id": "e8c910341879", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 438, "id": "ee1777d98a28", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 439, "id": "7939cf541a54", "label": "ambiguous", "labeler": "claude", "note": "statistics, as #19"}
+{"index": 440, "id": "994f1958ef97", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 441, "id": "dcbc87a9cacf", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 442, "id": "6df74d4578cf", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 443, "id": "d76bee59d7d7", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 444, "id": "bdf0035cd379", "label": "run_action", "labeler": "claude", "note": "repository settings"}
+{"index": 445, "id": "bac51eaea862", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 446, "id": "7dd564d47ab9", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 447, "id": "b75d73bcb7f7", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 448, "id": "4392886deca3", "label": "review", "labeler": "claude", "note": ""}
+{"index": 449, "id": "9d053380d292", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 450, "id": "26eb8d92ebd7", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 451, "id": "8751da4531ea", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 452, "id": "2b87dce02f02", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 453, "id": "f35d241d9061", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 454, "id": "09067b599a68", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 455, "id": "2704394a7795", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 456, "id": "776acf91e8d1", "label": "bugfix", "labeler": "claude", "note": "framed as a feature, but the API returns nothing"}
+{"index": 457, "id": "d55097b9bef8", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 458, "id": "59a6c63733c7", "label": "feature", "labeler": "claude", "note": "write a regex"}
+{"index": 459, "id": "6fa94fe90c50", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 460, "id": "bd1d3a7e03bf", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 461, "id": "320daf6c50ff", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 462, "id": "03c3a7e189e6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 463, "id": "232cc0664f63", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 464, "id": "1de55a0e54c1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 465, "id": "0b09329a97f0", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 466, "id": "ee930dbb1a30", "label": "review", "labeler": "claude", "note": ""}
+{"index": 467, "id": "5a38873c217e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 468, "id": "d44fdd1317f2", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 469, "id": "8b1f10cb7e98", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 470, "id": "f0733807edfb", "label": "write_text", "labeler": "claude", "note": "roadmap update (+ gitignore line)"}
+{"index": 471, "id": "dcf1997febe6", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 472, "id": "ed9750f5d10c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 473, "id": "f5347365249f", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 474, "id": "7d35d81704ba", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 475, "id": "5344447ef795", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 476, "id": "80a9d0926df0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 477, "id": "8d02a0abd8fb", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 478, "id": "7d515c225cc4", "label": "ambiguous", "labeler": "claude", "note": "preamble, no task yet"}
+{"index": 479, "id": "7b5a834f67b3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 480, "id": "9d8d31b495a1", "label": "feature", "labeler": "claude", "note": "rename + new subtitle (feature beats refactor)"}
+{"index": 481, "id": "4fe0621efabd", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 482, "id": "3ac11e741afe", "label": "refactor", "labeler": "claude", "note": "Excel formula compatibility rewrite"}
+{"index": 483, "id": "3d3b10445408", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 484, "id": "8e8c7546ae06", "label": "review", "labeler": "claude", "note": "PR template"}
+{"index": 485, "id": "5762c3e57740", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 486, "id": "6e9280b9723a", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 487, "id": "c91e4611c62c", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 488, "id": "2f7f21c5c7a4", "label": "design", "labeler": "claude", "note": ""}
+{"index": 489, "id": "f9da60bf9e52", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 490, "id": "a09f5189a752", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 491, "id": "552bf7f23b8c", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 492, "id": "f795122f224c", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 493, "id": "f648ae353fc1", "label": "explain", "labeler": "claude", "note": "concept + naming check; borderline design"}
+{"index": 494, "id": "9f85de1d7880", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 495, "id": "4874da71102d", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 496, "id": "fd8739e5f1a2", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 497, "id": "6d150240bfe2", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 498, "id": "6e4066d8f79e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 499, "id": "f3c2e43cbf6a", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 500, "id": "c493909a55b0", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 501, "id": "09a58f02a1d7", "label": "write_text", "labeler": "claude", "note": "add documentation to code"}
+{"index": 502, "id": "2e46ebceb91b", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 503, "id": "3cc57b25a38e", "label": "design", "labeler": "claude", "note": "tool choice"}
+{"index": 504, "id": "5ef4a3da6f63", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 505, "id": "6a191c86206e", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 506, "id": "65fa088037f1", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 507, "id": "5b29d642713d", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 508, "id": "2e2e7c0dbea7", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 509, "id": "2df54955fcc0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 510, "id": "40ff71b5b97f", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 511, "id": "52fd9fb0960c", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 512, "id": "49ac9663bab9", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 513, "id": "dc447f93e1bf", "label": "refactor", "labeler": "claude", "note": "remove duplication with a union type"}
+{"index": 514, "id": "46c6ecab6482", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 515, "id": "e14f9c919164", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 516, "id": "bd50c624d14e", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 517, "id": "4472170c454e", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 518, "id": "c5668233a2f2", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 519, "id": "045bdf7710c3", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 520, "id": "a96c27ab032d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 521, "id": "594120c134ee", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 522, "id": "0a9efdb27bc5", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 523, "id": "6f795eac8cca", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 524, "id": "10e737ec5d1d", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 525, "id": "62ceb5d91f7b", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 526, "id": "83a85efdc010", "label": "run_action", "labeler": "claude", "note": "sign a DLL"}
+{"index": 527, "id": "b15b96ba2080", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 528, "id": "fd8d65fd2705", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 529, "id": "7f66870f370f", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 530, "id": "c5e2efe484f8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 531, "id": "7f7233768564", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 532, "id": "f7f334773549", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 533, "id": "c3591fc8c19b", "label": "ambiguous", "labeler": "claude", "note": "prompt cut off mid-sentence"}
+{"index": 534, "id": "5c190e8f14a1", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 535, "id": "1f3708e49932", "label": "explain", "labeler": "claude", "note": "crash log, no request"}
+{"index": 536, "id": "2d8cd110977e", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 537, "id": "f4183c6515f6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 538, "id": "38460e663629", "label": "write_text", "labeler": "claude", "note": "tech blog post"}
+{"index": 539, "id": "9c45daad0848", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 540, "id": "9ba4dc64cb84", "label": "write_text", "labeler": "claude", "note": "fill a PR checklist"}
+{"index": 541, "id": "79d0914ccce0", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 542, "id": "82aef9408a05", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 543, "id": "04b10d22bf7c", "label": "ambiguous", "labeler": "claude", "note": "not English"}
+{"index": 544, "id": "991f211870d2", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 545, "id": "51c4642ea7ac", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 546, "id": "ea7f341d691f", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 547, "id": "b53986bd0286", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 548, "id": "ebe19a386a20", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 549, "id": "dac1d622ee12", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 550, "id": "036a667432a6", "label": "write_text", "labeler": "claude", "note": "docs site favicon"}
+{"index": 551, "id": "14acab3708da", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 552, "id": "cfc25a018890", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 553, "id": "eb48b1291217", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 554, "id": "43d8f40b5c01", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 555, "id": "0c9284b1d8fb", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 556, "id": "229f8404405d", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 557, "id": "4c95ab824e20", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 558, "id": "742e5d76fae3", "label": "explain", "labeler": "claude", "note": "how it works + diagrams; CUDA ideas are secondary"}
+{"index": 559, "id": "fcd15f96ac25", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 560, "id": "e4ba6baff877", "label": "bugfix", "labeler": "claude", "note": "problem stated, fix implied"}
+{"index": 561, "id": "d0fad934d060", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 562, "id": "df866701fb35", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 563, "id": "372a7f7f91ca", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 564, "id": "a59c9715ff81", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 565, "id": "cae4e678faf2", "label": "ambiguous", "labeler": "claude", "note": "list missing"}
+{"index": 566, "id": "e0aad313b0c1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 567, "id": "1dcb9943262e", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 568, "id": "bfe9b684673b", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 569, "id": "c6399562a648", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 570, "id": "578e741a8498", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 571, "id": "730a02fb2ba8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 572, "id": "4e8a125a5b5c", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 573, "id": "c4e06eb8a9da", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 574, "id": "d6f33a700a9d", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 575, "id": "99dc2237e3a4", "label": "feature", "labeler": "claude", "note": "asks for collate-function code"}
+{"index": 576, "id": "3891f29f0c96", "label": "feature", "labeler": "claude", "note": "data analysis"}
+{"index": 577, "id": "c526cc6d19ae", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 578, "id": "326f5f4e69e0", "label": "write_text", "labeler": "claude", "note": "structure a literature review"}
+{"index": 579, "id": "f2fc86af3164", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 580, "id": "1d4413dfecc9", "label": "feature", "labeler": "claude", "note": "SQL insert statement"}
+{"index": 581, "id": "d2c1b557e4df", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 582, "id": "1827f56ca1a2", "label": "feature", "labeler": "claude", "note": "move dir + new route (feature beats refactor)"}
+{"index": 583, "id": "d36d3c49cd5a", "label": "bugfix", "labeler": "claude", "note": "narrative \"git clone fails\" + error"}
+{"index": 584, "id": "a4220f44fdcf", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 585, "id": "42818437ec91", "label": "ambiguous", "labeler": "claude", "note": "maths"}
+{"index": 586, "id": "f5f97510c8e9", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 587, "id": "1176c032bcc1", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 588, "id": "35a1c2d24f41", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 589, "id": "2052ddbe424f", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 590, "id": "5718df9b677a", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 591, "id": "94bf0efdc122", "label": "feature", "labeler": "claude", "note": "add a console.warn"}
+{"index": 592, "id": "8d90cda90a58", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 593, "id": "29e90d32351f", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 594, "id": "6ff9a900014c", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 595, "id": "afae642dc3bd", "label": "feature", "labeler": "claude", "note": "same as #220"}
+{"index": 596, "id": "c941419e97f4", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 597, "id": "4e245e8d677a", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 598, "id": "a77d13698905", "label": "design", "labeler": "claude", "note": "app UX practice"}
+{"index": 599, "id": "b5c20dda29b4", "label": "ambiguous", "labeler": "claude", "note": "code + data pasted, no request"}
+{"index": 600, "id": "d7f4754f9779", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 601, "id": "120a59634590", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 602, "id": "a7f049ce71ed", "label": "review", "labeler": "claude", "note": "code not included"}
+{"index": 603, "id": "86dace72bf47", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 604, "id": "692fd9a5ee53", "label": "design", "labeler": "claude", "note": "user stories + architecture"}
+{"index": 605, "id": "9c6f30748011", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 606, "id": "7e42901182a9", "label": "write_text", "labeler": "claude", "note": "commit-message generator prompt"}
+{"index": 607, "id": "325ab310fea8", "label": "design", "labeler": "claude", "note": ""}
+{"index": 608, "id": "f351c298eb14", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 609, "id": "e6afb9ace274", "label": "refactor", "labeler": "claude", "note": "move files"}
+{"index": 610, "id": "54a626486585", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 611, "id": "189e3896aa04", "label": "design", "labeler": "claude", "note": ""}
+{"index": 612, "id": "a59f021cd384", "label": "ambiguous", "labeler": "claude", "note": "statement, no request"}
+{"index": 613, "id": "7caa6e5609dd", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 614, "id": "cee217e513d8", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 615, "id": "d5605b6153d5", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 616, "id": "2382e4d2f176", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 617, "id": "62edd3cdc76a", "label": "tests", "labeler": "claude", "note": ""}
+{"index": 618, "id": "9776788defb3", "label": "feature", "labeler": "claude", "note": "remove a feature = behaviour change"}
+{"index": 619, "id": "d3f4ce1ec4c6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 620, "id": "c8890ecf1b57", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 621, "id": "8eddd6c4f730", "label": "ambiguous", "labeler": "claude", "note": "statistics"}
+{"index": 622, "id": "a45f106ec0b0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 623, "id": "1d505c23a355", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 624, "id": "2eea4845327a", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 625, "id": "59f68e7d004b", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 626, "id": "d7cb746bf836", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 627, "id": "2ee73c9637d5", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 628, "id": "3e7723c04c5c", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 629, "id": "6eb7edc47bdd", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 630, "id": "24e4fb7040bb", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 631, "id": "b1a721a96fe4", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 632, "id": "6dc47285099d", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 633, "id": "de7a8afa941a", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 634, "id": "aa1586a8e917", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 635, "id": "0c87b5ab29bc", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 636, "id": "10917bc318e7", "label": "ambiguous", "labeler": "claude", "note": "no request"}
+{"index": 637, "id": "c047e4a2eca5", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 638, "id": "ae9f23ad454b", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 639, "id": "3d03e1d5fba6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 640, "id": "522a961715e0", "label": "refactor", "labeler": "claude", "note": ""}
+{"index": 641, "id": "1391e74e3fb1", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 642, "id": "d7055d008880", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 643, "id": "73851daed81a", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 644, "id": "8c4343c2a008", "label": "ambiguous", "labeler": "claude", "note": "no request"}
+{"index": 645, "id": "43573bc7dabd", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 646, "id": "456295505dd2", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 647, "id": "239366778bf0", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 648, "id": "cb33b597e5d4", "label": "explain", "labeler": "claude", "note": "as #108"}
+{"index": 649, "id": "de2e6641c8c8", "label": "design", "labeler": "claude", "note": ""}
+{"index": 650, "id": "bad96e9b74b9", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 651, "id": "9c7f963c0d65", "label": "run_action", "labeler": "claude", "note": ""}
+{"index": 652, "id": "892dd34934c8", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 653, "id": "f2ec8b5697a2", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 654, "id": "ff02417498fd", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 655, "id": "6bc945fd329b", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 656, "id": "0164c13de2e8", "label": "ambiguous", "labeler": "claude", "note": "generate sample sentences"}
+{"index": 657, "id": "8993d0c396b9", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 658, "id": "462ed35fd752", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 659, "id": "b6e442c0bcce", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 660, "id": "bca4abfc57e1", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 661, "id": "120a8baa6f29", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 662, "id": "915b5478d582", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 663, "id": "fe048abce168", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 664, "id": "f941f8ac9352", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 665, "id": "ccc83e2b86e6", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 666, "id": "9b92c6a97778", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 667, "id": "ed965f7f05a2", "label": "explain", "labeler": "claude", "note": "why was this PR made"}
+{"index": 668, "id": "df9e9280855e", "label": "design", "labeler": "claude", "note": ""}
+{"index": 669, "id": "34db0e3d472a", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 670, "id": "b92231affe7d", "label": "bugfix", "labeler": "claude", "note": ""}
+{"index": 671, "id": "91649e44ea21", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 672, "id": "0fe65a174b1c", "label": "ambiguous", "labeler": "claude", "note": "naming brainstorm"}
+{"index": 673, "id": "af79059b63e4", "label": "ambiguous", "labeler": "claude", "note": "extract values from an HTML page"}
+{"index": 674, "id": "d5aec7813139", "label": "feature", "labeler": "claude", "note": "make SQL conditional"}
+{"index": 675, "id": "038aeac39e49", "label": "refactor", "labeler": "claude", "note": "port PHP to JavaScript"}
+{"index": 676, "id": "ce49f44c8a2b", "label": "bugfix", "labeler": "claude", "note": "marked \"Refactor!\" but fixes wrong click behaviour"}
+{"index": 677, "id": "a7655b582fae", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 678, "id": "fc1911972b5f", "label": "tests", "labeler": "claude", "note": ""}
+{"index": 679, "id": "bda9ea0c950d", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 680, "id": "1e98264b4907", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 681, "id": "c4c8d7eca01c", "label": "design", "labeler": "claude", "note": "tool recommendation"}
+{"index": 682, "id": "655f04901ea7", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 683, "id": "f3b91125d4c5", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 684, "id": "645c2305a18e", "label": "write_text", "labeler": "claude", "note": ""}
+{"index": 685, "id": "e3727a06d943", "label": "bugfix", "labeler": "claude", "note": "narrative \"when deploying I get\" + log"}
+{"index": 686, "id": "236d07e4721e", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 687, "id": "0117ad5d717c", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 688, "id": "5f40d7fdeb98", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 689, "id": "7d561f874b70", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 690, "id": "f0402148be12", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 691, "id": "af305c61ddca", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 692, "id": "c5abdcbf7e96", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 693, "id": "e564e29f0564", "label": "explain", "labeler": "claude", "note": ""}
+{"index": 694, "id": "0b230d070090", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 695, "id": "8ad74b8a0f58", "label": "feature", "labeler": "claude", "note": "compare models with a script; request is at the end"}
+{"index": 696, "id": "62e69a4d9f48", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 697, "id": "2f8b3ee8cf83", "label": "feature", "labeler": "claude", "note": ""}
+{"index": 698, "id": "5686df700622", "label": "ambiguous", "labeler": "claude", "note": "code pasted, no request"}
+{"index": 699, "id": "1098bca3d361", "label": "ambiguous", "labeler": "claude", "note": ""}
+{"index": 700, "id": "9cdb5e4292e6", "label": "feature", "labeler": "claude", "note": ""}
