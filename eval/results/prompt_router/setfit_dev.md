@@ -28,6 +28,21 @@ Per label (precision / recall / n): feature 0.90 / 0.84 / 32 · explain 0.84 / 0
 bugfix 0.58 / 0.70 / 10 · design 0.50 / 0.86 / 7 · run_action 0.57 / 0.80 / 5 ·
 write_text 0.50 / 0.43 / 7 · refactor 0.40 / 0.33 / 6 · tests 0.33 / 0.50 / 2 · review 0.00 / 0.00 / 2.
 
-Limits: 97 prompts (±~9 points); thresholds read on dev; small labels are noise; not yet
-measured how many `ambiguous` prompts would wrongly get a brief (added to the script for the
-next run); the test split is still untouched.
+## Run 1b — prompts that should get no brief (same model, re-run with the new script)
+
+Identical numbers to the run above (same data, seed 42), plus the 42 dev prompts labelled
+`ambiguous` (no clear coding task): share that would still get a brief.
+
+| min_prob | Real-label prompts briefed | … correct | `ambiguous` prompts wrongly briefed |
+|---|---|---|---|
+| 0.5 | 68% | 77% | 48% (20 / 42) |
+| 0.6 | 53% | 82% | 29% (12 / 42) |
+| **0.7** | **34%** | **94%** | **10% (4 / 42)** |
+| 0.8 | 13% | 100% | 2% (1 / 42) |
+
+All 139 dev prompts at 0.7: ~37 briefs (~31 right, ~2 wrong task type, 4 that should have had
+none: ~84% of briefs right), ~102 unchanged. At 0.6: ~42 of ~63 briefs right (~67%).
+Working threshold for this model: 0.7.
+
+Limits: 139 prompts (±~9 points on the real-label share); thresholds read on dev; small labels
+are noise; the test split is still untouched.
