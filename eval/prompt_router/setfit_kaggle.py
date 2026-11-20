@@ -18,9 +18,9 @@ import time
 
 os.environ.setdefault("WANDB_MODE", "disabled")  # no interactive wandb login prompt
 
-import numpy as np  # noqa: E402
-from datasets import Dataset  # noqa: E402
-from setfit import SetFitModel, Trainer, TrainingArguments  # noqa: E402
+import numpy as np
+from datasets import Dataset
+from setfit import SetFitModel, Trainer, TrainingArguments
 
 BASE = "BAAI/bge-small-en-v1.5"
 AMBIGUOUS = "ambiguous"
