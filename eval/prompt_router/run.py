@@ -134,6 +134,8 @@ def main(argv: list[str] | None = None) -> None:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("split", choices=["dev", "test"])
     parser.add_argument("--target-precision", type=float, default=0.95)
+    parser.add_argument("--embed", choices=EMBED_MODELS, action="append",
+                        help="embedding model(s) to compare (default: all)")
     args = parser.parse_args(argv)
 
     labels = final_labels(load_jsonl(LABELS_FILE))
@@ -159,7 +161,7 @@ def main(argv: list[str] | None = None) -> None:
         report["kappa"] = cohen_kappa([labels[i] for i in both], [second[i] for i in both])
         report["kappa_n"] = len(both)
 
-    for model_name in EMBED_MODELS:
+    for model_name in args.embed or EMBED_MODELS:
         embed = fastembed_embedder(ROOT / "cache", model_name)
         start = time.perf_counter()
         x_train = embed([texts[i] for i in train])

@@ -29,6 +29,7 @@ STAGE1 = {
 }
 LABELS = tuple(STAGE1)
 MODEL = "BAAI/bge-small-en-v1.5"  # same model as the offline benchmark and the repo index
+EMBED_BATCH = 8
 MAX_CHARS = 2_000  # the start of a request says what is wanted; long pastes follow it
 
 _FOLLOWUP_WORDS = frozenset(
@@ -181,7 +182,10 @@ def fastembed_embedder(cache_dir: Path, model: str = MODEL) -> Callable[[list[st
     from fastembed import TextEmbedding  # optional dependency, imported only when used
 
     encoder = TextEmbedding(model, cache_dir=str(cache_dir / "models"))
-    return lambda texts: np.stack([np.asarray(v, dtype=np.float32) for v in encoder.embed(texts)])
+    # Small batches: a long-context model (8k tokens) embedding 256 long prompts at once
+    # runs a 16 GB laptop out of memory.
+    return lambda texts: np.stack([np.asarray(v, dtype=np.float32)
+                                   for v in encoder.embed(texts, batch_size=EMBED_BATCH)])
 
 
 class PromptRouter:
