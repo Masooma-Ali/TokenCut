@@ -20,6 +20,8 @@ import numpy as np
 
 from eval.prompt_router.data import OUT_DIR
 from eval.prompt_router.label import LABELS_FILE, SECOND_FILE, load_jsonl
+
+EXTRA_FILE = Path(__file__).parent / "labels_extra.jsonl"  # keyword-found, training only
 from tokencut.gateway.prompt_router import (
     AMBIGUOUS,
     KNN,
@@ -39,7 +41,9 @@ CLASSIFIERS = {
     "prototypes": Prototypes,
     "knn5": lambda: KNN(k=5),
     "softmax": SoftmaxHead,
+    "softmax_balanced": lambda: SoftmaxHead(class_weight="balanced"),
     "two_stage": lambda: TwoStage(SoftmaxHead),
+    "two_stage_balanced": lambda: TwoStage(lambda: SoftmaxHead(class_weight="balanced")),
 }
 THRESHOLDS = [(p, m) for p in (0.0, 0.4, 0.5, 0.6, 0.7, 0.8) for m in (0.0, 0.1, 0.2, 0.3)]
 
@@ -133,17 +137,22 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     labels = final_labels(load_jsonl(LABELS_FILE))
-    if not SPLITS.exists():
+    if not SPLITS.exists():  # the split covers the random 700 only
         SPLITS.write_text(json.dumps(stratified_split(labels), indent=1))
     splits = json.loads(SPLITS.read_text())
-    texts = {p["id"]: p["text"][:MAX_CHARS] for p in load_jsonl(OUT_DIR / "prompts.jsonl")}
+    texts = {p["id"]: p["text"][:MAX_CHARS] for name in ("prompts.jsonl", "prompts_extra.jsonl")
+             for p in load_jsonl(OUT_DIR / name)}
+    extra = final_labels(load_jsonl(EXTRA_FILE))
     train = [i for i in splits["train"] if i in labels and labels[i] != AMBIGUOUS]
+    train += sorted(i for i, lab in extra.items() if lab != AMBIGUOUS and i not in labels)
+    labels = {**extra, **labels}  # the random 700 win if an id is in both (it never is)
     evaluate = [i for i in splits[args.split] if i in labels]
     y_train = [labels[i] for i in train]
     y_eval = [labels[i] for i in evaluate]
     all_labels = sorted(set(labels.values()) | {AMBIGUOUS})
 
-    report: dict = {"split": args.split, "n_train": len(train), "n_eval": len(evaluate), "runs": []}
+    report: dict = {"split": args.split, "n_train": len(train), "n_eval": len(evaluate), "runs": [],
+                    "train_counts": {lab: y_train.count(lab) for lab in sorted(set(y_train))}}
     second = final_labels(load_jsonl(SECOND_FILE))
     both = sorted(set(second) & set(labels))
     if both:

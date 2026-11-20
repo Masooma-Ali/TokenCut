@@ -9,6 +9,13 @@ deduplicated, with key- / token- / e-mail-like strings masked. Same zip + seed -
 sample, so teammates rebuild identical texts; only ids and labels are committed.
 
 Output (local, gitignored): cache/prompt_router/prompts.jsonl  {id, text, source}
+
+    python -m eval.prompt_router.data --extra
+
+Extra TRAINING prompts for rare labels: keyword search over the prompts NOT in the random sample
+(keywords per label in EXTRA_KEYWORDS), a seeded pick per label. Keyword-found prompts are not a
+random sample, so they are used for training only; dev / test stay the random 700.
+Output: cache/prompt_router/prompts_extra.jsonl  {id, text, source, searched_for}
 """
 
 import argparse
@@ -102,14 +109,76 @@ def sample(rows: list[dict], n: int, seed: int = 13) -> list[dict]:
     return picked[:n]
 
 
+EXTRA_KEYWORDS = {
+    "tests": r"\b(unit ?tests?|pytest|jest|test ?cases?|testing|mock(ing|s)?|coverage|cypress)\b",
+    "review": (r"\b(review|code quality|any (bugs|issues|problems)|is (this|it|my code) "
+               r"(correct|right|good|ok|valid)|feedback on|improvements? (to|for|in))\b"),
+    "run_action": (r"\b(install|deploy|git (push|pull|rebase|commit|clone|checkout|merge)|"
+                   r"docker (run|compose|build)|command to|how (do i|to|can i) run)\b"),
+    "refactor": r"\b(refactor|simplif(y|ied)|clean ?up|rewrite|more readable|port (this|it) to)\b",
+    "design": (r"\b(architecture|best (way|approach|practice)|which (library|framework|database)|"
+               r"pros and cons|trade-?offs?|should i use)\b"),
+    "write_text": (r"\b(readme|documentation|docstrings?|commit message|blog post|release notes|"
+                   r"changelog)\b"),
+}
+
+
+# Round 2: stricter phrases for the two labels round 1 found least often.
+EXTRA_KEYWORDS_2 = {
+    "tests": (r"\b(write|add|create|generate|need) (some |a |the )?(unit |integration |e2e )?tests?\b|"
+              r"\btests? (for|of) (this|my|the)\b|\b(pytest|jest|unittest|vitest|mocha)\b"),
+    "review": (r"\b(review (my|this|the) (code|pr|pull request|function|script)|code review|"
+               r"is (this|the following|my) (code |function |script )?(correct|right|ok|safe|valid)|"
+               r"what('s| is) wrong with (this|my)|any (bugs|issues|problems) (in|with))\b"),
+}
+
+
+def extra_candidates(rows: list[dict], exclude: set[str], per_label: dict[str, int],
+                     seed: int = 17, keywords: dict[str, str] | None = None) -> list[dict]:
+    """Seeded keyword candidates per rare label, never a prompt already sampled or picked."""
+    keywords = keywords or EXTRA_KEYWORDS
+    rng = random.Random(seed)
+    taken = set(exclude)
+    out = []
+    for label in sorted(per_label):
+        pattern = re.compile(keywords[label], re.IGNORECASE)
+        pool = [r for r in rows if r["id"] not in taken and pattern.search(r["text"])]
+        for row in rng.sample(pool, min(per_label[label], len(pool))):
+            taken.add(row["id"])
+            out.append({**row, "searched_for": label})
+    return out
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--zip", type=Path, default=OUT_DIR / "DevGPT.zip")
     parser.add_argument("--sample", type=int, default=700)
     parser.add_argument("--seed", type=int, default=13)
+    parser.add_argument("--extra", action="store_true", help="keyword candidates for rare labels")
+    parser.add_argument("--extra2", action="store_true", help="round 2: stricter tests / review")
     args = parser.parse_args(argv)
     rows = extract(args.zip)
+    if args.extra2:
+        taken = {json.loads(line)["id"] for name in ("prompts.jsonl", "prompts_extra.jsonl")
+                 for line in (OUT_DIR / name).open()}
+        extra = extra_candidates(rows, taken, {"tests": 50, "review": 50}, seed=29,
+                                 keywords=EXTRA_KEYWORDS_2)
+        with (OUT_DIR / "prompts_extra.jsonl").open("a") as f:  # appended: E171 onwards
+            for row in extra:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        print(f"{len(extra)} round-2 candidates appended")
+        return
+    if args.extra:
+        sampled = {json.loads(line)["id"] for line in (OUT_DIR / "prompts.jsonl").open()}
+        per_label = {"tests": 45, "review": 40, "run_action": 30, "refactor": 25, "design": 15,
+                     "write_text": 15}
+        extra = extra_candidates(rows, sampled, per_label)
+        with (OUT_DIR / "prompts_extra.jsonl").open("w") as f:
+            for row in extra:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        print(f"{len(extra)} extra candidates for {sorted(per_label)}")
+        return
     picked = sample(rows, args.sample, args.seed)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     with (OUT_DIR / "prompts.jsonl").open("w") as f:

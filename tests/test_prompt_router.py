@@ -79,3 +79,19 @@ def test_router_is_deterministic_and_round_trips(tmp_path):
     assert loaded.labels == head.labels
     assert np.array_equal(loaded.predict_proba(x), head.predict_proba(x))
     assert np.array_equal(head.predict_proba(x), head.predict_proba(x))
+
+
+def test_balanced_weights_stop_a_big_class_from_swallowing_a_small_one():
+    rng = np.random.default_rng(3)
+    big, small = DIRECTIONS["feature"], DIRECTIONS["tests"]
+    x = np.array([big + 0.9 * rng.normal(size=DIM) for _ in range(200)]
+                 + [small + 0.9 * rng.normal(size=DIM) for _ in range(6)], dtype=np.float32)
+    y = ["feature"] * 200 + ["tests"] * 6
+    probe = np.array([small + 0.9 * rng.normal(size=DIM) for _ in range(50)], dtype=np.float32)
+
+    def recall(head):
+        return np.mean(head.predict_proba(probe).argmax(axis=1) == head.labels.index("tests"))
+
+    plain = recall(SoftmaxHead(epochs=300).fit(x, y))
+    balanced = recall(SoftmaxHead(epochs=300, class_weight="balanced").fit(x, y))
+    assert balanced > plain

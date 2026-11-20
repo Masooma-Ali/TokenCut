@@ -2,7 +2,14 @@
 
 import numpy as np
 
-from eval.prompt_router.data import _first_prompts, clean, is_english, prompt_id, sample
+from eval.prompt_router.data import (
+    _first_prompts,
+    clean,
+    extra_candidates,
+    is_english,
+    prompt_id,
+    sample,
+)
 from eval.prompt_router.run import (
     cascade,
     cohen_kappa,
@@ -66,3 +73,13 @@ def test_cascade_sends_unclear_prompts_to_ambiguous():
     probs = np.array([[0.9, 0.1], [0.55, 0.45]])
     assert cascade(probs, ["bugfix", "feature"], 0.6, 0.0) == ["bugfix", "ambiguous"]
     assert cascade(probs, ["bugfix", "feature"], 0.0, 0.2) == ["bugfix", "ambiguous"]
+
+
+def test_extra_candidates_skip_the_random_sample_and_never_repeat():
+    rows = [{"id": str(i), "text": f"please add unit tests for f{i}", "source": "pr"} for i in range(30)]
+    rows += [{"id": "r", "text": "review my code", "source": "pr"}]
+    picked = extra_candidates(rows, exclude={"0", "1"}, per_label={"tests": 5, "review": 3})
+    ids = [r["id"] for r in picked]
+    assert len(ids) == len(set(ids)) == 6 and not {"0", "1"} & set(ids)
+    assert {r["searched_for"] for r in picked} == {"tests", "review"}
+    assert picked == extra_candidates(rows, exclude={"0", "1"}, per_label={"tests": 5, "review": 3})

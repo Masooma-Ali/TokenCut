@@ -1,0 +1,192 @@
+{"index": "E1", "id": "9d83481ae17c", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": "prompt-injection evaluation task"}
+{"index": "E2", "id": "86b5ce1f0c0c", "label": "explain", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E3", "id": "e6e74b75c6c3", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E4", "id": "4fbd73948460", "label": "design", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E5", "id": "722b1719169c", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E6", "id": "4697815099e0", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E7", "id": "25cac5e0c400", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E8", "id": "ce93409332c3", "label": "explain", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E9", "id": "d4adca176410", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E10", "id": "9f1b8def1d13", "label": "design", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E11", "id": "c8a1d45a45ba", "label": "design", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E12", "id": "4558af8e29a4", "label": "design", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E13", "id": "12cfc03968d4", "label": "explain", "labeler": "claude", "searched_for": "design", "note": "build log pasted, no request"}
+{"index": "E14", "id": "02276368b96d", "label": "design", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E15", "id": "32d01615fe45", "label": "ambiguous", "labeler": "claude", "searched_for": "design", "note": ""}
+{"index": "E16", "id": "9ac1c7a20468", "label": "write_text", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E17", "id": "a13ec8025802", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "marked \"Refactor!\" but adds behaviour"}
+{"index": "E18", "id": "600e8e0d9878", "label": "ambiguous", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E19", "id": "d0f2a53d5f8e", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E20", "id": "8665c240c633", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E21", "id": "9df96d59d904", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E22", "id": "3b3ea7ce226f", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "add styles for markdown display"}
+{"index": "E23", "id": "e691408e23e2", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E24", "id": "1d871a5b1a60", "label": "ambiguous", "labeler": "claude", "searched_for": "refactor", "note": "code pasted, no request"}
+{"index": "E25", "id": "eb90a450c160", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "padding change"}
+{"index": "E26", "id": "4f04633612f9", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "factor out + new fit addon (feature beats refactor)"}
+{"index": "E27", "id": "3eff28b07d2a", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E28", "id": "e2c2be061d99", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "await + output order + prompt.md handling (feature beats refactor)"}
+{"index": "E29", "id": "59378ac22e17", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E30", "id": "87fc735a17c7", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": "parallelise a loop"}
+{"index": "E31", "id": "37ceba836fff", "label": "ambiguous", "labeler": "claude", "searched_for": "refactor", "note": "code pasted, no request"}
+{"index": "E32", "id": "1de9ba89b459", "label": "write_text", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E33", "id": "79293301b6f8", "label": "explain", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E34", "id": "9ebf0cfa095c", "label": "ambiguous", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E35", "id": "27b811e52883", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E36", "id": "d1e89fa01d14", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E37", "id": "be4f99926f20", "label": "feature", "labeler": "claude", "searched_for": "refactor", "note": "changes rendered structure"}
+{"index": "E38", "id": "3dc7d590950e", "label": "bugfix", "labeler": "claude", "searched_for": "refactor", "note": "factor out + fix wrong scoring (bugfix beats refactor)"}
+{"index": "E39", "id": "d8d751c2614b", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": "port C++ to Rust"}
+{"index": "E40", "id": "cf53f16e9869", "label": "refactor", "labeler": "claude", "searched_for": "refactor", "note": ""}
+{"index": "E41", "id": "f8879fc8b7eb", "label": "bugfix", "labeler": "claude", "searched_for": "review", "note": "accessibility defect found in review"}
+{"index": "E42", "id": "b050d7af567a", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E43", "id": "0251aab8ed45", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E44", "id": "d2dcf9456c99", "label": "explain", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E45", "id": "570844ba10fb", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E46", "id": "887185096fce", "label": "feature", "labeler": "claude", "searched_for": "review", "note": "reformat a transcript programmatically"}
+{"index": "E47", "id": "11a67534dc3f", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E48", "id": "d7dfd47e60b4", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E49", "id": "b62cc94dd37b", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E50", "id": "b61026368384", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": "proofread game text"}
+{"index": "E51", "id": "52d8fc97f75c", "label": "feature", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E52", "id": "e058692af8ba", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": "summary of course tasks"}
+{"index": "E53", "id": "75b540cadf42", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": "guidelines pasted, no request"}
+{"index": "E54", "id": "f238238ca5b5", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E55", "id": "90d12c7d8b5e", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E56", "id": "b710765a6c62", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": "write a custom-instructions prompt"}
+{"index": "E57", "id": "009435727c67", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E58", "id": "648743db24a9", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E59", "id": "35f247ea61d0", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E60", "id": "18670c22c15c", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E61", "id": "857b6d12d330", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E62", "id": "2b33139326ef", "label": "review", "labeler": "claude", "searched_for": "review", "note": "accessibility review of HTML"}
+{"index": "E63", "id": "dcc2746f9d7d", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E64", "id": "831c003a52d4", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E65", "id": "d06c09edbc52", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E66", "id": "f24e710ee4d8", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": "transcript cleanup"}
+{"index": "E67", "id": "42f23ca5cec9", "label": "feature", "labeler": "claude", "searched_for": "review", "note": "assignment: add logging"}
+{"index": "E68", "id": "12a7ce0574b3", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E69", "id": "95533334fb77", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E70", "id": "2a01ae4ee453", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E71", "id": "b202f308a9e2", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E72", "id": "83c2e7b29caf", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": "quiz"}
+{"index": "E73", "id": "1a8a1b05df24", "label": "bugfix", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E74", "id": "378d4cd2441b", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E75", "id": "455e91b5c916", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": "not English"}
+{"index": "E76", "id": "d64baaeadf35", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E77", "id": "1ef0451646a1", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": "setup, no task yet"}
+{"index": "E78", "id": "131dac2d17d6", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E79", "id": "d2880a842930", "label": "feature", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E80", "id": "9b924ecffe75", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E81", "id": "ffab09fe4597", "label": "refactor", "labeler": "claude", "searched_for": "run_action", "note": "move Python step into a bash script"}
+{"index": "E82", "id": "b0afd96a15dd", "label": "feature", "labeler": "claude", "searched_for": "run_action", "note": "write a Dockerfile"}
+{"index": "E83", "id": "b19293374bef", "label": "write_text", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E84", "id": "dfa6de7833a4", "label": "ambiguous", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E85", "id": "4e1791235ca5", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E86", "id": "5a8a032a9ab2", "label": "ambiguous", "labeler": "claude", "searched_for": "run_action", "note": "Makefile pasted, no request"}
+{"index": "E87", "id": "0366e8da424c", "label": "feature", "labeler": "claude", "searched_for": "run_action", "note": "Kubernetes manifests"}
+{"index": "E88", "id": "0d82d9c019cc", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E89", "id": "d3a137ba450d", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E90", "id": "5bf28e89e703", "label": "write_text", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E91", "id": "045745b2cd25", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E92", "id": "7db4738d8b1f", "label": "feature", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E93", "id": "d35c102c37d4", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E94", "id": "f7e98095b17d", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": "git rebase"}
+{"index": "E95", "id": "7e3941787717", "label": "bugfix", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E96", "id": "bcc644161852", "label": "feature", "labeler": "claude", "searched_for": "run_action", "note": "factor out + new ignore entry (feature beats refactor)"}
+{"index": "E97", "id": "ec9855d3e3fd", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": "install tool, move files"}
+{"index": "E98", "id": "d15b762d86ac", "label": "design", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E99", "id": "38a1dca568b3", "label": "explain", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E100", "id": "529ad5498c90", "label": "feature", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E101", "id": "4c39f54729e1", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E102", "id": "182d642ba7c4", "label": "ambiguous", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E103", "id": "d083a633c532", "label": "bugfix", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E104", "id": "81b82cabad88", "label": "write_text", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E105", "id": "ea3239807834", "label": "design", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E106", "id": "b7ac44e18124", "label": "tests", "labeler": "claude", "searched_for": "run_action", "note": "e2e test procedure"}
+{"index": "E107", "id": "af1076884f78", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": "make a repo pip-installable"}
+{"index": "E108", "id": "9e99d4ced8fc", "label": "run_action", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E109", "id": "caae60847319", "label": "bugfix", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E110", "id": "3006a128c649", "label": "bugfix", "labeler": "claude", "searched_for": "run_action", "note": ""}
+{"index": "E111", "id": "9049c7abc113", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E112", "id": "a8d7b2743491", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E113", "id": "f2cd83159e91", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E114", "id": "c512483aea96", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "mocking for tests"}
+{"index": "E115", "id": "8ff2e7e850b2", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": "curve fitting"}
+{"index": "E116", "id": "401e66f5dbf0", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "tutorial text, no request"}
+{"index": "E117", "id": "417da5fe639c", "label": "run_action", "labeler": "claude", "searched_for": "tests", "note": "CI configuration"}
+{"index": "E118", "id": "52c08dee321a", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "config pasted, no request"}
+{"index": "E119", "id": "327a0d03f7f4", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "workflow pasted, no request"}
+{"index": "E120", "id": "db78f2b68b44", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E121", "id": "28f51d35a068", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E122", "id": "43ca129e8ac1", "label": "explain", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E123", "id": "10d97fbb216a", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "set up files to run unit tests"}
+{"index": "E124", "id": "b411ba2b6409", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E125", "id": "6baa199a268c", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": "rename + new npm script (feature beats refactor)"}
+{"index": "E126", "id": "753f07591ccc", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": "implement a function (TDD framing)"}
+{"index": "E127", "id": "d8244eaad14d", "label": "bugfix", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E128", "id": "dee08d8539d8", "label": "review", "labeler": "claude", "searched_for": "tests", "note": "review a CI workflow"}
+{"index": "E129", "id": "32c623eba58c", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E130", "id": "92c776b2fe62", "label": "write_text", "labeler": "claude", "searched_for": "tests", "note": "commit message"}
+{"index": "E131", "id": "1d4b8104bd8d", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": "data science"}
+{"index": "E132", "id": "d8bc1587a656", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E133", "id": "eb22f469c62e", "label": "review", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E134", "id": "ffc2a8599ed4", "label": "bugfix", "labeler": "claude", "searched_for": "tests", "note": "remove a warning"}
+{"index": "E135", "id": "a8b5abee9c32", "label": "bugfix", "labeler": "claude", "searched_for": "tests", "note": "marked \"Refactor!\" but fixes stale package.json scripts"}
+{"index": "E136", "id": "164a337c124a", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "tutorial text, no request"}
+{"index": "E137", "id": "b7392c5aec00", "label": "bugfix", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E138", "id": "1cab4f630e54", "label": "refactor", "labeler": "claude", "searched_for": "tests", "note": "move packages to devDependencies"}
+{"index": "E139", "id": "c199919ba432", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E140", "id": "48211ebe3e09", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E141", "id": "44ad54077cc6", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "find which tests warn"}
+{"index": "E142", "id": "e5669333a8e8", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "deliberately bad code"}
+{"index": "E143", "id": "54b78550c459", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E144", "id": "d01861969a1b", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E145", "id": "6304087796db", "label": "write_text", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E146", "id": "d03533cf041f", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E147", "id": "ff74c823a30f", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "test framework choice"}
+{"index": "E148", "id": "af155fdc5dc4", "label": "review", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E149", "id": "fe71fedad88a", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E150", "id": "9297d92df5c6", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "test collection error"}
+{"index": "E151", "id": "5295cdac3046", "label": "write_text", "labeler": "claude", "searched_for": "tests", "note": "docstring for a fixture"}
+{"index": "E152", "id": "e0351674b7f6", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "Cypress test config"}
+{"index": "E153", "id": "60b45fb5834b", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E154", "id": "42d2061a64b6", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "workflow pasted, no request"}
+{"index": "E155", "id": "b2a95b66b73e", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E156", "id": "b5ccc5acdd43", "label": "bugfix", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E157", "id": "1ee030f2266f", "label": "bugfix", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E158", "id": "bfd17c66c143", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E159", "id": "51a7af5ee162", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E160", "id": "55ea7c0968b2", "label": "write_text", "labeler": "claude", "searched_for": "write_text", "note": "docs site sidebar"}
+{"index": "E161", "id": "cba1aaba3af1", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E162", "id": "7b43e7d89626", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E163", "id": "47555fe29687", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E164", "id": "8d65b8efa93e", "label": "write_text", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E165", "id": "08c007cd418d", "label": "run_action", "labeler": "claude", "searched_for": "write_text", "note": "gitignore + untrack, as #240"}
+{"index": "E166", "id": "f5f4dd1222c0", "label": "feature", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E167", "id": "f2814542d440", "label": "bugfix", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E168", "id": "da62b289876d", "label": "write_text", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E169", "id": "a99ee6920db8", "label": "write_text", "labeler": "claude", "searched_for": "write_text", "note": ""}
+{"index": "E170", "id": "14ff4b4e05f1", "label": "bugfix", "labeler": "claude", "searched_for": "write_text", "note": "wrong path (bugfix beats feature)"}
+{"index": "E171", "id": "e3f4e2ecd300", "label": "review", "labeler": "claude", "searched_for": "review", "note": "what's wrong with this code"}
+{"index": "E172", "id": "275f726b8101", "label": "design", "labeler": "claude", "searched_for": "review", "note": "ideas for a project"}
+{"index": "E173", "id": "487b3b0f7566", "label": "ambiguous", "labeler": "claude", "searched_for": "review", "note": "persona setup, no clear task"}
+{"index": "E174", "id": "68e2cac5b78f", "label": "review", "labeler": "claude", "searched_for": "review", "note": ""}
+{"index": "E175", "id": "ca12bfbab942", "label": "write_text", "labeler": "claude", "searched_for": "review", "note": "proofread text, as E50"}
+{"index": "E176", "id": "fee1345b0325", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "sample text"}
+{"index": "E177", "id": "a86bcea8753d", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": "open handles after tests"}
+{"index": "E178", "id": "5cf56014f0ef", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": "act as a testing bot for a ChatGPT plugin"}
+{"index": "E179", "id": "f92ccf06ce05", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E180", "id": "000a332b2d63", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E181", "id": "c0d64c62b2ce", "label": "refactor", "labeler": "claude", "searched_for": "tests", "note": "refactor for testability (refactor beats tests)"}
+{"index": "E182", "id": "02dd06ab137f", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E183", "id": "6a52dbe60bd0", "label": "bugfix", "labeler": "claude", "searched_for": "tests", "note": "move deps so packaging works"}
+{"index": "E184", "id": "40356987094f", "label": "tests", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E185", "id": "55964351c63a", "label": "explain", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E186", "id": "fbbbffc270d4", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E187", "id": "786f3cbb8cf9", "label": "ambiguous", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E188", "id": "0c9932f6e0a2", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E189", "id": "978a0e8233e7", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": "+ a new test (feature beats tests)"}
+{"index": "E190", "id": "54853b5e3c37", "label": "feature", "labeler": "claude", "searched_for": "tests", "note": ""}
+{"index": "E191", "id": "d1d56f2cf645", "label": "review", "labeler": "claude", "searched_for": "tests", "note": "suggestions on a test file"}
+{"index": "E192", "id": "9b4eacdced40", "label": "refactor", "labeler": "claude", "searched_for": "tests", "note": "move scripts out + set up Jest (refactor beats tests)"}

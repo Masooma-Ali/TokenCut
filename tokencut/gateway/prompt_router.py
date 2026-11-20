@@ -99,22 +99,30 @@ class KNN:
 
 
 class SoftmaxHead:
-    """Multinomial logistic regression on frozen embeddings (full-batch Adam, L2)."""
+    """Multinomial logistic regression on frozen embeddings (full-batch Adam, L2).
 
-    def __init__(self, l2: float = 1e-3, epochs: int = 500, lr: float = 0.05):
-        self.l2, self.epochs, self.lr = l2, epochs, lr
+    class_weight="balanced": each label counts as much as any other in the loss, however many
+    examples it has (weight = n / (labels * count)), so rare labels are not drowned out."""
+
+    def __init__(self, l2: float = 1e-3, epochs: int = 500, lr: float = 0.05,
+                 class_weight: str | None = None):
+        self.l2, self.epochs, self.lr, self.class_weight = l2, epochs, lr, class_weight
 
     def fit(self, x: np.ndarray, y: list[str]) -> "SoftmaxHead":
         x = _unit(x).astype(np.float64)
         self.labels = sorted(set(y))
         target = np.zeros((len(y), len(self.labels)))
         target[np.arange(len(y)), [self.labels.index(t) for t in y]] = 1
+        weight = np.ones((len(y), 1))
+        if self.class_weight == "balanced":
+            counts = target.sum(axis=0)
+            weight = (len(y) / (len(self.labels) * counts))[[self.labels.index(t) for t in y]][:, None]
         w = np.zeros((x.shape[1], len(self.labels)))
         b = np.zeros(len(self.labels))
         m = [np.zeros_like(w), np.zeros_like(b)]
         v = [np.zeros_like(w), np.zeros_like(b)]
         for step in range(1, self.epochs + 1):
-            grad = (_softmax(x @ w + b) - target) / len(y)
+            grad = weight * (_softmax(x @ w + b) - target) / len(y)
             grads = [x.T @ grad + self.l2 * w, grad.sum(axis=0)]
             for j, (param, g) in enumerate(zip((w, b), grads)):
                 m[j] = 0.9 * m[j] + 0.1 * g
