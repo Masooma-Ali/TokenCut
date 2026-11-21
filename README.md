@@ -4,6 +4,32 @@ Cost-aware joint context-and-model routing gateway for AI coding agents (FYP, FA
 
 **Iteration 1:** repository parsing, code-graph construction, and 4-tier context-variant generation.
 
+## Install and use (one command)
+Needs [Claude Code](https://claude.ai/code) installed first. Then:
+```bash
+curl -fsSL https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.sh | sh     # macOS / Linux
+```
+```powershell
+irm https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.ps1 | iex          # Windows
+```
+The installer adds [uv](https://docs.astral.sh/uv/) if missing, installs the `tokencut` command
+(PyPI package `tokencut-cli`) and runs `tokencut setup`, which asks whether to add your ChatGPT
+plan, installs the hidden model connector (LiteLLM) and downloads the prompt model once.
+Then, in any project folder:
+
+| Command | What it does |
+|---|---|
+| `tokencut` | opens Claude Code through TokenCut (trimming, system note, task briefs, routing); `/model gpt-6.1-sol` for GPT if set up |
+| `tokencut setup` | change logins / re-run one-time installs (`--chatgpt`, `--no-chatgpt`) |
+| `tokencut status` | running? tokens removed, billed usage |
+| `tokencut logs [gateway\|connector]` | last lines of a process log |
+
+Settings: `~/.tokencut/config.json` (no secrets); every `TOKENCUT_*` variable below overrides it.
+Claude keeps Claude Code's own login; the ChatGPT token stays in LiteLLM's file; a local
+TokenCut key (`~/.tokencut/tokencut_key`) stops other programs from using the gateway.
+Releases: push a tag `vX.Y.Z` (`.github/workflows/release.yml` tests, publishes to PyPI and
+creates a GitHub Release).
+
 ## Pipeline
 
 ```
@@ -88,6 +114,7 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 |---|---|---|
 | `TOKENCUT_ANTHROPIC_UPSTREAM` / `_OPENAI_` / `_GEMINI_` | official API URLs | send to another compatible endpoint (e.g. OpenRouter) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | where numbers are logged (empty = off) |
+| `TOKENCUT_KEY` | none | if set, proxy requests must send it in `x-tokencut-key` (the `tokencut` command does this; the header is never forwarded) |
 | `TOKENCUT_CAPTURE` | off | `1` = also save full request bodies locally, for parser test fixtures (contain your prompts and code) |
 | `TOKENCUT_HOST` / `TOKENCUT_PORT` | `127.0.0.1` / `8787` | listen address |
 | `TOKENCUT_MODE` | `shadow` | `shadow` = forward unchanged, report possible savings; `trim` = send the trimmed request |

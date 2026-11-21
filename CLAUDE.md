@@ -127,10 +127,10 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `tokencut/gateway/note.py` | fixed system note on TokenCut's markers (`TOKENCUT_SYSTEM_NOTE`) |
 | `tokencut/gateway/task_router.py`, `brief.py`, `prompt_router.py` | task briefs: machine-text rules + ONNX router, six brief texts (`TOKENCUT_PROMPT_BRIEF`) |
 | `tokencut/gateway/routing.py` | model routing: GPT (and optionally Claude) models to LiteLLM |
-| `tokencut/cli.py`, `tokencut/launch.py` | the `tokencut` command (`code`, `gateway`); launcher for gateway + LiteLLM + Claude Code |
+| `tokencut/cli.py`, `launch.py`, `wizard.py`, `userconfig.py`, `litellm_proxy.py` | the installed `tokencut` command: setup, config, hidden LiteLLM, launcher, status / logs (section 5a) |
 | `eval/loader.py`, `metrics.py`, `run_eval.py` | SWE-bench Lite loader (HF datasets-server), gold chunks, Iteration 1 eval |
 | `eval/benchmark.py`, `embeddings.py`, `prepare.py` | head-to-head benchmark vs baselines; task sets in `eval/tasks_iter2.json` |
-| `tests/` | 357 tests (all must pass) |
+| `tests/` | 381 tests (all must pass) |
 
 ### Gateway settings (environment variables)
 | Variable | Default | Meaning |
@@ -155,6 +155,7 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_GPT_KEY` | — | LiteLLM master key |
 | `TOKENCUT_CLAUDE_VIA_LITELLM` | off | `1` = Claude models through LiteLLM too (the deployment default) |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
+| `TOKENCUT_KEY` | — | if set, proxy requests must send it in `x-tokencut-key` (set by `tokencut` from `~/.tokencut/tokencut_key`; never forwarded) |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
 | `TOKENCUT_{ANTHROPIC,OPENAI,GEMINI}_UPSTREAM` | official URLs | other compatible endpoints |
@@ -214,23 +215,28 @@ These live sessions are **short and on a tiny repo**.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                 # must be 357+ passed
+pytest -q                 # must be 381+ passed
 ruff check .              # must be clean
 ```
 The machine may have no `python` command; use `python3` or the venv. The first token count
 downloads a small tiktoken file (needs internet once).
 
-### 5a. As an installed package (branch `feat/cli-install`, in progress)
+### 5a. As an installed package (branch `feat/cli-install`)
 ```bash
-pip install -e ".[dev]"    # editable install with test tools; or build: pip wheel . --no-deps -w dist
-tokencut --version
-tokencut gateway           # the gateway in the foreground
-tokencut code              # gateway + LiteLLM + Claude Code (same as python -m tokencut.launch code)
+pip install -e ".[dev]"    # editable install with test tools
+tokencut setup             # Claude Code check, ChatGPT question, hidden LiteLLM, router download
+tokencut                   # connector + gateway + Claude Code (same as `tokencut code`)
+tokencut status | logs [gateway|connector] | gateway | --version
 ```
-`pyproject.toml` holds version ranges for installs; `requirements.txt` keeps the exact
-versions the team tests with. Planned next: config file `~/.tokencut/config.json`,
-`tokencut setup` (Claude Code check, logins, hidden LiteLLM venv + generated config),
-`status` / `logs`, a local TokenCut key, release pipeline and install scripts.
+Users install with `install.sh` / `install.ps1` (uv + `uv tool install tokencut-cli`; PyPI name
+`tokencut` is taken). Code: `tokencut/cli.py`, `wizard.py` (setup), `userconfig.py`
+(`~/.tokencut/config.json`, keys, env), `litellm_proxy.py` (pinned LiteLLM venv, generated
+config), `launch.py`. `TOKENCUT_HOME` moves `~/.tokencut` (tests). `TOKENCUT_KEY` (gateway):
+proxy requests need `x-tokencut-key`; the launcher passes it via `ANTHROPIC_CUSTOM_HEADERS`.
+`pyproject.toml` holds version ranges (version from the git tag, setuptools-scm);
+`requirements.txt` keeps the exact versions the team tests with. Release: push `vX.Y.Z` →
+`.github/workflows/release.yml` (tests + package matrix → PyPI trusted publishing → GitHub
+Release). Keep `LITELLM_VERSION` equal to `deploy/litellm/requirements.txt` (tested).
 
 ### Offline benchmark
 Local data is NOT in git (gitignored, several GB): `swebench_repos/`, `cache/`
