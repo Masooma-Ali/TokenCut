@@ -88,7 +88,7 @@ class GatewayConfig:
     virtual: VirtualConfig = field(default_factory=VirtualConfig)  # CCR, lazy tool loading
     route: RouteConfig = field(default_factory=RouteConfig)  # dual-plan demo (GPT via LiteLLM)
     router_dir: str | None = None  # prompt router model folder (TOKENCUT_ROUTER_DIR)
-    router_repo: str | None = None  # else this private Hugging Face repo (TOKENCUT_ROUTER_REPO)
+    router_repo: str | None = None  # else this public Hugging Face repo (TOKENCUT_ROUTER_REPO)
     router: object | None = None  # loaded router (tests pass a fake)
 
     @classmethod

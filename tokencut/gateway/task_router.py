@@ -7,9 +7,9 @@ fine-tuned on SWE-chat (RESULTS_REPORT §11), run as ONNX on CPU with the traini
 360 + "…" + last 149 tokens) and probabilities re-weighted to the natural label mix.
 
 The model files (router.onnx, router.onnx.data, tokenizer.json, router_config.json) are not in
-git: TOKENCUT_ROUTER_DIR, or downloaded once from the private Hugging Face repo
-TOKENCUT_ROUTER_REPO with the user's HF login. onnxruntime, tokenizers and huggingface_hub come
-with fastembed and are imported only when the router is used.
+git: TOKENCUT_ROUTER_DIR, or downloaded once (no login) from the public Hugging Face repo
+TOKENCUT_ROUTER_REPO. onnxruntime, tokenizers and huggingface_hub are package dependencies and
+are imported only when the router is used.
 """
 
 import hashlib

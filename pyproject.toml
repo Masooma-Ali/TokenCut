@@ -1,7 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "tokencut"
-version = "0.0.1"
+version = "0.1.0.dev0"
+description = "Cache-aware gateway that trims the context coding agents send to the model"
+readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "Masooma Ali" }, { name = "Huma Taj" }, { name = "Fatima Shakir" }]
+# Ranges for installs; requirements.txt keeps the exact versions the team tests with.
+dependencies = [
+    "tree-sitter>=0.26,<0.27",
+    "tree-sitter-python>=0.25,<0.26",
+    "networkx>=3.6,<4",
+    "pydantic>=2.13,<3",
+    "tiktoken>=0.14,<1",
+    "rank-bm25>=0.2.2,<0.3",
+    "fastapi>=0.142,<1",
+    "uvicorn>=0.53,<1",
+    "httpx2>=2.13,<3",
+    "pillow>=13,<14",
+    "pypdf>=6.21,<7",
+    "numpy>=2.4,<3",
+    # Prompt router (task briefs): ONNX model downloaded once from the public HF repo.
+    "onnxruntime>=1.30,<2",
+    "tokenizers>=0.23,<1",
+    "huggingface-hub>=1.33,<2",
+]
+
+[project.optional-dependencies]
+embed = ["fastembed>=0.9.1,<1"]  # repo index embeddings and the offline benchmark
+dev = ["fastembed==0.9.1", "unidiff==1.0.1", "pytest==9.1.1", "ruff==0.16.10"]
+
+[project.scripts]
+tokencut = "tokencut.cli:main"
+
+[project.urls]
+Repository = "https://github.com/Masooma-Ali/TokenCut"
+
+[tool.setuptools.packages.find]
+include = ["tokencut*"]
+
+[tool.setuptools.package-data]
+"tokencut.gateway" = ["live.html"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
