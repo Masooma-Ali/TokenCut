@@ -65,6 +65,7 @@ class TrimConfig:
     trim_borders: bool = True  # attachments step 6: cut plain outer borders off images
     media_user: bool = False  # also change the user's own attachments (team decision; off)
     pdf_text_pages: bool = True  # attachments step 7: PDF pages without images / drawings as text
+    system_note: bool = False  # add the fixed note on TokenCut's markers to the system prompt
 
 
 @dataclass
@@ -79,7 +80,8 @@ class TrimReport:
 
     def as_dict(self) -> dict:
         return {
-            "segments_trimmed": sum(1 for t in self.trimmed if t["how"] != "ccr_tool"),
+            "segments_trimmed": sum(1 for t in self.trimmed
+                                    if t["how"] not in ("ccr_tool", "system_note")),
             "tokens_before": self.tokens_before,
             "tokens_after": self.tokens_after,
             "tokens_saved": self.saved,

@@ -14,6 +14,7 @@ from tokencut.contracts import Chunk, ChunkKind, Tier
 from tokencut.graph.builder import build_graph
 from tokencut.ingestion.python_parser import PythonParser
 from tokencut.tokens import count_tokens
+from tokencut.trimming.query import SYMBOL_WEIGHT, analyse_query
 from tokencut.trimming.variants import generate_variants
 
 # "     12→code", "12\tcode", "  12 | code" (prefix kept verbatim, code is what follows)
@@ -74,9 +75,31 @@ def select_lines(code: str, path: str, query: str, tier: Tier) -> set[int] | Non
     for cid in variant.kept_chunk_ids:
         keep |= _own_lines(by_id[cid], chunks, n_lines)
     for cid in variant.skeleton_chunk_ids:  # signature lines only; the body becomes a marker
-        chunk = by_id[cid]
-        keep |= set(range(chunk.start_line, chunk.start_line + chunk.signature.count("\n") + 1))
+        keep |= _signature_lines(by_id[cid])
+    # Code the query names (or a traceback points into) is always kept whole, like a file the
+    # user named: the packer may drop it for being bigger than the tier budget or for losing
+    # the budget to higher-ranked neighbours (step D, DECISIONS change log).
+    for cid in named_chunk_ids(chunks, query):
+        keep |= _own_lines(by_id[cid], chunks, n_lines)
+        parent = by_id.get(by_id[cid].parent_id or "")
+        if parent is not None:
+            keep |= _signature_lines(parent)
     return keep
+
+
+def named_chunk_ids(chunks: list[Chunk], query: str) -> list[str]:
+    """Functions / classes / methods the query names by symbol or a traceback points into."""
+    mentions = analyse_query(query, chunks)
+    kinds = {c.id: c.kind for c in chunks}
+    return [
+        cid
+        for cid, weight in mentions.weights.items()
+        if weight >= SYMBOL_WEIGHT and kinds.get(cid) != ChunkKind.MODULE
+    ]
+
+
+def _signature_lines(chunk: Chunk) -> set[int]:
+    return set(range(chunk.start_line, chunk.start_line + chunk.signature.count("\n") + 1))
 
 
 def render(view: FileView, keep: set[int], path: str) -> str:

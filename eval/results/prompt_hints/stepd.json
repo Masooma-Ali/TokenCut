@@ -1,0 +1,101 @@
+[
+ {
+  "task": "sympy__sympy-18835",
+  "file": "sympy/utilities/iterables.py",
+  "gold": 1,
+  "tokens": 914,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-19007",
+  "file": "sympy/matrices/expressions/blockmatrix.py",
+  "gold": 1,
+  "tokens": 326,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-19254",
+  "file": "sympy/polys/factortools.py",
+  "gold": 1,
+  "tokens": 1319,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-20154",
+  "file": "sympy/utilities/iterables.py",
+  "gold": 1,
+  "tokens": 2046,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-20442",
+  "file": "sympy/physics/units/util.py",
+  "gold": 1,
+  "tokens": 1931,
+  "ranged": false,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-21171",
+  "file": "sympy/printing/latex.py",
+  "gold": 1,
+  "tokens": 83,
+  "ranged": true,
+  "model_words": 25,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-21847",
+  "file": "sympy/polys/monomials.py",
+  "gold": 1,
+  "tokens": 2244,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-24066",
+  "file": "sympy/physics/units/unitsystem.py",
+  "gold": 1,
+  "tokens": 569,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ },
+ {
+  "task": "sympy__sympy-24152",
+  "file": "sympy/physics/quantum/tensorproduct.py",
+  "gold": 1,
+  "tokens": 158,
+  "ranged": true,
+  "model_words": 0,
+  "today": 1,
+  "+model_words": 1,
+  "+right": 1
+ }
+]

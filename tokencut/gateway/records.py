@@ -18,6 +18,7 @@ from tokencut.gateway.adapters import anthropic, gemini, openai
 from tokencut.gateway.adapters.common import lookup
 from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
 from tokencut.gateway.media import adjust_images, split_pdfs, with_media_tokens
+from tokencut.gateway.note import add_system_note
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
 from tokencut.gateway.virtual import VirtualConfig, finish_tools, offers_tools, resolve
@@ -103,6 +104,13 @@ def analyse(
                 report.tokens_after += entry["after"]
                 report.trimmed.append(entry)
             if extra:
+                new_body = out
+        if trim_config.system_note:  # last: it may insert a message (OpenAI), shifting paths
+            out = new_body if new_body is not None else copy.deepcopy(data)
+            entry = add_system_note(provider, out)
+            if entry is not None:
+                report.tokens_after += entry["after"]
+                report.trimmed.append(entry)
                 new_body = out
         analysis["trim"] = {
             **report.as_dict(),
