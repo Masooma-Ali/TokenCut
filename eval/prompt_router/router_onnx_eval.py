@@ -69,8 +69,11 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("split", choices=["dev", "test"])
+    parser.add_argument("--model", default="router",
+                        help="model folder under cache/prompt_router/models/ (e.g. router_int8)")
     args = parser.parse_args(argv)
-    router = OnnxRouter()
+    router = OnnxRouter(MODEL.parent / args.model)
+    tag = "" if args.model == "router" else f"_{args.model.removeprefix('router_')}"
     rows = [json.loads(line) for line in (DATA / f"{args.split}.jsonl").open()]
     true = [r["label"] for r in rows]
 
@@ -89,7 +92,7 @@ def main(argv: list[str] | None = None) -> None:
            "cpu_ms_per_prompt_incl_tokenizing": {"median": float(np.median(times)),
                                                  "p95": float(np.percentile(times, 95))}}
     if args.split == "dev":  # the deployable model must reproduce what Kaggle measured
-        kaggle = np.load(MODEL / "dev_predictions.npz", allow_pickle=True)
+        kaggle = np.load(MODEL / "dev_predictions.npz", allow_pickle=True)  # full-precision model
         order = {i: k for k, i in enumerate(kaggle["ids"])}
         ref = kaggle["probs"][[order[r["id"]] for r in rows]]
         out["max_abs_prob_diff_vs_kaggle"] = float(np.abs(ref - probs).max())
@@ -106,7 +109,7 @@ def main(argv: list[str] | None = None) -> None:
     out["at_threshold"] = point
     out["report"] = report
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / f"router_{args.split}.json").write_text(json.dumps(out, indent=1, default=float))
+    (RESULTS / f"router{tag}_{args.split}.json").write_text(json.dumps(out, indent=1, default=float))
 
     def pct(v):
         return f"{100 * v:.1f}%"
@@ -115,7 +118,7 @@ def main(argv: list[str] | None = None) -> None:
         lo, hi = point[f"{key}_ci95"]
         return f"{pct(point[key])} ({pct(lo)}–{pct(hi)})"
 
-    lines = [f"# Prompt router — {args.split} set, ONNX on CPU (as in the gateway)", "",
+    lines = [f"# Prompt router ({args.model}) — {args.split} set, ONNX on CPU (as in the gateway)", "",
              (f"{len(rows):,} SWE-chat prompts from repositories never seen in training; labels: "
              "SWE-chat's own (LLM-annotated). Model: bge-small fine-tuned (Kaggle), exported to "
              f"ONNX; prior-corrected; brief when the top label is a real task and p ≥ {THRESHOLD}."),
@@ -140,7 +143,7 @@ def main(argv: list[str] | None = None) -> None:
         lines += ["", (f"Check against Kaggle's dev predictions: max probability difference "
                   f"{out['max_abs_prob_diff_vs_kaggle']:.2e}, same top label for "
                   f"{pct(out['same_top_label_as_kaggle'])} of prompts.")]
-    (RESULTS / f"router_{args.split}.md").write_text("\n".join(lines) + "\n")
+    (RESULTS / f"router{tag}_{args.split}.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 
 
