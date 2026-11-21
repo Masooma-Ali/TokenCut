@@ -8,6 +8,7 @@ switched on, for building parser test fixtures.
 import copy
 import dataclasses
 import json
+import logging
 import time
 from collections import deque
 from datetime import UTC, datetime
@@ -16,6 +17,7 @@ from pathlib import Path
 from tokencut.contracts import Segment, SegmentKind, ToolResultKind
 from tokencut.gateway.adapters import anthropic, gemini, openai
 from tokencut.gateway.adapters.common import lookup
+from tokencut.gateway.brief import add_task_briefs
 from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
 from tokencut.gateway.media import adjust_images, split_pdfs, with_media_tokens
 from tokencut.gateway.note import add_system_note
@@ -23,6 +25,7 @@ from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
 from tokencut.gateway.virtual import VirtualConfig, finish_tools, offers_tools, resolve
 
+log = logging.getLogger(__name__)
 ADAPTERS = {"anthropic": anthropic, "openai": openai, "gemini": gemini}
 RECENT_RECORDS = 1000
 
@@ -35,6 +38,7 @@ def analyse(
     session: tuple[SessionStore, CacheEventConfig] | None = None,
     now: float | None = None,
     virtual: VirtualConfig | None = None,
+    router=None,
 ) -> tuple[dict, bytes | None]:
     """Split a request into segments and count tokens per kind; with a TrimConfig, also
     work out the cache-safe trim and the gateway's own tools (virtual.py). Returns
@@ -104,6 +108,19 @@ def analyse(
                 report.tokens_after += entry["after"]
                 report.trimmed.append(entry)
             if extra:
+                new_body = out
+        if trim_config.prompt_brief and router is not None:  # before the note (it shifts paths)
+            out = new_body if new_body is not None else copy.deepcopy(data)
+            try:
+                entries, analysis["task"] = add_task_briefs(provider, out, segments, router,
+                                                            trim_config.brief_threshold)
+            except Exception as exc:  # fail open: no briefs, the request still goes out
+                log.warning("task briefs failed", exc_info=True)
+                entries, analysis["task"] = [], {"error": type(exc).__name__}
+            for entry in entries:
+                report.tokens_after += entry["after"]
+                report.trimmed.append(entry)
+            if entries:
                 new_body = out
         if trim_config.system_note:  # last: it may insert a message (OpenAI), shifting paths
             out = new_body if new_body is not None else copy.deepcopy(data)
@@ -211,6 +228,7 @@ class RequestLog:
             "attachments": attachments,  # estimated provider tokens, forwarded unchanged
             "billed_usage": usage_total,
             "by_route": self._by_route(),
+            "tasks": _tasks(analysed),
         }
 
     def _by_route(self) -> dict:
@@ -245,6 +263,7 @@ class RequestLog:
                 "tokens_saved": _saved(r),
                 "applied": bool(r.get("trim_applied")),
                 "cache_event": trim.get("cache_event"),
+                "task": (r.get("analysis") or {}).get("task"),
                 "trims": [
                     {"how": d["how"], "before": d["before"], "after": d["after"]}
                     for d in trim.get("details", [])
@@ -252,6 +271,15 @@ class RequestLog:
                 "usage": r.get("usage"),
             })
         return feed
+
+
+def _tasks(analysed: list[dict]) -> dict:
+    """Task type of the newest typed message per request (labels and counts only)."""
+    tasks = [r["analysis"]["task"] for r in analysed if (r["analysis"].get("task") or {}).get("label")
+             or (r["analysis"].get("task") or {}).get("reason")]
+    return {"by_label": _count([t["label"] for t in tasks if t.get("label")]),
+            "by_reason": _count([t["reason"] for t in tasks if t.get("reason")]),
+            "briefed": sum(1 for t in tasks if t.get("briefed"))}
 
 
 def _tokens(record: dict) -> int:

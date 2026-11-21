@@ -66,6 +66,8 @@ class TrimConfig:
     media_user: bool = False  # also change the user's own attachments (team decision; off)
     pdf_text_pages: bool = True  # attachments step 7: PDF pages without images / drawings as text
     system_note: bool = False  # add the fixed note on TokenCut's markers to the system prompt
+    prompt_brief: bool = False  # add a task brief to typed user messages (brief.py, opt-in)
+    brief_threshold: float = 0.87  # router confidence needed for a brief (chosen on dev)
 
 
 @dataclass
@@ -81,7 +83,7 @@ class TrimReport:
     def as_dict(self) -> dict:
         return {
             "segments_trimmed": sum(1 for t in self.trimmed
-                                    if t["how"] not in ("ccr_tool", "system_note")),
+                                    if t["how"] not in ("ccr_tool", "system_note", "task_brief")),
             "tokens_before": self.tokens_before,
             "tokens_after": self.tokens_after,
             "tokens_saved": self.saved,

@@ -102,6 +102,10 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_CCR` | off | `1` = every shortened output gets a reference; the gateway offers `tokencut_retrieve` and answers it with the exact original lines |
 | `TOKENCUT_LAZY_TOOLS` | off | `1` = every request carries only core / used tools + a catalog tool `tokencut_enable_tools` for the rest |
 | `TOKENCUT_SYSTEM_NOTE` | off | `1` = trim mode adds a fixed ~125-token note to the system prompt: how to treat `[TokenCut: …]` markers (re-read only the omitted lines, do not re-run commands for cut log lines, keep test output short) |
+| `TOKENCUT_PROMPT_BRIEF` | off | `1` = trim mode classifies each typed user message (rules + the ONNX prompt router) and, when confident, appends a short task brief (`<tokencut_task_brief type="bugfix">…`, 48–71 tokens); agent requests only; never repeated for the same type in a row |
+| `TOKENCUT_BRIEF_THRESHOLD` | `0.87` | minimum router probability for a brief (chosen on dev, RESULTS_REPORT §11) |
+| `TOKENCUT_ROUTER_DIR` | — | local folder with `router.onnx`, `router.onnx.data`, `tokenizer.json`, `router_config.json` |
+| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | private Hugging Face repo the model is downloaded from (once, to `~/.cache/tokencut/router`) when no local folder is set; needs `hf auth login` with access |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become

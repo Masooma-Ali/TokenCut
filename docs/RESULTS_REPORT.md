@@ -1160,8 +1160,7 @@ top-ranked function; a fix for that needs a ranking signal, not a name.
 **Goal.** Recognise what a user message to a coding agent asks for, so the gateway can add a short,
 task-specific brief (bugfix: reproduce with a failing test, fix, run the real tests; explain: no
 edits; …) — only when the classifier is confident, otherwise the message stays unchanged. This
-section measures the classifier only; the briefs themselves and the gateway integration are not
-built (team decision pending, see recommendations).
+section measures the classifier; §11.1 (2026-11-21) covers the gateway integration (opt-in).
 
 ### Bottom line
 - Final model: **bge-small (33M) fine-tuned on 33,611 real coding-agent prompts (SWE-chat)**, run
@@ -1235,8 +1234,8 @@ of prompts (`router_int8_dev.md`).
   agreement with them. All Claude-labelled steps (DevGPT, CCSBench) are superseded by SWE-chat.
 - The classifier sees one message; it cannot tell a correction from a new request (by design:
   the gateway decides about repeating a brief).
-- English only; refactor is the weakest label; some machine text still slips through the rules
-  ("Base directory for this skill:", "[n] assistant:").
+- English only; refactor is the weakest label. (The machine-text patterns missed on dev are
+  rules now, §11.1.)
 - Measured: task-type recognition. **Not measured: whether briefs help the agent** (task success,
   tokens) — that needs the gateway integration and a live A/B.
 
@@ -1250,3 +1249,59 @@ of prompts (`router_int8_dev.md`).
 2. Write and review the 6 brief texts (≤ ~120 tokens each; research basis in the prompt-
    enhancement notes), then a small live A/B: same tasks with / without briefs.
 3. Add the two missed machine-text patterns; consider a 256-token input if latency must drop.
+
+### 11.1 Gateway integration and offline replay (2026-11-21)
+Built behind `TOKENCUT_PROMPT_BRIEF=1` (recommendations 1–3 above, at the user's request;
+DECISIONS 2026-11-21). Six brief texts of 48–71 tokens (`gateway/brief.py`), threshold 0.87,
+agent requests only, stateless repeat rule, fail open. Tests: `tests/test_task_brief.py` (16,
+fake router + one real-model test skipped when the model is absent); full suite 354 passed.
+
+**Offline replay** (commit a008de5 + this change; laptop, 8 CPUs, ONNX Runtime 4 threads): all
+1,607 Claude Code request bodies saved during step D (29 SWE-bench tasks, `logs/stepd_p1`, local)
+run through `records.analyse` in time order with one router instance, briefs on vs off. Numbers
+only.
+
+| Value | Result |
+|---|---|
+| Requests with a task decision (agent requests) | 1,378 of 1,607 (229 side requests, e.g. status summaries, skipped) |
+| Unique typed messages | 383: 217 machine text (Claude Code status summaries), 34 empty (reminders only), 132 to the router |
+| Router decisions (unique messages) | bugfix ≥ 0.87: 52, tests ≥ 0.87: 33; below threshold: refactor 34, explain 6, bugfix 4, feature 2; no_brief 1 |
+| Requests carrying ≥ 1 brief | 1,273 (briefs on earlier messages stay in later requests) |
+| Tokens added per request | mean 60, max 124 (two briefs) — o200k proxy |
+| Extra gateway time per request | median 2.3 ms, p95 8.5 ms, max 249 ms (first sight of a long message; cached after) |
+
+Reading it: the SWE-bench issue text (first message) is briefed as bugfix (or tests when the
+issue is about tests); the scripted follow-up "Now make the code change in the repository that
+resolves the issue." gets refactor at p ≈ 0.6 and is correctly left alone. The first replay
+(before the fix) found that Claude Code's session status summaries (one message, no tools,
+starting "Current state: working (for 1m) / Tool calls so far: …") went to the router and were
+sometimes briefed: now a machine-text rule, and requests with fewer than two client tools get no
+briefs at all.
+
+**Live check** (2026-11-21; Claude Code 2.1.304, `--model haiku`, `claude -p` with `--continue` =
+one session; gateway `TOKENCUT_MODE=trim TOKENCUT_PROMPT_BRIEF=1 TOKENCUT_MIN_TRIM_TOKENS=300`,
+model downloaded from the private HF repo; fresh copy of `fixtures/sample_repo`). 7 scripted
+prompts, 33 requests (19 agent requests, 7 side requests, 7 other):
+
+| # | Prompt (kind) | Router decision | Brief | Agent outcome |
+|---|---|---|---|---|
+| 1 | syntax error in broken.py, fix | bugfix 0.948 | yes | correct: reproduced, root cause, one-line fix, verified |
+| 2 | negative discount rate, fix too | bugfix 0.957 | no (repeat) | correct: ValueError for rates outside [0, 1], verified |
+| 3 | what does Cart.total compute | explain 0.950 | yes | correct, short, file:line refs, no edits |
+| 4 | add round_price + pytest test | tests 0.712 | no (below 0.87) | correct: function + 3 passing tests |
+| 5 | "yes" | follow-up rule | no | asked what "yes" refers to (nothing was pending; expected) |
+| 6 | pasted traceback (invented, does not match the repo), fix | bugfix 0.961 | yes | tried to reproduce, could not, **made no edits** and explained why |
+| 7 | commit all changes | run_action 0.965 | yes | committed (checked status first), did not push |
+
+- All tasks correct; final repo: one commit, 3 tests pass.
+- **Prompt cache intact**: cache reads grew on every turn (34k → 44k). The uncached input on a new
+  prompt was only the new message + its brief (74 / 103 / 84 tokens). Billed totals: 6,318 input,
+  785,743 cache read, 46,333 cache write (cache read share 93.7 %).
+- Side requests (titles / summaries) got no decision and no brief.
+- Gateway time on agent requests (all processing incl. briefs): median 3.0 ms, max 65 ms.
+- Brief tokens added (o200k proxy, summed over requests, almost all cache reads): 2,505.
+- Prompt 4 ("add … with a test") was classified as tests at 0.71, not feature, and left
+  unbriefed — harmless, but an example of the feature / tests overlap.
+
+This is a smoke test (one short session, Haiku, tiny repo). **Not measured: whether briefs
+improve task success or cost** — needs an A/B on the same tasks with and without briefs.

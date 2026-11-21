@@ -19,11 +19,11 @@ Report (numbers only, committed): eval/results/prompt_router/swechat_eda.md
 
 import json
 import random
-import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
 from eval.prompt_router.data import clean
+from tokencut.gateway.task_router import is_machine, strip_markup  # shared with the gateway
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "cache" / "prompt_router" / "swechat_user_prompts.jsonl"
@@ -40,30 +40,6 @@ TRAIN_PER_REPO = 3_000  # training: no single project above ~2-3 % of the data
 TRAIN_PER_LABEL = 5_000
 EVAL_SIZE = 3_000
 SPLIT = {"dev": 0.1, "test": 0.1}
-
-_MACHINE_START = re.compile(
-    r"^[\s\"'`]*(<(command-name|command-message|command-args|local-command-stdout|environment_context|"
-    r"subagent_notification|turn_aborted|skill|skills|codex_internal_context|recommended_plugins|"
-    r"timestamp|task-notification|teammate-message|ci-monitor-event|objective|state_management|"
-    r"verification|team_[a-z_]+|system-reminder|user_instructions|permissions)\b"
-    r"|\[\d+\] tool [\w.-]+ (call|result):|\[Request interrupted|\[delegate worktree\]|/[A-Za-z][\w:-]*(\s|$)|>>> )",
-    re.IGNORECASE)
-_MACHINE_ANYWHERE = re.compile(
-    r"APPROVAL REQUEST START|The Codex agent has requested|TRANSCRIPT DELTA START|"
-    r"^Execution instructions:|^# AGENTS\.md instructions|Another Claude session sent a message|"
-    r"<teammate-message|<task-notification|<usage>|<tool_uses>", re.IGNORECASE | re.MULTILINE)
-_IMAGE = re.compile(r"<image[^>]*>|</image>|\[Image[^\]]*\]", re.IGNORECASE)
-
-
-def strip_markup(text: str) -> str:
-    return " ".join(_IMAGE.sub(" ", text).split()) if _IMAGE.search(text) else text.strip()
-
-
-def is_machine(text: str) -> bool:
-    """Not typed by the user: harness, slash command, CI / sub-agent notice, approval request."""
-    rest = strip_markup(text)
-    return (not rest or bool(_MACHINE_START.match(text)) or bool(_MACHINE_ANYWHERE.search(text)))
-
 
 def cut(text: str, limit: int = MAX_CHARS) -> str:
     """Head + tail: the request is usually at the start, sometimes after a pasted log."""
