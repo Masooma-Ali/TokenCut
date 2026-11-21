@@ -123,7 +123,11 @@ def summary(report: dict) -> str:
 
 
 def export_onnx(model, tokenizer, device) -> dict:
-    """router.onnx for the gateway (ONNX Runtime on CPU) and a check that it matches PyTorch."""
+    """router.onnx for the gateway (ONNX Runtime on CPU) and a check that it matches PyTorch.
+
+    Exported from an "eager" attention copy: the default (sdpa) attention traces its padding
+    logic as constants, which made padded batches differ by ~0.04 in the first smoke test."""
+    model = AutoModelForSequenceClassification.from_pretrained(OUT, attn_implementation="eager")
     model.eval().to("cpu")
     sample = tokenizer(["fix the failing login test", "commit and push"], padding=True,
                        return_tensors="pt")
@@ -152,7 +156,16 @@ def export_onnx(model, tokenizer, device) -> dict:
         session = ort.InferenceSession(path, providers=["CPUExecutionProvider"])
         onnx_logits = session.run(None, {k: sample[k].numpy() for k in ("input_ids", "attention_mask")})[0]
         torch_logits = model(**{k: sample[k] for k in ("input_ids", "attention_mask")}).logits
-        result["max_abs_diff_vs_torch"] = float(np.abs(onnx_logits - torch_logits.detach().numpy()).max())
+        result["max_abs_diff_vs_torch_padded_batch"] = float(
+            np.abs(onnx_logits - torch_logits.detach().numpy()).max())
+        single = 0.0  # the gateway classifies one message at a time (no padding)
+        for text in ("fix the failing login test", "commit and push", "what does parse_listing do?",
+                     "Traceback (most recent call last):\n  File \"app.py\", line 3\nKeyError: 'x'"):
+            one = tokenizer([text], return_tensors="pt")
+            a = session.run(None, {k: one[k].numpy() for k in ("input_ids", "attention_mask")})[0]
+            b = model(**{k: one[k] for k in ("input_ids", "attention_mask")}).logits.detach().numpy()
+            single = max(single, float(np.abs(a - b).max()))
+        result["max_abs_diff_vs_torch_single_prompts"] = single
         one = tokenizer(["the login test fails after my change, fix it"], return_tensors="pt")
         start = time.perf_counter()
         for _ in range(50):
@@ -160,7 +173,6 @@ def export_onnx(model, tokenizer, device) -> dict:
         result["cpu_ms_per_prompt"] = round((time.perf_counter() - start) * 1000 / 50, 1)
     except ImportError:
         result["check"] = "onnxruntime not installed; run !pip install onnxruntime"
-    model.to(device)
     return result
 
 
@@ -194,7 +206,7 @@ def main() -> None:
 
     tokenizer = AutoTokenizer.from_pretrained(BASE)
     model = AutoModelForSequenceClassification.from_pretrained(
-        BASE, num_labels=len(LABELS), id2label=dict(enumerate(LABELS)),
+        BASE, id2label=dict(enumerate(LABELS)),
         label2id={lab: i for i, lab in enumerate(LABELS)}).to(device)
     train, dev = load("train"), load("dev")
     if args.limit:  # quick end-to-end check before the real run
