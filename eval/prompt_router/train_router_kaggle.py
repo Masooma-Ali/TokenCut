@@ -3,7 +3,7 @@
 Upload together (one Kaggle dataset): train.jsonl, dev.jsonl, test.jsonl
 (cache/prompt_router/kaggle_swe/), this file and router_metrics.py. In a notebook cell:
 
-    !pip install -q "optimum[onnxruntime]"
+    !pip install -q onnxscript onnxruntime
     !python /kaggle/input/<dataset>/train_router_kaggle.py --limit 400 --epochs 1   # smoke test
     !python /kaggle/input/<dataset>/train_router_kaggle.py              # train, choose on dev
     !python /kaggle/input/<dataset>/train_router_kaggle.py --test       # ONCE, at the very end
@@ -17,7 +17,7 @@ Outputs in /kaggle/working/router/: the PyTorch model, router.onnx (+ a check th
 PyTorch agree), tokenizer, router_config.json (labels, cut sizes) and report_<split>.json with
 every value of router_metrics.evaluate (dev; test only with --test), raw and corrected for the
 natural label mix of the training repositories (natural_prior.json), and dev_predictions.npz
-(probabilities) for analysis without retraining. ONNX via Hugging Face Optimum.
+(probabilities) for analysis without retraining. ONNX via PyTorch's dynamo exporter.
 """
 
 import argparse
@@ -138,40 +138,66 @@ def summary(report: dict) -> str:
 
 
 def export_onnx(model, tokenizer, device) -> dict:
-    """router ONNX for the gateway (ONNX Runtime, CPU) via Hugging Face Optimum, checked against
-    PyTorch on single prompts (how the gateway classifies) and on a padded batch.
+    """router.onnx for the gateway (ONNX Runtime, CPU), checked against PyTorch on single prompts
+    (how the gateway classifies) and on a padded batch.
 
-    The first attempt used torch.onnx.export directly; it froze the attention's padding / position
-    logic as constants and differed from PyTorch by up to 0.63 in the logits."""
-    from optimum.onnxruntime import ORTModelForSequenceClassification
+    Uses PyTorch's newer exporter (dynamo=True, needs onnxscript): the classic TorchScript exporter
+    froze the attention's padding / position logic as constants (diff vs PyTorch up to 0.63), and
+    Hugging Face Optimum downgraded huggingface-hub on Kaggle, breaking other packages."""
+    import onnxruntime as ort
 
-    onnx_dir = f"{OUT}/onnx"
-    ort_model = ORTModelForSequenceClassification.from_pretrained(OUT, export=True)
-    ort_model.save_pretrained(onnx_dir)
-    tokenizer.save_pretrained(onnx_dir)
-    cpu_model = AutoModelForSequenceClassification.from_pretrained(OUT).eval().to("cpu")
+    cpu_model = AutoModelForSequenceClassification.from_pretrained(
+        OUT, attn_implementation="eager").eval().to("cpu")
+
+    class LogitsOnly(torch.nn.Module):  # plain tensor output, no Hugging Face output object
+        def __init__(self, inner):
+            super().__init__()
+            self.inner = inner
+
+        def forward(self, input_ids, attention_mask):
+            return self.inner(input_ids=input_ids, attention_mask=attention_mask).logits
+
+    path = f"{OUT}/router.onnx"
+    sample = tokenizer(["fix the failing login test", "commit and push"], padding=True,
+                       return_tensors="pt")
+    batch, tokens = torch.export.Dim("batch", max=64), torch.export.Dim("tokens", max=512)
+    torch.onnx.export(LogitsOnly(cpu_model), (sample["input_ids"], sample["attention_mask"]), path,
+                      dynamo=True, input_names=["input_ids", "attention_mask"],
+                      output_names=["logits"],
+                      dynamic_shapes={"input_ids": {0: batch, 1: tokens},
+                                      "attention_mask": {0: batch, 1: tokens}})
+    session = ort.InferenceSession(path, providers=["CPUExecutionProvider"])
+
+    def run(enc):
+        return session.run(None, {k: enc[k].numpy() for k in ("input_ids", "attention_mask")})[0]
+
     texts = ["fix the failing login test", "commit and push", "what does parse_listing do?",
              "Traceback (most recent call last):\n  File \"app.py\", line 3\nKeyError: 'x'"]
     single = 0.0
     with torch.no_grad():
         for text in texts:
             one = tokenizer([text], return_tensors="pt")
-            a = ort_model(**one).logits.detach().numpy()
-            b = cpu_model(**one).logits.numpy()
-            single = max(single, float(np.abs(a - b).max()))
-        batch = tokenizer(texts, padding=True, return_tensors="pt")
-        padded = float(np.abs(ort_model(**batch).logits.detach().numpy()
-                              - cpu_model(**batch).logits.numpy()).max())
+            single = max(single, float(np.abs(run(one) - cpu_model(**one).logits.numpy()).max()))
+        enc = tokenizer(texts, padding=True, return_tensors="pt")
+        padded = float(np.abs(run(enc) - cpu_model(**enc).logits.numpy()).max())
     one = tokenizer(["the login test fails after my change, fix it"], return_tensors="pt")
     start = time.perf_counter()
     for _ in range(50):
-        ort_model(**one)
-    files = glob.glob(f"{onnx_dir}/*.onnx")
-    return {"onnx_dir": onnx_dir,
-            "mb": round(sum(os.path.getsize(f) for f in files) / 1e6, 1),
+        run(one)
+    data = [f for f in glob.glob(f"{OUT}/router.onnx*")]
+    return {"onnx": path, "mb": round(sum(os.path.getsize(f) for f in data) / 1e6, 1),
             "max_abs_diff_vs_torch_single_prompts": single,
             "max_abs_diff_vs_torch_padded_batch": padded,
             "cpu_ms_per_prompt": round((time.perf_counter() - start) * 1000 / 50, 1)}
+
+
+def safe_export(model, tokenizer, device) -> dict:
+    """The trained model and reports are saved before this; an export failure is only recorded."""
+    try:
+        return export_onnx(model, tokenizer, device)
+    except Exception as exc:  # noqa: BLE001 - reported in router_config.json and printed
+        print(f"ONNX export failed: {type(exc).__name__}: {exc}", flush=True)
+        return {"error": f"{type(exc).__name__}: {exc}"[:500]}
 
 
 def main() -> None:
@@ -283,7 +309,7 @@ def main() -> None:
               "train_prior": train_prior.tolist(),
               "natural_prior": natural_prior.tolist() if natural_prior is not None else None,
               "train_minutes": round((time.perf_counter() - start) / 60, 1),
-              "export": export_onnx(model, tokenizer, device)}
+              "export": safe_export(model, tokenizer, device)}
     save_json(config, f"{OUT}/router_config.json")
     print("\n" + json.dumps(config, indent=1))
     print(f"\nKept epoch with best dev macro-F1 {best:.3f}. Download /kaggle/working/router "
