@@ -161,7 +161,7 @@ def export_onnx(model, tokenizer, device) -> dict:
     sample = tokenizer(["fix the failing login test", "commit and push"], padding=True,
                        return_tensors="pt")
     batch, tokens = torch.export.Dim("batch", max=64), torch.export.Dim("tokens", max=512)
-    torch.onnx.export(LogitsOnly(cpu_model), (sample["input_ids"], sample["attention_mask"]), path,
+    torch.onnx.export(LogitsOnly(cpu_model).eval(), (sample["input_ids"], sample["attention_mask"]), path,
                       dynamo=True, input_names=["input_ids", "attention_mask"],
                       output_names=["logits"],
                       dynamic_shapes={"input_ids": {0: batch, 1: tokens},
