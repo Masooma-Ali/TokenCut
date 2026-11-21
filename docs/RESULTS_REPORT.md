@@ -1278,4 +1278,30 @@ starting "Current state: working (for 1m) / Tool calls so far: …") went to the
 sometimes briefed: now a machine-text rule, and requests with fewer than two client tools get no
 briefs at all.
 
-Not measured yet: whether briefs change the agent's behaviour or cost (live check / A/B pending).
+**Live check** (2026-11-21; Claude Code 2.1.304, `--model haiku`, `claude -p` with `--continue` =
+one session; gateway `TOKENCUT_MODE=trim TOKENCUT_PROMPT_BRIEF=1 TOKENCUT_MIN_TRIM_TOKENS=300`,
+model downloaded from the private HF repo; fresh copy of `fixtures/sample_repo`). 7 scripted
+prompts, 33 requests (19 agent requests, 7 side requests, 7 other):
+
+| # | Prompt (kind) | Router decision | Brief | Agent outcome |
+|---|---|---|---|---|
+| 1 | syntax error in broken.py, fix | bugfix 0.948 | yes | correct: reproduced, root cause, one-line fix, verified |
+| 2 | negative discount rate, fix too | bugfix 0.957 | no (repeat) | correct: ValueError for rates outside [0, 1], verified |
+| 3 | what does Cart.total compute | explain 0.950 | yes | correct, short, file:line refs, no edits |
+| 4 | add round_price + pytest test | tests 0.712 | no (below 0.87) | correct: function + 3 passing tests |
+| 5 | "yes" | follow-up rule | no | asked what "yes" refers to (nothing was pending; expected) |
+| 6 | pasted traceback (invented, does not match the repo), fix | bugfix 0.961 | yes | tried to reproduce, could not, **made no edits** and explained why |
+| 7 | commit all changes | run_action 0.965 | yes | committed (checked status first), did not push |
+
+- All tasks correct; final repo: one commit, 3 tests pass.
+- **Prompt cache intact**: cache reads grew on every turn (34k → 44k). The uncached input on a new
+  prompt was only the new message + its brief (74 / 103 / 84 tokens). Billed totals: 6,318 input,
+  785,743 cache read, 46,333 cache write (cache read share 93.7 %).
+- Side requests (titles / summaries) got no decision and no brief.
+- Gateway time on agent requests (all processing incl. briefs): median 3.0 ms, max 65 ms.
+- Brief tokens added (o200k proxy, summed over requests, almost all cache reads): 2,505.
+- Prompt 4 ("add … with a test") was classified as tests at 0.71, not feature, and left
+  unbriefed — harmless, but an example of the feature / tests overlap.
+
+This is a smoke test (one short session, Haiku, tiny repo). **Not measured: whether briefs
+improve task success or cost** — needs an A/B on the same tasks with and without briefs.
