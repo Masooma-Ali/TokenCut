@@ -152,6 +152,10 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_CCR` | off | `1` = shortened outputs carry a `tc_…` reference; gateway offers and answers `tokencut_retrieve` (P1) |
 | `TOKENCUT_LAZY_TOOLS` | off | `1` = only core / used tools sent + catalog tool `tokencut_enable_tools` (P1) |
 | `TOKENCUT_SYSTEM_NOTE` | off | `1` = fixed ~125-token note on TokenCut's markers at the end of the system prompt (agent requests, trim mode only; prompt enhancement, not yet A/B tested) |
+| `TOKENCUT_PROMPT_BRIEF` | off | `1` = task brief appended to confidently classified typed user messages (rules + ONNX router; agent requests, trim mode only; stateless repeat rule; fail open) |
+| `TOKENCUT_BRIEF_THRESHOLD` | `0.87` | router probability needed for a brief |
+| `TOKENCUT_ROUTER_DIR` | — | local router model folder (4 files, not in git) |
+| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | private HF repo, downloaded once to `~/.cache/tokencut/router` if no local folder |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |

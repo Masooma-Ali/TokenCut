@@ -16,14 +16,8 @@ from pathlib import Path
 
 import numpy as np
 
-from eval.prompt_router.router_metrics import (
-    LABELS,
-    bootstrap_ci,
-    brief_curve,
-    cut_token_ids,
-    evaluate,
-    prior_correct,
-)
+from eval.prompt_router.router_metrics import bootstrap_ci, brief_curve, evaluate, prior_correct
+from tokencut.gateway.task_router import OnnxRouter  # the gateway's runtime router
 
 ROOT = Path(__file__).resolve().parents[2]
 MODEL = ROOT / "cache" / "prompt_router" / "models" / "router"
@@ -32,45 +26,12 @@ RESULTS = ROOT / "eval" / "results" / "prompt_router"
 THRESHOLD = 0.87  # chosen on dev (middle of the 0.85-0.88 range that meets all three targets)
 
 
-class OnnxRouter:
-    """Exactly the training input: head 6,000 + tail 2,000 characters for huge pastes, then the
-    first 360 + "…" + last 149 tokens between [CLS] and [SEP]."""
-
-    def __init__(self, folder: Path = MODEL):
-        import onnxruntime as ort
-        from tokenizers import Tokenizer
-
-        self.config = json.loads((folder / "router_config.json").read_text(encoding="utf-8"))
-        assert self.config["labels"] == LABELS
-        self.tokenizer = Tokenizer.from_file(str(folder / "tokenizer.json"))
-        self.tokenizer.no_truncation()
-        self.tokenizer.no_padding()
-        self.marker = [self.tokenizer.token_to_id("…")]
-        self.cls, self.sep = self.tokenizer.token_to_id("[CLS]"), self.tokenizer.token_to_id("[SEP]")
-        options = ort.SessionOptions()
-        options.intra_op_num_threads = 4
-        self.session = ort.InferenceSession(str(folder / "router.onnx"), options,
-                                            providers=["CPUExecutionProvider"])
-
-    def ids(self, text: str) -> list[int]:
-        text = text[:6000] + ("\n" + text[-2000:] if len(text) > 8000 else "")
-        ids = self.tokenizer.encode(text, add_special_tokens=False).ids
-        cut = cut_token_ids(ids, self.config["head_tokens"], self.config["tail_tokens"], self.marker)
-        return [self.cls, *cut, self.sep]
-
-    def probs(self, text: str) -> np.ndarray:
-        ids = np.array([self.ids(text)], dtype=np.int64)
-        logits = self.session.run(None, {"input_ids": ids, "attention_mask": np.ones_like(ids)})[0]
-        e = np.exp(logits - logits.max(axis=1, keepdims=True))
-        return (e / e.sum(axis=1, keepdims=True))[0]
-
-
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("split", choices=["dev", "test"])
     args = parser.parse_args(argv)
-    router = OnnxRouter()
+    router = OnnxRouter(MODEL)
     rows = [json.loads(line) for line in (DATA / f"{args.split}.jsonl").open(encoding="utf-8")]
     true = [r["label"] for r in rows]
 

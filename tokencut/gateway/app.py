@@ -39,6 +39,7 @@ from tokencut.gateway.routing import (
     pick_route,
 )
 from tokencut.gateway.session import SessionStore
+from tokencut.gateway.task_router import load_router
 from tokencut.gateway.trimmer import TrimConfig
 from tokencut.gateway.usage import UsageSniffer
 from tokencut.gateway.virtual import VirtualConfig
@@ -86,6 +87,9 @@ class GatewayConfig:
     events: CacheEventConfig = field(default_factory=CacheEventConfig)
     virtual: VirtualConfig = field(default_factory=VirtualConfig)  # CCR, lazy tool loading
     route: RouteConfig = field(default_factory=RouteConfig)  # dual-plan demo (GPT via LiteLLM)
+    router_dir: str | None = None  # prompt router model folder (TOKENCUT_ROUTER_DIR)
+    router_repo: str | None = None  # else this private Hugging Face repo (TOKENCUT_ROUTER_REPO)
+    router: object | None = None  # loaded router (tests pass a fake)
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -105,6 +109,9 @@ class GatewayConfig:
             media_user=os.environ.get("TOKENCUT_MEDIA_USER", "") == "1",
             pdf_text_pages=os.environ.get("TOKENCUT_PDF_TEXT_PAGES", "1") != "0",
             system_note=os.environ.get("TOKENCUT_SYSTEM_NOTE", "") == "1",
+            prompt_brief=os.environ.get("TOKENCUT_PROMPT_BRIEF", "") == "1",
+            brief_threshold=float(os.environ.get("TOKENCUT_BRIEF_THRESHOLD",
+                                                 TrimConfig.brief_threshold)),
         )
         events = CacheEventConfig(
             cache_ttl_seconds=int(os.environ.get("TOKENCUT_CACHE_TTL",
@@ -132,6 +139,8 @@ class GatewayConfig:
             events=events,
             virtual=virtual,
             route=RouteConfig.from_env(),
+            router_dir=os.environ.get("TOKENCUT_ROUTER_DIR") or None,
+            router_repo=os.environ.get("TOKENCUT_ROUTER_REPO") or None,
         )
 
 
@@ -142,6 +151,8 @@ def create_app(
     request_log = RequestLog(config.log_dir, config.capture)
     # Conversation memory for cache-event trimming (in shadow mode its decisions are never sent).
     session = (SessionStore(), config.events) if config.cache_events else None
+    if config.trim.prompt_brief and config.router is None:  # once, at start; None = no briefs
+        config.router = load_router(config.router_dir, config.router_repo)
     timeout = httpx2.Timeout(connect=10.0, read=600.0, write=60.0, pool=10.0)
 
     @asynccontextmanager
@@ -198,7 +209,8 @@ def create_app(
                 # Trim before sending. Any failure: send the original request (fail open).
                 try:
                     analysis, trimmed = await asyncio.to_thread(
-                        analyse, provider, path, body, config.trim, session, None, config.virtual
+                        analyse, provider, path, body, config.trim, session, None, config.virtual,
+                        config.router
                     )
                     record["analysis"] = analysis
                     if trimmed is not None:
@@ -212,7 +224,8 @@ def create_app(
                 # unchanged request is already on its way, so no latency is added.
                 analysis_task = asyncio.create_task(
                     asyncio.to_thread(
-                        analyse, provider, path, body, config.trim, session, None, config.virtual
+                        analyse, provider, path, body, config.trim, session, None, config.virtual,
+                        config.router
                     )
                 )
 
