@@ -25,6 +25,8 @@ def test_machine_generated_prompts_are_recognised():
         '"[delegate worktree]\nRun all file edits inside this worktree',
         "# AGENTS.md instructions for /Users/x/repo\n<INSTRUCTIONS>",
         'Another Claude session sent a message:\n<teammate-message teammate_id="a">hi</teammate-message>',
+        '[162] tool exec call: const patch = "*** Begin Patch',
+        "[67] tool exec result: Script completed\nWall time 5.0 seconds",
         "Task done.\n<usage><total_tokens>120</total_tokens><tool_uses>3</tool_uses></usage>",
     ):
         assert is_machine(text), text
@@ -77,3 +79,12 @@ def test_repo_split_has_no_repo_in_two_splits_and_is_seeded():
     assert not (repos["train"] & repos["dev"]) and not (repos["train"] & repos["test"])
     assert not (repos["dev"] & repos["test"])
     assert sum(len(p) for p in a.values()) == 1000
+
+
+def test_split_balances_by_capped_size_so_one_huge_repo_cannot_fill_dev():
+    rows = [{"repo_id": "huge", "text": f"h{i}"} for i in range(5000)]
+    rows += [{"repo_id": f"r{i % 40}", "text": str(i)} for i in range(2000)]
+    parts = repo_split(rows, seed=1, weight_cap=100)
+    for name in ("dev", "test"):
+        repos = {r["repo_id"] for r in parts[name]}
+        assert len(repos) >= 3, (name, repos)  # several projects, not just one

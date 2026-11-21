@@ -35,8 +35,9 @@ INTENT_TO_LABEL = {"create new code": "feature", "debug": "bugfix", "refactor": 
                    "connect": "run_action", "other": "no_brief"}
 STEERING = {"correction", "rejection"}  # mid-task steering: the task's brief already applies
 MAX_CHARS = 2_000
-PER_SESSION, PER_REPO = 20, 400
-TRAIN_PER_LABEL = 4_000
+PER_SESSION, PER_REPO = 20, 400  # dev / test only: one project cannot decide the score
+TRAIN_PER_REPO = 3_000  # training: no single project above ~2-3 % of the data
+TRAIN_PER_LABEL = 5_000
 EVAL_SIZE = 3_000
 SPLIT = {"dev": 0.1, "test": 0.1}
 
@@ -45,7 +46,7 @@ _MACHINE_START = re.compile(
     r"subagent_notification|turn_aborted|skill|skills|codex_internal_context|recommended_plugins|"
     r"timestamp|task-notification|teammate-message|ci-monitor-event|objective|state_management|"
     r"verification|team_[a-z_]+|system-reminder|user_instructions|permissions)\b"
-    r"|\[Request interrupted|\[delegate worktree\]|/[A-Za-z][\w:-]*(\s|$)|>>> )",
+    r"|\[\d+\] tool exec (call|result):|\[Request interrupted|\[delegate worktree\]|/[A-Za-z][\w:-]*(\s|$)|>>> )",
     re.IGNORECASE)
 _MACHINE_ANYWHERE = re.compile(
     r"APPROVAL REQUEST START|The Codex agent has requested|TRANSCRIPT DELTA START|"
@@ -109,12 +110,18 @@ def cap(rows: list[dict], key: str, limit: int, rng: random.Random) -> list[dict
     return out
 
 
-def repo_split(rows: list[dict], seed: int = 7) -> dict[str, list[dict]]:
-    """Whole repositories go to train / dev / test, ~10 % of prompts each to dev and test."""
+def repo_split(rows: list[dict], seed: int = 7, weight_cap: int | None = None
+               ) -> dict[str, list[dict]]:
+    """Whole repositories go to train / dev / test, ~10 % each to dev and test.
+
+    weight_cap: a repository counts with at most this many prompts when filling dev / test (it
+    is capped there later), so one huge project cannot fill a whole evaluation split."""
     counts = Counter(r["repo_id"] for r in rows)
+    if weight_cap is not None:
+        counts = Counter({repo: min(c, weight_cap) for repo, c in counts.items()})
     repos = sorted(counts)
     random.Random(seed).shuffle(repos)
-    total, assigned, target = len(rows), {}, dict(SPLIT)
+    total, assigned, target = sum(counts.values()), {}, dict(SPLIT)
     filled = {name: 0 for name in target}
     for repo in repos:
         name = next((n for n in target if filled[n] < target[n] * total), "train")
@@ -182,17 +189,21 @@ def main() -> None:
     funnel.append(("minus unlabelled", len(rows)))
     rows = dedupe(rows)
     funnel.append(("minus exact duplicates (majority label kept)", len(rows)))
-    rows = cap(rows, "session_id", PER_SESSION, rng)
-    funnel.append((f"at most {PER_SESSION} per session", len(rows)))
-    rows = cap(rows, "repo_id", PER_REPO, rng)
-    funnel.append((f"at most {PER_REPO} per repository", len(rows)))
     lines += ["## Preprocessing funnel", "", "| Step | Prompts left |", "|---|---|"]
     lines += [f"| {step} | {count:,} |" for step, count in funnel]
 
-    splits = repo_split(rows)
+    splits = repo_split(rows, weight_cap=PER_REPO)
+    pool = cap(splits["train"], "repo_id", TRAIN_PER_REPO, rng)  # no per-session cap in training
+    for name in ("dev", "test"):
+        splits[name] = cap(cap(splits[name], "session_id", PER_SESSION, rng), "repo_id", PER_REPO, rng)
+    lines += ["", (f"Training pool: {len(splits['train']):,} prompts in training repositories, "
+              f"{len(pool):,} after at most {TRAIN_PER_REPO:,} per repository (no per-session cap). "
+              f"Dev / test: at most {PER_SESSION} per session and {PER_REPO} per repository, so one "
+              "project cannot decide the score.")]
+    rows = pool + splits["dev"] + splits["test"]
     train = []
     by_label: dict[str, list[dict]] = defaultdict(list)
-    for r in splits["train"]:
+    for r in pool:
         by_label[r["label"]].append(r)
     for label in sorted(by_label):
         members = by_label[label]
@@ -205,7 +216,7 @@ def main() -> None:
 
     labels = sorted({r["label"] for r in rows})
     lines += ["", "## Splits (whole repositories per split; train balanced, dev / test natural)", "",
-              "| Label | after cleaning | train | dev | test |", "|---|---|---|---|---|"]
+              "| Label | available | train | dev | test |", "|---|---|---|---|---|"]
     clean_counts = Counter(r["label"] for r in rows)
     part_counts = {k: Counter(r["label"] for r in v) for k, v in final.items()}
     for label in labels:
