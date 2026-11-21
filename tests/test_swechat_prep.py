@@ -27,6 +27,7 @@ def test_machine_generated_prompts_are_recognised():
         'Another Claude session sent a message:\n<teammate-message teammate_id="a">hi</teammate-message>',
         '[162] tool exec call: const patch = "*** Begin Patch',
         "[67] tool exec result: Script completed\nWall time 5.0 seconds",
+        '[111] tool exec_command call: {"cmd":"rtk proxy curl -sS"}',
         "Task done.\n<usage><total_tokens>120</total_tokens><tool_uses>3</tool_uses></usage>",
     ):
         assert is_machine(text), text

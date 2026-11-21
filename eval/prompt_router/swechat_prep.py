@@ -46,7 +46,7 @@ _MACHINE_START = re.compile(
     r"subagent_notification|turn_aborted|skill|skills|codex_internal_context|recommended_plugins|"
     r"timestamp|task-notification|teammate-message|ci-monitor-event|objective|state_management|"
     r"verification|team_[a-z_]+|system-reminder|user_instructions|permissions)\b"
-    r"|\[\d+\] tool exec (call|result):|\[Request interrupted|\[delegate worktree\]|/[A-Za-z][\w:-]*(\s|$)|>>> )",
+    r"|\[\d+\] tool [\w.-]+ (call|result):|\[Request interrupted|\[delegate worktree\]|/[A-Za-z][\w:-]*(\s|$)|>>> )",
     re.IGNORECASE)
 _MACHINE_ANYWHERE = re.compile(
     r"APPROVAL REQUEST START|The Codex agent has requested|TRANSCRIPT DELTA START|"
