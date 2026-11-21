@@ -53,6 +53,12 @@ python -m tokencut.launch code
 It starts LiteLLM and the gateway (trim mode) if they are not running, opens Claude Code
 wired to the gateway, and stops what it started when Claude Code exits.
 
+**Since 2026-11-21 (installable tool):** the launcher reads `~/.tokencut/config.json` and runs
+`tokencut setup` first if it is missing. LiteLLM then comes from `tokencut setup` (pinned,
+in `~/.tokencut/litellm-venv`, config generated as `~/.tokencut/litellm_config.yaml`, port
+8788) and Claude goes through it by default. The `deploy/litellm/` scripts stay for manual
+use; `TOKENCUT_LITELLM` / `TOKENCUT_LITELLM_CONFIG` still override the executable / config.
+
 - `/model sonnet` (or opus / haiku) → Claude Pro plan
 - `/model gpt-6.1-sol` → ChatGPT plan
 - Live page: <http://127.0.0.1:8787/tokencut/> (savings, billed usage, cache reads per plan)
@@ -98,7 +104,7 @@ fallback when LiteLLM is stopped.
 | `TOKENCUT_GPT_MODELS` | `gpt-,o3,o4,codex` | model-name prefixes routed to the GPT side |
 | `TOKENCUT_GPT_KEY` | none | LiteLLM master key, if the proxy uses one |
 | `TOKENCUT_CLAUDE_VIA_LITELLM` | off | `1` = Claude requests also go through LiteLLM (Claude login forwarded, proxy key in `x-litellm-api-key`); if LiteLLM is down they go straight to Anthropic |
-| `TOKENCUT_LITELLM`, `TOKENCUT_LITELLM_CONFIG`, `TOKENCUT_GPT_PORT` | `~/.tokencut/litellm-venv/...`, `deploy/litellm/config.yaml`, `4000` | launcher only |
+| `TOKENCUT_LITELLM`, `TOKENCUT_LITELLM_CONFIG` | `~/.tokencut/litellm-venv/...`, generated `~/.tokencut/litellm_config.yaml` | launcher only (port: `litellm.port` in `~/.tokencut/config.json`, 8788) |
 
 ## Caveats
 

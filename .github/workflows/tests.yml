@@ -2,14 +2,16 @@ name: tests
 
 on:
   push:
+    branches: ["**"]  # tags run the same checks through release.yml
   pull_request:
+  workflow_call:  # release.yml runs the same checks before publishing
 
 jobs:
   test:
     strategy:
-      fail-fast: false  # report both systems even if one fails
+      fail-fast: false  # report every system even if one fails
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -23,3 +25,35 @@ jobs:
       - run: pip install -r requirements.txt
       - run: ruff check .
       - run: pytest -v
+
+  package:
+    # Build the wheel, install it into a clean environment, check the command and the gateway.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the version comes from git tags
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build && python -m build
+      - name: Install into a clean venv and smoke-test
+        shell: bash
+        run: |
+          python -m venv clean
+          if [ -d clean/Scripts ]; then bin=clean/Scripts; else bin=clean/bin; fi
+          "$bin/pip" install dist/*.whl
+          "$bin/tokencut" --version
+          TOKENCUT_HOME="$PWD/tchome" TOKENCUT_PORT=8799 "$bin/tokencut" gateway &
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8799/tokencut/health && break; sleep 1; done
+          curl -sf http://127.0.0.1:8799/tokencut/health
+          curl -sf -o /dev/null http://127.0.0.1:8799/tokencut/
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: dist
+          path: dist/

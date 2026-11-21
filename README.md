@@ -4,6 +4,33 @@ Cost-aware joint context-and-model routing gateway for AI coding agents (FYP, FA
 
 **Iteration 1:** repository parsing, code-graph construction, and 4-tier context-variant generation.
 
+## Install and use (one command)
+Needs [Claude Code](https://claude.ai/code) installed first. Then:
+```bash
+curl -fsSL https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.sh | sh     # macOS / Linux
+```
+```powershell
+irm https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.ps1 | iex          # Windows
+```
+The installer adds [uv](https://docs.astral.sh/uv/) if missing, installs the `tokencut` command
+(PyPI package `tokencut-proxy`) and runs `tokencut setup`, which asks whether to add your ChatGPT
+plan, installs the hidden model connector (LiteLLM) and downloads the prompt model once.
+Then, in any project folder:
+
+| Command | What it does |
+|---|---|
+| `tokencut` | opens Claude Code through TokenCut (trimming, system note, task briefs, routing); `/model gpt-6.1-sol` for GPT if set up |
+| `tokencut setup` | change logins / re-run one-time installs (`--chatgpt`, `--no-chatgpt`) |
+| `tokencut status` | running? tokens removed, billed usage |
+| `tokencut logs [gateway\|connector]` | last lines of a process log |
+
+Settings: `~/.tokencut/config.json` (no secrets); every `TOKENCUT_*` variable below overrides it.
+Claude keeps Claude Code's own login; the ChatGPT token stays in LiteLLM's file; a local
+TokenCut key (`~/.tokencut/tokencut_key`) stops other programs from using the gateway.
+Releases: push a tag `vX.Y.Z` (`.github/workflows/release.yml` tests, publishes to PyPI and
+creates a GitHub Release with the install scripts attached; the `releases/latest/download/…`
+links above always point to the newest one). The links work only while the repository is public.
+
 ## Pipeline
 
 ```
@@ -88,6 +115,7 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 |---|---|---|
 | `TOKENCUT_ANTHROPIC_UPSTREAM` / `_OPENAI_` / `_GEMINI_` | official API URLs | send to another compatible endpoint (e.g. OpenRouter) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | where numbers are logged (empty = off) |
+| `TOKENCUT_KEY` | none | if set, proxy requests must send it in `x-tokencut-key` (the `tokencut` command does this; the header is never forwarded) |
 | `TOKENCUT_CAPTURE` | off | `1` = also save full request bodies locally, for parser test fixtures (contain your prompts and code) |
 | `TOKENCUT_HOST` / `TOKENCUT_PORT` | `127.0.0.1` / `8787` | listen address |
 | `TOKENCUT_MODE` | `shadow` | `shadow` = forward unchanged, report possible savings; `trim` = send the trimmed request |
@@ -105,7 +133,7 @@ See what was measured at `http://127.0.0.1:8787/tokencut/stats`; per-request num
 | `TOKENCUT_PROMPT_BRIEF` | off | `1` = trim mode classifies each typed user message (rules + the ONNX prompt router) and, when confident, appends a short task brief (`<tokencut_task_brief type="bugfix">…`, 48–71 tokens); agent requests only; never repeated for the same type in a row |
 | `TOKENCUT_BRIEF_THRESHOLD` | `0.87` | minimum router probability for a brief (chosen on dev, RESULTS_REPORT §11) |
 | `TOKENCUT_ROUTER_DIR` | — | local folder with `router.onnx`, `router.onnx.data`, `tokenizer.json`, `router_config.json` |
-| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | private Hugging Face repo the model is downloaded from (once, to `~/.cache/tokencut/router`) when no local folder is set; needs `hf auth login` with access |
+| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | public Hugging Face repo the model is downloaded from (once, no login, to `~/.cache/tokencut/router`) when no local folder is set |
 
 **Trimming (phase 3).** Only large tool results are shortened: Python file contents
 (through the Iteration 1 engine; kept lines stay verbatim, gaps become
