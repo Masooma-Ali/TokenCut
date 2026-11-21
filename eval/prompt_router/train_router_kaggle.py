@@ -3,7 +3,7 @@
 Upload together (one Kaggle dataset): train.jsonl, dev.jsonl, test.jsonl
 (cache/prompt_router/kaggle_swe/), this file and router_metrics.py. In a notebook cell:
 
-    !pip install -q onnx onnxruntime
+    !pip install -q "optimum[onnxruntime]"
     !python /kaggle/input/<dataset>/train_router_kaggle.py --limit 400 --epochs 1   # smoke test
     !python /kaggle/input/<dataset>/train_router_kaggle.py              # train, choose on dev
     !python /kaggle/input/<dataset>/train_router_kaggle.py --test       # ONCE, at the very end
@@ -15,7 +15,9 @@ silently lost at the 512-token limit. The best epoch on dev macro-F1 is kept.
 
 Outputs in /kaggle/working/router/: the PyTorch model, router.onnx (+ a check that ONNX and
 PyTorch agree), tokenizer, router_config.json (labels, cut sizes) and report_<split>.json with
-every value of router_metrics.evaluate (dev; test only with --test).
+every value of router_metrics.evaluate (dev; test only with --test), raw and corrected for the
+natural label mix of the training repositories (natural_prior.json), and dev_predictions.npz
+(probabilities) for analysis without retraining. ONNX via Hugging Face Optimum.
 """
 
 import argparse
@@ -40,6 +42,7 @@ from router_metrics import (
     TAIL_TOKENS,
     cut_token_ids,
     evaluate,
+    prior_correct,
 )
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -56,6 +59,18 @@ def load(split: str) -> list[dict]:
     path = glob.glob(f"/kaggle/input/**/{split}.jsonl", recursive=True)[0]
     with open(path) as f:
         return [json.loads(line) for line in f.read().split("\n") if line.strip()]
+
+
+def priors(train_labels: list[int]) -> tuple[np.ndarray, np.ndarray | None]:
+    """(label mix the model was trained on, natural mix of the training repositories)."""
+    train = np.bincount(train_labels, minlength=len(LABELS)) / len(train_labels)
+    found = glob.glob("/kaggle/input/**/natural_prior.json", recursive=True)
+    if not found:
+        return train, None
+    with open(found[0]) as f:
+        counts = json.load(f)
+    natural = np.array([counts.get(lab, 0) for lab in LABELS], dtype=float)
+    return train, natural / natural.sum()
 
 
 def encode(tokenizer, texts: list[str]) -> tuple[list[list[int]], list[int]]:
@@ -123,57 +138,40 @@ def summary(report: dict) -> str:
 
 
 def export_onnx(model, tokenizer, device) -> dict:
-    """router.onnx for the gateway (ONNX Runtime on CPU) and a check that it matches PyTorch.
+    """router ONNX for the gateway (ONNX Runtime, CPU) via Hugging Face Optimum, checked against
+    PyTorch on single prompts (how the gateway classifies) and on a padded batch.
 
-    Exported from an "eager" attention copy: the default (sdpa) attention traces its padding
-    logic as constants, which made padded batches differ by ~0.04 in the first smoke test."""
-    model = AutoModelForSequenceClassification.from_pretrained(OUT, attn_implementation="eager")
-    model.eval().to("cpu")
-    sample = tokenizer(["fix the failing login test", "commit and push"], padding=True,
-                       return_tensors="pt")
-    path = f"{OUT}/router.onnx"
+    The first attempt used torch.onnx.export directly; it froze the attention's padding / position
+    logic as constants and differed from PyTorch by up to 0.63 in the logits."""
+    from optimum.onnxruntime import ORTModelForSequenceClassification
 
-    class LogitsOnly(torch.nn.Module):  # plain tensor output, no Hugging Face output object
-        def __init__(self, inner):
-            super().__init__()
-            self.inner = inner
-
-        def forward(self, input_ids, attention_mask):
-            return self.inner(input_ids=input_ids, attention_mask=attention_mask).logits
-
-    kwargs = {"input_names": ["input_ids", "attention_mask"], "output_names": ["logits"],
-                  "dynamic_axes": {"input_ids": {0: "batch", 1: "tokens"},
-                                "attention_mask": {0: "batch", 1: "tokens"},
-                                "logits": {0: "batch"}}, "opset_version": 17}
-    args = (sample["input_ids"], sample["attention_mask"])
-    try:  # the classic exporter (newer torch defaults to dynamo, which needs onnxscript)
-        torch.onnx.export(LogitsOnly(model), args, path, dynamo=False, **kwargs)
-    except TypeError:  # older torch: no `dynamo` argument
-        torch.onnx.export(LogitsOnly(model), args, path, **kwargs)
-    result = {"onnx": path, "mb": round(os.path.getsize(path) / 1e6, 1)}
-    try:
-        import onnxruntime as ort
-        session = ort.InferenceSession(path, providers=["CPUExecutionProvider"])
-        onnx_logits = session.run(None, {k: sample[k].numpy() for k in ("input_ids", "attention_mask")})[0]
-        torch_logits = model(**{k: sample[k] for k in ("input_ids", "attention_mask")}).logits
-        result["max_abs_diff_vs_torch_padded_batch"] = float(
-            np.abs(onnx_logits - torch_logits.detach().numpy()).max())
-        single = 0.0  # the gateway classifies one message at a time (no padding)
-        for text in ("fix the failing login test", "commit and push", "what does parse_listing do?",
-                     "Traceback (most recent call last):\n  File \"app.py\", line 3\nKeyError: 'x'"):
+    onnx_dir = f"{OUT}/onnx"
+    ort_model = ORTModelForSequenceClassification.from_pretrained(OUT, export=True)
+    ort_model.save_pretrained(onnx_dir)
+    tokenizer.save_pretrained(onnx_dir)
+    cpu_model = AutoModelForSequenceClassification.from_pretrained(OUT).eval().to("cpu")
+    texts = ["fix the failing login test", "commit and push", "what does parse_listing do?",
+             "Traceback (most recent call last):\n  File \"app.py\", line 3\nKeyError: 'x'"]
+    single = 0.0
+    with torch.no_grad():
+        for text in texts:
             one = tokenizer([text], return_tensors="pt")
-            a = session.run(None, {k: one[k].numpy() for k in ("input_ids", "attention_mask")})[0]
-            b = model(**{k: one[k] for k in ("input_ids", "attention_mask")}).logits.detach().numpy()
+            a = ort_model(**one).logits.detach().numpy()
+            b = cpu_model(**one).logits.numpy()
             single = max(single, float(np.abs(a - b).max()))
-        result["max_abs_diff_vs_torch_single_prompts"] = single
-        one = tokenizer(["the login test fails after my change, fix it"], return_tensors="pt")
-        start = time.perf_counter()
-        for _ in range(50):
-            session.run(None, {k: one[k].numpy() for k in ("input_ids", "attention_mask")})
-        result["cpu_ms_per_prompt"] = round((time.perf_counter() - start) * 1000 / 50, 1)
-    except ImportError:
-        result["check"] = "onnxruntime not installed; run !pip install onnxruntime"
-    return result
+        batch = tokenizer(texts, padding=True, return_tensors="pt")
+        padded = float(np.abs(ort_model(**batch).logits.detach().numpy()
+                              - cpu_model(**batch).logits.numpy()).max())
+    one = tokenizer(["the login test fails after my change, fix it"], return_tensors="pt")
+    start = time.perf_counter()
+    for _ in range(50):
+        ort_model(**one)
+    files = glob.glob(f"{onnx_dir}/*.onnx")
+    return {"onnx_dir": onnx_dir,
+            "mb": round(sum(os.path.getsize(f) for f in files) / 1e6, 1),
+            "max_abs_diff_vs_torch_single_prompts": single,
+            "max_abs_diff_vs_torch_padded_batch": padded,
+            "cpu_ms_per_prompt": round((time.perf_counter() - start) * 1000 / 50, 1)}
 
 
 def main() -> None:
@@ -199,9 +197,17 @@ def main() -> None:
         ids, lengths = encode(tokenizer, [r["text"] for r in rows])
         probs = predict(model, ids, device, tokenizer.pad_token_id)
         meta = [{**r, "n_tokens": n} for r, n in zip(rows, lengths)]
-        report = evaluate(probs, [r["label"] for r in rows], meta, ci=True)
-        save_json(report, f"{OUT}/report_test.json")
-        print("TEST\n" + summary(report))
+        true = [r["label"] for r in rows]
+        with open(f"{OUT}/router_config.json") as f:
+            config = json.load(f)
+        reports = {"raw": evaluate(probs, true, meta, ci=True)}
+        if config.get("natural_prior"):
+            reports["prior_corrected"] = evaluate(
+                prior_correct(probs, np.array(config["train_prior"]), np.array(config["natural_prior"])),
+                true, meta, ci=True)
+        save_json(reports, f"{OUT}/report_test.json")
+        for name, report in reports.items():
+            print(f"TEST ({name})\n" + summary(report))
         return
 
     tokenizer = AutoTokenizer.from_pretrained(BASE)
@@ -214,6 +220,7 @@ def main() -> None:
     train_ids, _ = encode(tokenizer, [r["text"] for r in train])
     dev_ids, dev_len = encode(tokenizer, [r["text"] for r in dev])
     y = [LABELS.index(r["label"]) for r in train]
+    train_prior, natural_prior = priors(y)
     counts = np.bincount(y, minlength=len(LABELS))
     weights = torch.tensor(len(y) / (len(LABELS) * np.maximum(counts, 1)), dtype=torch.float)
     loss_fn = torch.nn.CrossEntropyLoss(weight=weights.to(device))
@@ -250,19 +257,31 @@ def main() -> None:
                 running = 0.0
         probs = predict(model, dev_ids, device, tokenizer.pad_token_id)
         meta = [{**r, "n_tokens": n} for r, n in zip(dev, dev_len)]
-        report = evaluate(probs, [r["label"] for r in dev], meta)
+        true = [r["label"] for r in dev]
+        report = evaluate(probs, true, meta)
         print(f"\n=== epoch {epoch} on DEV ===\n" + summary(report), flush=True)
+        corrected = None
+        if natural_prior is not None:
+            corrected = evaluate(prior_correct(probs, train_prior, natural_prior), true, meta)
+            print(f"\n--- epoch {epoch} on DEV, corrected for the natural label mix ---\n"
+                  + summary(corrected), flush=True)
         if report["macro_f1"] > best:  # keep the best epoch (threshold-free choice)
             best = report["macro_f1"]
-            report["epoch"] = epoch
             model.save_pretrained(OUT)
             tokenizer.save_pretrained(OUT)
-            save_json(report, f"{OUT}/report_dev.json")
+            save_json({"epoch": epoch, "raw": report, "prior_corrected": corrected},
+                      f"{OUT}/report_dev.json")
+            np.savez_compressed(f"{OUT}/dev_predictions.npz", probs=probs,
+                                labels=np.array(true), ids=np.array([r["id"] for r in dev]),
+                                train_prior=train_prior,
+                                natural_prior=natural_prior if natural_prior is not None else [])
 
     model = AutoModelForSequenceClassification.from_pretrained(OUT).to(device)
     config = {"base": BASE, "labels": LABELS, "no_brief": NO_BRIEF, "head_tokens": HEAD_TOKENS,
               "tail_tokens": TAIL_TOKENS, "best_dev_macro_f1": best, "epochs": args.epochs,
               "lr": args.lr, "batch": args.batch, "seed": args.seed,
+              "train_prior": train_prior.tolist(),
+              "natural_prior": natural_prior.tolist() if natural_prior is not None else None,
               "train_minutes": round((time.perf_counter() - start) / 60, 1),
               "export": export_onnx(model, tokenizer, device)}
     save_json(config, f"{OUT}/router_config.json")

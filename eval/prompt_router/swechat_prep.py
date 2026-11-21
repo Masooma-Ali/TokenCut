@@ -33,7 +33,7 @@ REPORT = ROOT / "eval" / "results" / "prompt_router" / "swechat_eda.md"
 INTENT_TO_LABEL = {"create new code": "feature", "debug": "bugfix", "refactor": "refactor",
                    "test": "tests", "understand": "explain", "git": "run_action",
                    "connect": "run_action", "other": "no_brief"}
-STEERING = {"correction", "rejection"}  # mid-task steering: the task's brief already applies
+STEERING = {"correction", "rejection"}  # reported in the EDA only
 MAX_CHARS = 2_000
 PER_SESSION, PER_REPO = 20, 400  # dev / test only: one project cannot decide the score
 TRAIN_PER_REPO = 3_000  # training: no single project above ~2-3 % of the data
@@ -74,10 +74,10 @@ def cut(text: str, limit: int = MAX_CHARS) -> str:
 
 
 def target_label(intent: str | None, pushback: str | None) -> str | None:
+    """SWE-chat intent -> brief label. Pushback (correction / rejection) does not change it: the
+    text says what is asked; repeating a brief is decided in the gateway from the conversation."""
     if intent is None or intent not in INTENT_TO_LABEL:
         return None
-    if pushback in STEERING:
-        return "no_brief"
     return INTENT_TO_LABEL[intent]
 
 
@@ -227,11 +227,15 @@ def main() -> None:
     repos = {k: len({r['repo_id'] for r in v}) for k, v in splits.items()}
     lines += ["", f"Repositories: train {repos['train']}, dev {repos['dev']}, test {repos['test']}.",
               "", ("Label mapping: create new code → feature, debug → bugfix, refactor → refactor, "
-              "test → tests, understand → explain, git / connect → run_action, other → no_brief; "
-              "any correction / rejection → no_brief (steering inside a running task); "
-              "failure_report keeps its intent (\"still failing\" asks for a fix)."), ""]
+              "test → tests, understand → explain, git / connect → run_action, other → no_brief. "
+              "Corrections / rejections keep their intent (the text says what is asked); the "
+              "gateway decides whether to repeat a brief, from the conversation."), ""]
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    # Natural label mix of the training repositories (before balancing): used to correct the
+    # model's probabilities for real traffic, so nothing is tuned on dev.
+    natural = Counter(r["label"] for r in pool)
+    (OUT_DIR / "natural_prior.json").write_text(json.dumps(dict(sorted(natural.items())), indent=1))
     for name, part in final.items():
         with (OUT_DIR / f"{name}.jsonl").open("w") as f:
             for r in part:

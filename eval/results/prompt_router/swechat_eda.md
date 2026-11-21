@@ -38,15 +38,15 @@ Training pool: 93,673 prompts in training repositories, 74,824 after at most 3,0
 
 | Label | available | train | dev | test |
 |---|---|---|---|---|
-| bugfix | 8,410 | 5,000 | 325 | 347 |
-| explain | 10,312 | 5,000 | 384 | 341 |
-| feature | 6,974 | 5,000 | 285 | 252 |
-| no_brief | 47,247 | 5,000 | 1,485 | 1,641 |
-| refactor | 2,413 | 2,082 | 114 | 75 |
-| run_action | 6,844 | 5,000 | 294 | 266 |
-| tests | 2,834 | 2,500 | 113 | 78 |
-| **total** | 85,034 | 29,582 | 3,000 | 3,000 |
+| bugfix | 13,585 | 5,000 | 463 | 570 |
+| explain | 16,543 | 5,000 | 564 | 505 |
+| feature | 13,861 | 5,000 | 502 | 563 |
+| no_brief | 14,933 | 5,000 | 463 | 483 |
+| refactor | 9,145 | 5,000 | 374 | 318 |
+| run_action | 12,901 | 5,000 | 494 | 452 |
+| tests | 4,066 | 3,611 | 140 | 109 |
+| **total** | 85,034 | 33,611 | 3,000 | 3,000 |
 
 Repositories: train 557, dev 50, test 82.
 
-Label mapping: create new code → feature, debug → bugfix, refactor → refactor, test → tests, understand → explain, git / connect → run_action, other → no_brief; any correction / rejection → no_brief (steering inside a running task); failure_report keeps its intent ("still failing" asks for a fix).
+Label mapping: create new code → feature, debug → bugfix, refactor → refactor, test → tests, understand → explain, git / connect → run_action, other → no_brief. Corrections / rejections keep their intent (the text says what is asked); the gateway decides whether to repeat a brief, from the conversation.

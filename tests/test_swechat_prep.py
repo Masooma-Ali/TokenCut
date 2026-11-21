@@ -56,9 +56,12 @@ def test_target_labels():
     assert target_label("connect", "non_pushback") == "run_action"
     assert target_label("understand", "non_pushback") == "explain"
     assert target_label("other", "non_pushback") == "no_brief"
-    assert target_label("refactor", "correction") == "no_brief"  # steering inside a task
-    assert target_label("debug", "rejection") == "no_brief"
-    assert target_label("debug", "failure_report") == "bugfix"  # "still failing" asks for a fix
+    # Corrections keep what they ask for ("explain what you did" -> explain); whether a brief is
+    # repeated is the gateway's decision, from the conversation, not the classifier's.
+    assert target_label("refactor", "correction") == "refactor"
+    assert target_label("understand", "correction") == "explain"
+    assert target_label("debug", "rejection") == "bugfix"
+    assert target_label("debug", "failure_report") == "bugfix"
     assert target_label(None, None) is None  # unlabelled: dropped
 
 

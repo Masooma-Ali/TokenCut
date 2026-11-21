@@ -73,3 +73,12 @@ def test_bootstrap_interval_contains_the_estimate_and_is_seeded():
     low, high = bootstrap_ci(values, np.mean, seed=1)
     assert low <= 0.8 <= high and high - low < 0.25
     assert bootstrap_ci(values, np.mean, seed=1) == (low, high)
+
+
+def test_prior_correction_moves_probability_towards_the_real_label_mix():
+    from eval.prompt_router.router_metrics import prior_correct
+    probs = np.array([[0.5, 0.5]])
+    out = prior_correct(probs, train_prior=np.array([0.5, 0.5]), real_prior=np.array([0.2, 0.8]))
+    assert np.allclose(out.sum(axis=1), 1) and out[0, 1] > out[0, 0]
+    same = prior_correct(probs, np.array([0.5, 0.5]), np.array([0.5, 0.5]))
+    assert np.allclose(same, probs)

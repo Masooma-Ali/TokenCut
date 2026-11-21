@@ -136,3 +136,12 @@ def evaluate(probs: np.ndarray, true: list[str], meta: list[dict], ci: bool = Fa
                 return pts["all_briefs_right"] if pts["all_briefs_right"] is not None else 0.0
             point["all_briefs_right_ci95"] = bootstrap_ci(idx, right_share, n=300)
     return report
+
+
+def prior_correct(probs: np.ndarray, train_prior: np.ndarray, real_prior: np.ndarray) -> np.ndarray:
+    """Re-weight probabilities from the training label mix to the real one (Bayes' rule).
+
+    Training is balanced by label; real traffic is not. p_real(y|x) ∝ p_train(y|x) · real(y) / train(y).
+    """
+    scaled = probs * (np.asarray(real_prior) / np.maximum(np.asarray(train_prior), 1e-12))
+    return scaled / scaled.sum(axis=1, keepdims=True)
