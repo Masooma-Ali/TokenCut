@@ -13,6 +13,7 @@ Point an agent at it:
 """
 
 import asyncio
+import hmac
 import json
 import logging
 import os
@@ -71,6 +72,7 @@ _DROP_REQUEST_HEADERS = {
     "proxy-authorization",
     "proxy-connection",
     "accept-encoding",
+    "x-tokencut-key",  # the local client key never leaves the gateway
 }
 _DROP_RESPONSE_HEADERS = {"content-length", "connection", "keep-alive", "transfer-encoding"}
 _METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]
@@ -90,6 +92,7 @@ class GatewayConfig:
     router_dir: str | None = None  # prompt router model folder (TOKENCUT_ROUTER_DIR)
     router_repo: str | None = None  # else this public Hugging Face repo (TOKENCUT_ROUTER_REPO)
     router: object | None = None  # loaded router (tests pass a fake)
+    client_key: str | None = None  # TOKENCUT_KEY: proxy requests must send it in x-tokencut-key
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -141,6 +144,7 @@ class GatewayConfig:
             route=RouteConfig.from_env(),
             router_dir=os.environ.get("TOKENCUT_ROUTER_DIR") or None,
             router_repo=os.environ.get("TOKENCUT_ROUTER_REPO") or None,
+            client_key=os.environ.get("TOKENCUT_KEY") or None,
         )
 
 
@@ -191,6 +195,14 @@ def create_app(
         return _LIVE_PAGE.read_text(encoding="utf-8")
 
     async def forward(provider: str, path: str, request: Request) -> Response:
+        if config.client_key and not hmac.compare_digest(
+            request.headers.get("x-tokencut-key", "").encode(), config.client_key.encode()
+        ):
+            # Only local programs given the key may use the gateway (and the user's logins).
+            return JSONResponse(status_code=401, content={"type": "error", "error": {
+                "type": "authentication_error",
+                "message": "TokenCut: missing or wrong x-tokencut-key (start the agent with "
+                           "`tokencut`)"}})
         started = time.perf_counter()
         body = await request.body()
         record: dict = {
