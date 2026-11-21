@@ -1154,3 +1154,99 @@ Limits: same as above; a common method name (e.g. `save`) names every method wit
 the file, which keeps more than needed (costs tokens, never correctness). Without any name
 (vague prompt) nothing changes: the packer's "skip what does not fit" rule still drops a large
 top-ranked function; a fix for that needs a ranking signal, not a name.
+
+## 11. Prompt router — task type of each user message (prompt enhancement, 2026-11-20 / 21)
+
+**Goal.** Recognise what a user message to a coding agent asks for, so the gateway can add a short,
+task-specific brief (bugfix: reproduce with a failing test, fix, run the real tests; explain: no
+edits; …) — only when the classifier is confident, otherwise the message stays unchanged. This
+section measures the classifier only; the briefs themselves and the gateway integration are not
+built (team decision pending, see recommendations).
+
+### Bottom line
+- Final model: **bge-small (33M) fine-tuned on 33,611 real coding-agent prompts (SWE-chat)**, run
+  as ONNX on CPU. On **3,000 test prompts from 82 repositories never seen in training**, at the
+  threshold fixed on dev: **92.2 % of briefs are the right type, 48.0 % of real tasks get one,
+  5.2 % of no-task messages wrongly get one** (95 % intervals 90.6–93.7 / 46.1–49.9 / 3.3–7.4).
+- Two of three proposed targets clearly met, the third on its edge (≤ 5 %).
+- **CPU time: median 14 ms, p95 235 ms** (long pastes, 512 tokens). It runs once per new user
+  message, not per agent request; **accepted** (2026-11-21). 8-bit quantization was tested and
+  not adopted (only ~15 % faster, probabilities shift).
+- Labels are SWE-chat's own LLM annotations; no human check (decision 2026-11-21: trust them).
+  Error inspection on dev suggests some "wrong" briefs are label mistakes, so true precision is
+  likely somewhat higher.
+
+### How we got there (each step measured on its own dev set)
+| Step | Data | Result | Lesson |
+|---|---|---|---|
+| Frozen bge-small embeddings + small classifiers | 700 DevGPT prompts labelled by Claude + 192 keyword-found extras | 52–58 % exact label (97 dev prompts with a real label); + word features 58–64 % | General embeddings capture topic, not intent |
+| SetFit fine-tuning (contrastive) | same | 68 % exact, 74 % broad; at 0.7: 94 % of real-task briefs right but 10 % of no-task prompts briefed | Fine-tuning helps (+10 points) |
+| + 387 CCSBench commit messages (relabelled) | + CCSBench | weak labels better (write_text F1 0.46 → 0.92) but 26–29 % of no-task prompts briefed | Short commit sentences make the model over-confident on non-tasks |
+| + "not a task" trained as a class | + 235 ambiguous examples | 0 of 42 no-task prompts briefed at ≥ 0.6; 80 % of all briefs right at 0.6 | Teach "no task" directly, not only through low confidence |
+| Switch to **SWE-chat** (real coding-agent sessions) | 229,909 user prompts, SWE-chat's own labels | first run (corrections → no brief): macro-F1 0.57, 69 % briefs right at 0.8 | A correction *reads* like a task; the model cannot see it is one |
+| SWE-chat, corrections keep their intent | 33,611 train / 3,000 dev / 3,000 test | dev macro-F1 0.73; at 0.87: 93.7 % / 45.8 % / 3.5 % | **final model** |
+
+### Data (SWE-chat; `eval/prompt_router/swechat_prep.py`, `eval/results/prompt_router/swechat_eda.md`)
+SWE-chat (SALT-NLP, COLM 2026; ODC-BY, gated): real sessions of Claude Code (66 %), Codex (25 %)
+and others on 701 public repositories. Of 229,909 user prompts, **27 % are not typed by a person**
+(slash commands, interrupts, CI / sub-agent / agent-to-agent messages, Codex approval requests and
+tool logs, image-only): removed by rules (in the gateway: no brief). Then non-English and
+unlabelled prompts removed, image markup stripped, secrets masked, exact duplicates merged
+(majority label), training repositories capped at 3,000 prompts, dev / test at 20 per session and
+400 per repository, **split by repository**. Labels: create new code → feature, debug → bugfix,
+refactor, test → tests, understand → explain, git / connect → run_action, other → no_brief;
+corrections keep their intent (whether to repeat a brief is a gateway decision, from the
+conversation). Training balanced to 5,000 per label (tests 3,611); dev / test natural.
+
+### Model (`eval/prompt_router/train_router_kaggle.py`, Kaggle 2× T4, 18.7 min)
+BAAI/bge-small-en-v1.5 + 7-label head, all weights fine-tuned (AdamW 3e-5, 3 epochs, warm-up,
+class weights, mixed precision). Input cut in tokens: first 360 + "…" + last 149 (instruction +
+final error line; with a 2,000-character cut, 42 % of log / code prompts lost their end to the
+512-token limit). Probabilities re-weighted to the natural label mix of the training repositories
+(prior correction, +~1 point). Exported to ONNX with PyTorch's dynamo exporter (the classic
+exporter differed from PyTorch by up to 0.63; Optimum downgraded packages on Kaggle); the local
+ONNX run reproduces the Kaggle dev predictions (same top label for 100 %).
+
+### Final test (`eval/results/prompt_router/router_test.md`; threshold 0.87 chosen on dev as the middle of the 0.85–0.88 range meeting all three targets)
+| Value | Test (95 % interval) | Dev | Target |
+|---|---|---|---|
+| All briefs right | **92.2 %** (90.6–93.7) | 93.7 % | ≥ 85 % |
+| Coverage of real tasks | **48.0 %** (46.1–49.9) | 45.8 % | ≥ 40 % |
+| No-task messages wrongly briefed | **5.2 %** (3.3–7.4) | 3.5 % | ≤ 5 % |
+| Accuracy / macro-F1 (no threshold) | 72.1 % / 0.717 | 73.2 % / 0.726 | — |
+| Broad-group accuracy | 79.6 % | 81.0 % | — |
+
+Per label (test F1): run_action 0.80 · bugfix 0.78 · tests 0.73 · feature 0.71 · explain 0.69 ·
+no_brief 0.69 · refactor 0.62. Slices (test accuracy): error logs 88.6 % · short prompts 85.2 % ·
+long (cut) prompts 75.4 % · corrections 68.1 % · Claude Code 71.1 % · Codex 80.8 %.
+
+### CPU time (this laptop, ONNX Runtime, 4 threads)
+| Prompt length | 16 tokens | 64 | 128 | 256 | 512 |
+|---|---|---|---|---|---|
+| Full precision | 11 ms | 24 ms | 44 ms | 91 ms | 227–241 ms |
+| 8-bit weights (not adopted) | — | 19 ms | — | — | 204 ms |
+
+Test set incl. tokenizing: median 14 ms, p95 235 ms. 8-bit: 33 instead of 129 MB, only ~15 %
+faster (attention between activations stays full precision) and the top label changes for 12 %
+of prompts (`router_int8_dev.md`).
+
+### Limits
+- Labels are SWE-chat's LLM annotations (noisy; not checked by a person); "briefs right" is
+  agreement with them. All Claude-labelled steps (DevGPT, CCSBench) are superseded by SWE-chat.
+- The classifier sees one message; it cannot tell a correction from a new request (by design:
+  the gateway decides about repeating a brief).
+- English only; refactor is the weakest label; some machine text still slips through the rules
+  ("Base directory for this skill:", "[n] assistant:").
+- Measured: task-type recognition. **Not measured: whether briefs help the agent** (task success,
+  tokens) — that needs the gateway integration and a live A/B.
+
+### Recommendations (do NOT implement — for the team to decide)
+1. **Gateway integration** behind an opt-in setting: rules for machine text and follow-ups first,
+   then the ONNX router; brief only if top label ≠ no_brief and p ≥ 0.87 (prior-corrected);
+   **stateless repeat rule** — recompute decisions for every earlier user message in the request
+   (cached by text hash, ~1 MB) and skip a brief whose type equals the last brief given, so
+   earlier messages stay byte-identical (prompt cache). This changes the decision "embeddings
+   offline only" (it concerned large code chunks; here one short message, median 14 ms).
+2. Write and review the 6 brief texts (≤ ~120 tokens each; research basis in the prompt-
+   enhancement notes), then a small live A/B: same tasks with / without briefs.
+3. Add the two missed machine-text patterns; consider a 256-token input if latency must drop.
