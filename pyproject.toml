@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tokencut"
-version = "0.1.0.dev0"
+name = "tokencut-cli"  # PyPI "tokencut" belongs to an unrelated SDK; the command is `tokencut`
+dynamic = ["version"]  # from the git tag (v0.1.0 -> 0.1.0), see release.yml
 description = "Cache-aware gateway that trims the context coding agents send to the model"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -38,6 +38,9 @@ tokencut = "tokencut.cli:main"
 
 [project.urls]
 Repository = "https://github.com/Masooma-Ali/TokenCut"
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0"  # e.g. a source copy without git
 
 [tool.setuptools.packages.find]
 include = ["tokencut*"]

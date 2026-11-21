@@ -1,0 +1,40 @@
+name: release
+
+# Push a version tag to release:  git tag v0.1.0 && git push origin v0.1.0
+# 1. the full test + package matrix, 2. publish to PyPI (trusted publishing, no token
+# stored in GitHub), 3. a GitHub Release with the wheel, sdist and generated notes.
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  checks:
+    uses: ./.github/workflows/tests.yml
+
+  pypi:
+    needs: checks
+    runs-on: ubuntu-latest
+    environment: pypi  # one-time: add this repo as a trusted publisher of tokencut-cli on PyPI
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes --title "TokenCut $GITHUB_REF_NAME"
