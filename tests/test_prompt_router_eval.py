@@ -90,7 +90,7 @@ def test_extra_candidates_skip_the_random_sample_and_never_repeat():
 def test_jsonl_with_unicode_line_separators_in_text(tmp_path):
     from eval.prompt_router.label import load_jsonl
     path = tmp_path / "p.jsonl"
-    path.write_text(json.dumps({"id": "1", "text": "a b\u0085c"}, ensure_ascii=False) + "\n")
+    path.write_text(encoding="utf-8", data=json.dumps({"id": "1", "text": "a b\u0085c"}, ensure_ascii=False) + "\n")
     assert load_jsonl(path) == [{"id": "1", "text": "a b\u0085c"}]
 
 

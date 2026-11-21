@@ -43,7 +43,7 @@ def extract() -> None:
 
     pf = pq.ParquetFile(RAW)
     kept = 0
-    with ALL.open("w") as out:
+    with ALL.open("w", encoding="utf-8") as out:
         for g in range(pf.metadata.num_row_groups):
             for row in pf.read_row_group(g, columns=COLUMNS).to_pylist():
                 if row["turn_type"] != "user_prompt" or not (row["content"] or "").strip():
@@ -65,7 +65,7 @@ def extract() -> None:
 def sample(n: int, per_session: int, seed: int) -> None:
     rng = random.Random(seed)
     by_session: dict[str, list[dict]] = defaultdict(list)
-    with ALL.open() as f:
+    with ALL.open(encoding="utf-8") as f:
         for line in f:
             row = json.loads(line)
             if len(row["text"]) <= MAX_CHARS:
@@ -75,7 +75,7 @@ def sample(n: int, per_session: int, seed: int) -> None:
         prompts = by_session[session]
         pool += rng.sample(prompts, min(per_session, len(prompts)))
     picked = rng.sample(pool, min(n, len(pool)))
-    with SAMPLE.open("w") as f:
+    with SAMPLE.open("w", encoding="utf-8") as f:
         for row in picked:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
     print(f"{len(pool)} candidates from {len(by_session)} sessions; sampled {len(picked)} -> {SAMPLE}")

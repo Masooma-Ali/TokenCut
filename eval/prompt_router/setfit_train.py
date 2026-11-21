@@ -48,7 +48,7 @@ def main(argv: list[str] | None = None) -> None:
 
     labels = final_labels(load_jsonl(LABELS_FILE))
     extra = final_labels(load_jsonl(EXTRA_FILE))
-    splits = json.loads(SPLITS.read_text())
+    splits = json.loads(SPLITS.read_text(encoding="utf-8"))
     texts = {p["id"]: p["text"][:MAX_CHARS] for name in ("prompts.jsonl", "prompts_extra.jsonl")
              for p in load_jsonl(OUT_DIR / name)}
     train = [i for i in splits["train"] if labels[i] != AMBIGUOUS]
@@ -96,7 +96,7 @@ def main(argv: list[str] | None = None) -> None:
               "broad_accuracy": float(np.mean([STAGE1[p] == STAGE1[t] for p, t in zip(pred, true)])),
               "macro_f1": macro_f1(stats), "per_class": stats, "coverage_curve": curve}
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / f"setfit_{args.split}.json").write_text(json.dumps(report, indent=1))
+    (RESULTS / f"setfit_{args.split}.json").write_text(encoding="utf-8", data=json.dumps(report, indent=1))
     model.save_pretrained(str(Path(OUT_DIR) / f"setfit-{args.split}"))
     print(json.dumps({k: v for k, v in report.items() if k != "per_class"}, indent=1))
 

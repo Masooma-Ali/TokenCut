@@ -140,8 +140,8 @@ def main(argv: list[str] | None = None) -> None:
 
     labels = final_labels(load_jsonl(LABELS_FILE))
     if not SPLITS.exists():  # the split covers the random 700 only
-        SPLITS.write_text(json.dumps(stratified_split(labels), indent=1))
-    splits = json.loads(SPLITS.read_text())
+        SPLITS.write_text(encoding="utf-8", data=json.dumps(stratified_split(labels), indent=1))
+    splits = json.loads(SPLITS.read_text(encoding="utf-8"))
     texts = {p["id"]: p["text"][:MAX_CHARS] for name in ("prompts.jsonl", "prompts_extra.jsonl")
              for p in load_jsonl(OUT_DIR / name)}
     extra = final_labels(load_jsonl(EXTRA_FILE))
@@ -188,8 +188,8 @@ def main(argv: list[str] | None = None) -> None:
     report["best"] = {k: best[k] for k in ("embed", "classifier", "min_prob", "min_margin",
                                             "macro_f1", "accuracy", "coverage", "precision")}
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / f"{args.split}.json").write_text(json.dumps(report, indent=1))
-    (RESULTS / f"{args.split}.md").write_text(render(report, best))
+    (RESULTS / f"{args.split}.json").write_text(encoding="utf-8", data=json.dumps(report, indent=1))
+    (RESULTS / f"{args.split}.md").write_text(encoding="utf-8", data=render(report, best))
     print(render(report, best))
 
 

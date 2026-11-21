@@ -40,7 +40,7 @@ class OnnxRouter:
         import onnxruntime as ort
         from tokenizers import Tokenizer
 
-        self.config = json.loads((folder / "router_config.json").read_text())
+        self.config = json.loads((folder / "router_config.json").read_text(encoding="utf-8"))
         assert self.config["labels"] == LABELS
         self.tokenizer = Tokenizer.from_file(str(folder / "tokenizer.json"))
         self.tokenizer.no_truncation()
@@ -71,7 +71,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("split", choices=["dev", "test"])
     args = parser.parse_args(argv)
     router = OnnxRouter()
-    rows = [json.loads(line) for line in (DATA / f"{args.split}.jsonl").open()]
+    rows = [json.loads(line) for line in (DATA / f"{args.split}.jsonl").open(encoding="utf-8")]
     true = [r["label"] for r in rows]
 
     probs, times, n_tokens = [], [], []
@@ -106,7 +106,7 @@ def main(argv: list[str] | None = None) -> None:
     out["at_threshold"] = point
     out["report"] = report
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / f"router_{args.split}.json").write_text(json.dumps(out, indent=1, default=float))
+    (RESULTS / f"router_{args.split}.json").write_text(encoding="utf-8", data=json.dumps(out, indent=1, default=float))
 
     def pct(v):
         return f"{100 * v:.1f}%"
@@ -140,7 +140,7 @@ def main(argv: list[str] | None = None) -> None:
         lines += ["", (f"Check against Kaggle's dev predictions: max probability difference "
                   f"{out['max_abs_prob_diff_vs_kaggle']:.2e}, same top label for "
                   f"{pct(out['same_top_label_as_kaggle'])} of prompts.")]
-    (RESULTS / f"router_{args.split}.md").write_text("\n".join(lines) + "\n")
+    (RESULTS / f"router_{args.split}.md").write_text(encoding="utf-8", data="\n".join(lines) + "\n")
     print("\n".join(lines))
 
 

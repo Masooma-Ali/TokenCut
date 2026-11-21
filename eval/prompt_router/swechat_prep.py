@@ -140,7 +140,7 @@ def _pct(n: int, d: int) -> str:
 
 def main() -> None:
     rng = random.Random(13)
-    raw = [json.loads(line) for line in SOURCE.open()]
+    raw = [json.loads(line) for line in SOURCE.open(encoding="utf-8")]
     lines = ["# SWE-chat user prompts — EDA and preprocessing for the prompt router", "",
              ("Source: SWE-chat (SALT-NLP, COLM 2026; ODC-BY), all user prompts of "
              "`conversations.parquet`. Labels: SWE-chat's own LLM annotations (`prompt_intent`, "
@@ -235,13 +235,13 @@ def main() -> None:
     # Natural label mix of the training repositories (before balancing): used to correct the
     # model's probabilities for real traffic, so nothing is tuned on dev.
     natural = Counter(r["label"] for r in pool)
-    (OUT_DIR / "natural_prior.json").write_text(json.dumps(dict(sorted(natural.items())), indent=1))
+    (OUT_DIR / "natural_prior.json").write_text(encoding="utf-8", data=json.dumps(dict(sorted(natural.items())), indent=1))
     for name, part in final.items():
-        with (OUT_DIR / f"{name}.jsonl").open("w") as f:
+        with (OUT_DIR / f"{name}.jsonl").open("w", encoding="utf-8") as f:
             for r in part:
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.write_text("\n".join(lines))
+    REPORT.write_text(encoding="utf-8", data="\n".join(lines))
     print("\n".join(lines))
 
 

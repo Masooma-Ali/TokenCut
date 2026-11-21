@@ -51,13 +51,13 @@ OUT = "/kaggle/working/router"
 
 
 def save_json(obj, path: str) -> None:
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=1)
 
 
 def load(split: str) -> list[dict]:
     path = glob.glob(f"/kaggle/input/**/{split}.jsonl", recursive=True)[0]
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f.read().split("\n") if line.strip()]
 
 
@@ -67,7 +67,7 @@ def priors(train_labels: list[int]) -> tuple[np.ndarray, np.ndarray | None]:
     found = glob.glob("/kaggle/input/**/natural_prior.json", recursive=True)
     if not found:
         return train, None
-    with open(found[0]) as f:
+    with open(found[0], encoding="utf-8") as f:
         counts = json.load(f)
     natural = np.array([counts.get(lab, 0) for lab in LABELS], dtype=float)
     return train, natural / natural.sum()
@@ -224,7 +224,7 @@ def main() -> None:
         probs = predict(model, ids, device, tokenizer.pad_token_id)
         meta = [{**r, "n_tokens": n} for r, n in zip(rows, lengths)]
         true = [r["label"] for r in rows]
-        with open(f"{OUT}/router_config.json") as f:
+        with open(f"{OUT}/router_config.json", encoding="utf-8") as f:
             config = json.load(f)
         reports = {"raw": evaluate(probs, true, meta, ci=True)}
         if config.get("natural_prior"):

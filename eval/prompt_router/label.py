@@ -31,7 +31,7 @@ SHOW_CHARS = 1_500
 def load_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
-    return [json.loads(line) for line in path.read_text().split("\n") if line.strip()]
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n") if line.strip()]
 
 
 def agreement_ids(prompts: list[dict]) -> list[str]:
@@ -82,7 +82,7 @@ def main(argv: list[str] | None = None) -> None:
         else:
             print("?")
             continue
-        out.write_text("".join(json.dumps(r) + "\n" for r in done))
+        out.write_text(encoding="utf-8", data="".join(json.dumps(r) + "\n" for r in done))
     print(f"saved {len(done)} labels to {out}")
 
 

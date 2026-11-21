@@ -102,7 +102,7 @@ def main(argv: list[str] | None = None) -> None:
         got = collect(commit_type, label, args.per_label, rng, seen)
         print(f"{commit_type} -> {label}: {len(got)}")
         rows += got
-    with (OUT_DIR / "ccsbench.jsonl").open("w") as f:
+    with (OUT_DIR / "ccsbench.jsonl").open("w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 

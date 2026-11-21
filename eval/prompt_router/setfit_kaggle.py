@@ -32,7 +32,7 @@ STAGE1 = {"bugfix": "change_code", "feature": "change_code", "refactor": "change
 
 def load(split):
     path = glob.glob(f"/kaggle/input/**/{split}.jsonl", recursive=True)[0]
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f.read().split("\n") if line.strip()]
 
 
@@ -115,7 +115,7 @@ def main():
               "macro_f1": round(float(np.mean([s["f1"] for s in stats.values()])), 3),
               "per_class": stats, "coverage_curve": curve}
     os.makedirs("/kaggle/working", exist_ok=True)
-    with open(f"/kaggle/working/setfit_{args.split}.json", "w") as f:
+    with open(f"/kaggle/working/setfit_{args.split}.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1)
     model.save_pretrained(f"/kaggle/working/setfit-{args.split}")
     print(json.dumps({k: v for k, v in report.items() if k != "per_class"}, indent=1))

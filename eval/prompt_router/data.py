@@ -161,27 +161,27 @@ def main(argv: list[str] | None = None) -> None:
     rows = extract(args.zip)
     if args.extra2:
         taken = {json.loads(line)["id"] for name in ("prompts.jsonl", "prompts_extra.jsonl")
-                 for line in (OUT_DIR / name).open()}
+                 for line in (OUT_DIR / name).open(encoding="utf-8")}
         extra = extra_candidates(rows, taken, {"tests": 50, "review": 50}, seed=29,
                                  keywords=EXTRA_KEYWORDS_2)
-        with (OUT_DIR / "prompts_extra.jsonl").open("a") as f:  # appended: E171 onwards
+        with (OUT_DIR / "prompts_extra.jsonl").open("a", encoding="utf-8") as f:  # appended: E171 onwards
             for row in extra:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
         print(f"{len(extra)} round-2 candidates appended")
         return
     if args.extra:
-        sampled = {json.loads(line)["id"] for line in (OUT_DIR / "prompts.jsonl").open()}
+        sampled = {json.loads(line)["id"] for line in (OUT_DIR / "prompts.jsonl").open(encoding="utf-8")}
         per_label = {"tests": 45, "review": 40, "run_action": 30, "refactor": 25, "design": 15,
                      "write_text": 15}
         extra = extra_candidates(rows, sampled, per_label)
-        with (OUT_DIR / "prompts_extra.jsonl").open("w") as f:
+        with (OUT_DIR / "prompts_extra.jsonl").open("w", encoding="utf-8") as f:
             for row in extra:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
         print(f"{len(extra)} extra candidates for {sorted(per_label)}")
         return
     picked = sample(rows, args.sample, args.seed)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    with (OUT_DIR / "prompts.jsonl").open("w") as f:
+    with (OUT_DIR / "prompts.jsonl").open("w", encoding="utf-8") as f:
         for row in picked:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
     counts: dict[str, int] = {}
