@@ -228,7 +228,7 @@ tokencut setup             # Claude Code check, ChatGPT question, hidden LiteLLM
 tokencut                   # connector + gateway + Claude Code (same as `tokencut code`)
 tokencut status | logs [gateway|connector] | gateway | --version
 ```
-Users install with `install.sh` / `install.ps1` (uv + `uv tool install tokencut-cli`; PyPI name
+Users install with `install.sh` / `install.ps1` (uv + `uv tool install tokencut-proxy`; PyPI name
 `tokencut` is taken). Code: `tokencut/cli.py`, `wizard.py` (setup), `userconfig.py`
 (`~/.tokencut/config.json`, keys, env), `litellm_proxy.py` (pinned LiteLLM venv, generated
 config), `launch.py`. `TOKENCUT_HOME` moves `~/.tokencut` (tests). `TOKENCUT_KEY` (gateway):

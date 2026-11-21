@@ -5,15 +5,15 @@
 # environment, then runs `tokencut setup`. Re-run it to update.
 # TOKENCUT_PACKAGE overrides what is installed (e.g. git+https://github.com/Masooma-Ali/TokenCut).
 set -eu
-pkg="${TOKENCUT_PACKAGE:-tokencut-cli}"
+pkg="${TOKENCUT_PACKAGE:-tokencut-proxy}"
 if ! command -v uv >/dev/null 2>&1; then
   echo "Installing uv ..."
   curl -LsSf https://astral.sh/uv/install.sh | sh
   PATH="$HOME/.local/bin:$PATH"
   export PATH
 fi
-if uv tool list 2>/dev/null | grep -q '^tokencut-cli '; then
-  uv tool upgrade tokencut-cli
+if uv tool list 2>/dev/null | grep -q '^tokencut-proxy '; then
+  uv tool upgrade tokencut-proxy
 else
   uv tool install --python 3.12 "$pkg"
 fi

@@ -16,7 +16,7 @@ jobs:
   pypi:
     needs: checks
     runs-on: ubuntu-latest
-    environment: pypi  # one-time: add this repo as a trusted publisher of tokencut-cli on PyPI
+    environment: pypi  # one-time: add this repo as a trusted publisher of tokencut-proxy on PyPI
     permissions:
       id-token: write
     steps:

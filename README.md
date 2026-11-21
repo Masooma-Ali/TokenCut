@@ -13,7 +13,7 @@ curl -fsSL https://github.com/Masooma-Ali/TokenCut/releases/latest/download/inst
 irm https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.ps1 | iex          # Windows
 ```
 The installer adds [uv](https://docs.astral.sh/uv/) if missing, installs the `tokencut` command
-(PyPI package `tokencut-cli`) and runs `tokencut setup`, which asks whether to add your ChatGPT
+(PyPI package `tokencut-proxy`) and runs `tokencut setup`, which asks whether to add your ChatGPT
 plan, installs the hidden model connector (LiteLLM) and downloads the prompt model once.
 Then, in any project folder:
 

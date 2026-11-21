@@ -1,4 +1,4 @@
-"""The `tokencut` command (installed with the tokencut-cli package).
+"""The `tokencut` command (installed with the tokencut-proxy package).
 
     tokencut [claude args...]   open Claude Code through TokenCut (runs setup the first time)
     tokencut setup              logins and one-time installs (--chatgpt / --no-chatgpt)
@@ -23,7 +23,7 @@ COMMANDS = ("setup", "status", "logs", "gateway", "code")
 
 def _version() -> str:
     try:
-        return version("tokencut-cli")
+        return version("tokencut-proxy")
     except PackageNotFoundError:  # running from a checkout without an install
         return "0+checkout"
 

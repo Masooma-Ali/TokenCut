@@ -3,7 +3,9 @@ requires = ["setuptools>=68", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tokencut-cli"  # PyPI "tokencut" belongs to an unrelated SDK; the command is `tokencut`
+# PyPI: "tokencut" is an unrelated SDK, "tokencut-cli" is too close to "token-cut-cli".
+# The command users type is still `tokencut`.
+name = "tokencut-proxy"
 dynamic = ["version"]  # from the git tag (v0.1.0 -> 0.1.0), see release.yml
 description = "Cache-aware gateway that trims the context coding agents send to the model"
 readme = "README.md"
