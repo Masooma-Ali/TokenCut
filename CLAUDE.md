@@ -6,38 +6,28 @@ phase**, how to run everything, and how to report results.
 
 ---
 
-## 0. Your job in this phase: TEST, COMPARE, MEASURE, REPORT
+## 0. Current phase (after the mid evaluation, updated 2026-11-21)
 
-The team is in a **testing and evaluation phase**. Do **not** build new features, do not
-start ODE / model routing, and do not prepare mid-evaluation slides on your own. The goal is
-an honest, reproducible answer to:
+The mid evaluation has **passed**. The testing / evaluation phase (sections 6 and 8) is done;
+its results are in `docs/RESULTS_REPORT.md`. The team now works on:
 
-> **Where does TokenCut's context trimming stand?** How much does it save, does the agent
-> still work correctly, how does it compare with baselines, what is fast or slow, and what
-> breaks?
+1. **Installable product** (branch `feat/cli-install`, section 5a): one install command, a
+   `tokencut` command, `tokencut setup` for logins, `tokencut` opens Claude Code with
+   trimming, prompt enhancement and routing on; releases through a CD pipeline.
+2. **Prompt enhancement**: system note (`TOKENCUT_SYSTEM_NOTE`) and task briefs
+   (`TOKENCUT_PROMPT_BRIEF`) are merged but opt-in; a live A/B has not been run yet.
+   Planned next: **minimal-code instructions** (prompt text, measured by diff size).
+3. **ODE** (contextual bandit for model × effort per task): now in scope, not started.
+   Step D showed the tier hardly matters, so ODE's actions are the model (and effort).
 
-Concretely you will (details in section 6):
-
-1. Reproduce the existing results (tests, benchmark) on your machine.
-2. Run the **offline** benchmark and extend the analysis (per repo, per budget, latency).
-3. Run **live** sessions through the gateway with a real coding agent, in a fixed test
-   matrix (shadow vs trim, tiers, cache events, tool pruning, with vs without TokenCut).
-4. Record every number, every failure, every odd agent behaviour.
-5. Write the results into `docs/RESULTS_REPORT.md` (template in section 8) and keep it up
-   to date. Honest negative results are as valuable as positive ones.
-
-**Update 2026-10-12:** at a team member's request, two improvements found by this phase's
-measurements were implemented on branch `trimming/researchpapers_methodology` — **R8** (diffs
-and "full" requests never trimmed) and **R10** (opt-in task masking, `TOKENCUT_TASK_MASK=1`);
-see `docs/DECISIONS.md` and `docs/RESULTS_REPORT.md` §4.6. Other recommendations stay
-recommendations until the team decides.
-
-Small fixes are allowed **only** when a test or measurement exposes a real bug. Then: write
-a failing test first, fix, keep all tests green, log it in `docs/DECISIONS.md`, and mention
-it in the report. Anything bigger → write it down as a recommendation, do not build it.
-
-Always tell the user what you measured, how, and what the numbers mean in plain words.
-Never present a result you did not actually measure. If a run fails, say so with the output.
+How to work:
+- Build what the user asks for, test-first, small PRs; plan first when the user asks for a
+  plan (do not start coding during a planning question).
+- Ask before anything that spends API quota (live A/B, SWE-bench runs).
+- Measure before claiming: tell the user what you measured, how, and what the numbers mean
+  in plain words. Never present a result you did not actually measure. If a run fails, say
+  so with the output. Honest negative results are as valuable as positive ones.
+- Log every change of behaviour or tuning in the `docs/DECISIONS.md` change log.
 
 ---
 
@@ -50,11 +40,11 @@ request — mainly **tool output** (file contents, test logs, search results), a
 right moments old history and unused tool definitions — so every request costs less,
 **without breaking the agent, its edits, or the provider's prompt cache.**
 
-Later (after the mid evaluation, NOT now) a contextual bandit called **ODE** will choose the
-context tier and the model per request.
+Next, a contextual bandit called **ODE** will choose the model (and reasoning effort) per
+task (in scope since the mid evaluation; not built yet).
 
 ### One-sentence definition
-*TokenCut is a model-free, cache-aware gateway that cuts the tool output coding agents feed
+*TokenCut is a cache-aware gateway that cuts the tool output coding agents feed
 back to the model, keeping the code and errors that matter, so every request costs less
 without breaking the agent.*
 
@@ -72,13 +62,14 @@ old pages are tidied too.
 
 | Decision | Detail |
 |---|---|
-| **Phase focus** | Testing / comparison / reporting of context trimming. No new features. |
-| **ODE / model routing** | Deferred until after the mid evaluation. Do not implement. Ideas parked for later: control the provider's thinking budget / reasoning effort per step; model switches cost a cache rewrite. |
+| **Phase focus** | After the mid evaluation: installable product, prompt enhancement, ODE (section 0). |
+| **ODE / model routing** | In scope, not started. Decide per task (at a new typed user message), never mid-task: a model switch costs a cache rewrite. Actions = model (and effort); the tier stays `moderate` (it hardly mattered in step D). |
 | **No local repo map in the gateway** | The gateway only trims what is inside requests. Do not add whole-repo indexing to the live gateway. |
-| **Embeddings** | Allowed in the **offline benchmark only** (`eval/embeddings.py`, `fastembed`). Too slow for the live gateway on a laptop CPU (~13 chunks/s → 2–5 s per new large file). Do not add them to the gateway. |
+| **Embeddings** | No embedding of **code chunks** in the gateway (too slow on a laptop CPU, ~13 chunks/s → 2–5 s per new large file); allowed offline (`eval/embeddings.py`). Exception (DECISIONS 2026-11-21): the ONNX prompt router embeds one short user message (median 14 ms). Models in the gateway are allowed in general. |
 | **Cache safety is non-negotiable** | Between cache events, earlier messages must be sent byte-for-byte as before. There are tests for this; keep them green. |
 | **Fail open** | Any trimming error → forward the original request. |
 | **Privacy** | Logs contain numbers only (no prompts, code, headers or keys). Full bodies only with `TOKENCUT_CAPTURE=1`, local, gitignored. Never commit `logs/`, `cache/`, `swebench_repos/`. |
+| **Deployment** | One install command; `tokencut setup` asks for the Claude and ChatGPT logins; **both Claude and ChatGPT go through LiteLLM**, which stays hidden from the user (private venv, generated config, child process). Claude Code is a prerequisite the user installs themselves. Router model is in the **public** HF repo `humataj/tokencut-router`. Releases via a CD pipeline (tag → tests → build → publish). |
 | **Shared files need approval of the other two members** | `tokencut/contracts.py`, `tokencut/tokens.py`, `requirements.txt`, `pyproject.toml`, `docs/DECISIONS.md` (append to the change log is fine). |
 
 Owners (README): ingestion + SWE-bench loader — Masooma Ali; graph + API — Huma Taj;
@@ -133,9 +124,13 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `tokencut/gateway/history.py`, `session.py` | cache-event trimming, per-conversation memory, tool pruning |
 | `tokencut/gateway/usage.py` | billed usage (incl. cache read / write) from SSE / JSON responses |
 | `tokencut/gateway/records.py`, `app.py` | analysis, logs, stats, modes, settings |
+| `tokencut/gateway/note.py` | fixed system note on TokenCut's markers (`TOKENCUT_SYSTEM_NOTE`) |
+| `tokencut/gateway/task_router.py`, `brief.py`, `prompt_router.py` | task briefs: machine-text rules + ONNX router, six brief texts (`TOKENCUT_PROMPT_BRIEF`) |
+| `tokencut/gateway/routing.py` | model routing: GPT (and optionally Claude) models to LiteLLM |
+| `tokencut/cli.py`, `tokencut/launch.py` | the `tokencut` command (`code`, `gateway`); launcher for gateway + LiteLLM + Claude Code |
 | `eval/loader.py`, `metrics.py`, `run_eval.py` | SWE-bench Lite loader (HF datasets-server), gold chunks, Iteration 1 eval |
 | `eval/benchmark.py`, `embeddings.py`, `prepare.py` | head-to-head benchmark vs baselines; task sets in `eval/tasks_iter2.json` |
-| `tests/` | 145 tests (all must pass) |
+| `tests/` | 357 tests (all must pass) |
 
 ### Gateway settings (environment variables)
 | Variable | Default | Meaning |
@@ -155,7 +150,10 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_PROMPT_BRIEF` | off | `1` = task brief appended to confidently classified typed user messages (rules + ONNX router; agent requests, trim mode only; stateless repeat rule; fail open) |
 | `TOKENCUT_BRIEF_THRESHOLD` | `0.87` | router probability needed for a brief |
 | `TOKENCUT_ROUTER_DIR` | — | local router model folder (4 files, not in git) |
-| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | private HF repo, downloaded once to `~/.cache/tokencut/router` if no local folder |
+| `TOKENCUT_ROUTER_REPO` | `humataj/tokencut-router` | public HF repo (no login), downloaded once to `~/.cache/tokencut/router` if no local folder |
+| `TOKENCUT_GPT_UPSTREAM` | — | LiteLLM URL; GPT models (`TOKENCUT_GPT_MODELS` prefixes) are routed there |
+| `TOKENCUT_GPT_KEY` | — | LiteLLM master key |
+| `TOKENCUT_CLAUDE_VIA_LITELLM` | off | `1` = Claude models through LiteLLM too (the deployment default) |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
@@ -198,8 +196,15 @@ session: 71–85% smaller event request, ~30 ms (synthetic best case).
 | + cache-event trimming (model switch) | 6.4% of request tokens saved; post-switch summary complete and accurate |
 | + tool pruning | **71% of request tokens saved** (34k tokens of tool definitions removed per request after the switch); all tasks correct; Claude used `curl` when the pruned web-fetch tool was missing |
 
-These live sessions are **short and on a tiny repo**. Nothing yet measures **task success on
-real bugs** with trimmed context — that is the biggest open evidence gap.
+These live sessions are **short and on a tiny repo**.
+
+### Task success on real bugs (step D, RESULTS_REPORT §7, 29 sympy SWE-bench tasks, Claude Code + Haiku)
+- Core trimming (§7): resolved 19/29 with TokenCut vs 18/29 without; cost about −7 % per
+  request, −14 % per task (not statistically certain); 90 % of the saving came from R10.
+- P1 features (§8: + lazy tools, CCR, repo index): cost −25 % (CI excludes zero) but resolved
+  18/29 vs 22/29 (p = 0.125); one of the 4 losses was a TokenCut bug (fixed), 2 passed on a
+  re-run, 1 (22840) is still unexplained. Lazy tools stay opt-in. Later work
+(prompt hints, packing fix, prompt router, task briefs): RESULTS_REPORT §10–§11.
 
 ---
 
@@ -209,11 +214,23 @@ real bugs** with trimmed context — that is the biggest open evidence gap.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                 # must be 145+ passed
+pytest -q                 # must be 357+ passed
 ruff check .              # must be clean
 ```
 The machine may have no `python` command; use `python3` or the venv. The first token count
 downloads a small tiktoken file (needs internet once).
+
+### 5a. As an installed package (branch `feat/cli-install`, in progress)
+```bash
+pip install -e ".[dev]"    # editable install with test tools; or build: pip wheel . --no-deps -w dist
+tokencut --version
+tokencut gateway           # the gateway in the foreground
+tokencut code              # gateway + LiteLLM + Claude Code (same as python -m tokencut.launch code)
+```
+`pyproject.toml` holds version ranges for installs; `requirements.txt` keeps the exact
+versions the team tests with. Planned next: config file `~/.tokencut/config.json`,
+`tokencut setup` (Claude Code check, logins, hidden LiteLLM venv + generated config),
+`status` / `logs`, a local TokenCut key, release pipeline and install scripts.
 
 ### Offline benchmark
 Local data is NOT in git (gitignored, several GB): `swebench_repos/`, `cache/`
@@ -248,7 +265,7 @@ Restart the gateway between test runs (it keeps per-conversation memory in RAM).
 
 ---
 
-## 6. The testing & evaluation work program
+## 6. The testing & evaluation work program (done before the mid evaluation; kept as reference)
 
 Work through these in order. Record every run (date, machine, settings, agent, model, repo,
 task script) in the report.
@@ -347,7 +364,7 @@ What they report vs what we measured; where we are better / worse / not comparab
 
 ## 9. Known limitations / open issues
 
-1. No task-success (resolve-rate) evidence yet — offline metrics are "needed code kept".
+1. Task-success evidence is one run per task on one repo (sympy) and one model (Haiku): 19/29 vs 18/29 (core), 18/29 vs 22/29 (P1).
 2. Held-out benchmark: level with BM25 / embeddings, not clearly ahead; whole-repo file recall ~62%.
 3. On small projects most tokens are Claude Code's tool definitions; without tool pruning the saving is small (~2–6%).
 4. Code trimming is Python-only (logs / search work for any language).
@@ -356,7 +373,8 @@ What they report vs what we measured; where we are better / worse / not comparab
 7. Conversation identity = system prompt + first user message; Claude Code's automatic
    first-message text may make two sessions in the same folder look alike (seen once; a model
    switch now only counts if the new model's cache is cold, which limits the impact).
-8. Live results so far are short sessions on a tiny repo.
+8. Live playground results are short sessions on a tiny repo; step D adds 29 real sympy tasks.
+10. Prompt enhancement (system note, task briefs) is not yet A/B tested for task success or tokens.
 9. Re-request protection works per file, not per line range.
 
 ## 10. Glossary
@@ -367,4 +385,4 @@ What they report vs what we measured; where we are better / worse / not comparab
 - **Cache event** — model switch to a cold model, cache TTL expired, or context nearly full.
 - **On-arrival trimming** — trimming a tool result the first time it appears; identical afterwards.
 - **Shadow mode** — measure only, forward unchanged.
-- **ODE** — the planned bandit for (tier × model) choice; out of scope now.
+- **ODE** — the planned bandit that chooses model (and effort) per task; in scope, not built.
