@@ -1,6 +1,6 @@
 #!/bin/sh
 # TokenCut installer (macOS / Linux):
-#   curl -fsSL https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.sh | sh
+#   curl -fsSL https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.sh | sh
 # Installs uv (Astral's Python tool manager) if missing, then the tokencut command in its own
 # environment, then runs `tokencut setup`. Re-run it to update.
 # TOKENCUT_PACKAGE overrides what is installed (e.g. git+https://github.com/Masooma-Ali/TokenCut).

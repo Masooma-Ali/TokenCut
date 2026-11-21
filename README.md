@@ -7,10 +7,10 @@ Cost-aware joint context-and-model routing gateway for AI coding agents (FYP, FA
 ## Install and use (one command)
 Needs [Claude Code](https://claude.ai/code) installed first. Then:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.sh | sh     # macOS / Linux
+curl -fsSL https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.sh | sh     # macOS / Linux
 ```
 ```powershell
-irm https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.ps1 | iex          # Windows
+irm https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.ps1 | iex          # Windows
 ```
 The installer adds [uv](https://docs.astral.sh/uv/) if missing, installs the `tokencut` command
 (PyPI package `tokencut-cli`) and runs `tokencut setup`, which asks whether to add your ChatGPT
@@ -28,7 +28,8 @@ Settings: `~/.tokencut/config.json` (no secrets); every `TOKENCUT_*` variable be
 Claude keeps Claude Code's own login; the ChatGPT token stays in LiteLLM's file; a local
 TokenCut key (`~/.tokencut/tokencut_key`) stops other programs from using the gateway.
 Releases: push a tag `vX.Y.Z` (`.github/workflows/release.yml` tests, publishes to PyPI and
-creates a GitHub Release).
+creates a GitHub Release with the install scripts attached; the `releases/latest/download/…`
+links above always point to the newest one). The links work only while the repository is public.
 
 ## Pipeline
 

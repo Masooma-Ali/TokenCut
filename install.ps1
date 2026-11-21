@@ -1,5 +1,5 @@
 # TokenCut installer (Windows PowerShell):
-#   irm https://raw.githubusercontent.com/Masooma-Ali/TokenCut/main/install.ps1 | iex
+#   irm https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.ps1 | iex
 # Installs uv (Astral's Python tool manager) if missing, then the tokencut command in its own
 # environment, then runs `tokencut setup`. Re-run it to update.
 # $env:TOKENCUT_PACKAGE overrides what is installed (e.g. git+https://github.com/Masooma-Ali/TokenCut).

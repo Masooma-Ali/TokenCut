@@ -236,7 +236,8 @@ proxy requests need `x-tokencut-key`; the launcher passes it via `ANTHROPIC_CUST
 `pyproject.toml` holds version ranges (version from the git tag, setuptools-scm);
 `requirements.txt` keeps the exact versions the team tests with. Release: push `vX.Y.Z` →
 `.github/workflows/release.yml` (tests + package matrix → PyPI trusted publishing → GitHub
-Release). Keep `LITELLM_VERSION` equal to `deploy/litellm/requirements.txt` (tested).
+Release with wheel, sdist, `install.sh`, `install.ps1`; users fetch
+`releases/latest/download/install.sh`, which needs a public repository). Keep `LITELLM_VERSION` equal to `deploy/litellm/requirements.txt` (tested).
 
 ### Offline benchmark
 Local data is NOT in git (gitignored, several GB): `swebench_repos/`, `cache/`

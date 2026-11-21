@@ -2,7 +2,9 @@ name: release
 
 # Push a version tag to release:  git tag v0.1.0 && git push origin v0.1.0
 # 1. the full test + package matrix, 2. publish to PyPI (trusted publishing, no token
-# stored in GitHub), 3. a GitHub Release with the wheel, sdist and generated notes.
+# stored in GitHub), 3. a GitHub Release with the wheel, sdist, install scripts and notes.
+# Install link that always points to the newest release (works once the repo is public):
+#   https://github.com/Masooma-Ali/TokenCut/releases/latest/download/install.sh  (or .ps1)
 on:
   push:
     tags: ["v*"]
@@ -37,4 +39,4 @@ jobs:
           path: dist/
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes --title "TokenCut $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" dist/* install.sh install.ps1 --generate-notes --title "TokenCut $GITHUB_REF_NAME"
