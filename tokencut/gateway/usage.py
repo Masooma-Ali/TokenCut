@@ -17,9 +17,17 @@ class Usage:
     cache_read_tokens: int = 0
     cache_write_tokens: int = 0
     output_tokens: int = 0
+    # Anthropic splits cache writes by lifetime; they are priced differently (ODE reward).
+    # Both 0 when the provider does not say (then cache_write_tokens is all there is).
+    cache_write_5m_tokens: int = 0
+    cache_write_1h_tokens: int = 0
 
     def as_dict(self) -> dict[str, int]:
-        return asdict(self)
+        """The split fields appear only when the provider gave them (log lines stay as before)."""
+        out = asdict(self)
+        if not (self.cache_write_5m_tokens or self.cache_write_1h_tokens):
+            del out["cache_write_5m_tokens"], out["cache_write_1h_tokens"]
+        return out
 
 
 def _int(value: object) -> int:
@@ -49,6 +57,10 @@ def apply_usage(provider: str, event: object, usage: Usage) -> None:
             ):
                 if field in data:
                     setattr(usage, attr, _int(data[field]))
+            split = data.get("cache_creation")
+            if isinstance(split, dict):
+                usage.cache_write_5m_tokens = _int(split.get("ephemeral_5m_input_tokens"))
+                usage.cache_write_1h_tokens = _int(split.get("ephemeral_1h_input_tokens"))
     elif provider == "openai":
         data = event.get("usage")
         if isinstance(data, dict):

@@ -29,6 +29,13 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
 from tokencut.contracts import Tier
 from tokencut.gateway.history import CacheEventConfig
+from tokencut.gateway.ode import (
+    ModelNameRestorer,
+    OdeConfig,
+    apply_arm,
+    arm_settings,
+    task_numbers,
+)
 from tokencut.gateway.records import RequestLog, analyse, now_iso
 from tokencut.gateway.routing import (
     RouteConfig,
@@ -93,6 +100,7 @@ class GatewayConfig:
     router_repo: str | None = None  # else this public Hugging Face repo (TOKENCUT_ROUTER_REPO)
     router: object | None = None  # loaded router (tests pass a fake)
     client_key: str | None = None  # TOKENCUT_KEY: proxy requests must send it in x-tokencut-key
+    ode: OdeConfig = field(default_factory=OdeConfig)  # TOKENCUT_ODE*: model x trim per request
 
     @classmethod
     def from_env(cls) -> "GatewayConfig":
@@ -145,6 +153,7 @@ class GatewayConfig:
             router_dir=os.environ.get("TOKENCUT_ROUTER_DIR") or None,
             router_repo=os.environ.get("TOKENCUT_ROUTER_REPO") or None,
             client_key=os.environ.get("TOKENCUT_KEY") or None,
+            ode=OdeConfig.from_env(),
         )
 
 
@@ -155,7 +164,8 @@ def create_app(
     request_log = RequestLog(config.log_dir, config.capture)
     # Conversation memory for cache-event trimming (in shadow mode its decisions are never sent).
     session = (SessionStore(), config.events) if config.cache_events else None
-    if config.trim.prompt_brief and config.router is None:  # once, at start; None = no briefs
+    # Once, at start. None = no briefs and no ODE task numbers (both fail open).
+    if (config.trim.prompt_brief or config.ode.on) and config.router is None:
         config.router = load_router(config.router_dir, config.router_repo)
     timeout = httpx2.Timeout(connect=10.0, read=600.0, write=60.0, pool=10.0)
 
@@ -180,6 +190,8 @@ def create_app(
             "ccr": config.virtual.ccr,
             "lazy_tools": config.virtual.lazy_tools,
             "gpt_upstream": config.route.gpt_upstream,
+            "ode": config.ode.mode,
+            "ode_force_arm": config.ode.force_arm,
         }
 
     @app.get("/tokencut/stats")
@@ -215,13 +227,38 @@ def create_app(
 
         analysis_task = None
         send_body = body
+        applied = None  # what ODE did to this request (None: not an ODE request)
         if request.method == "POST" and _INFERENCE_PATHS[provider].search(path):
             request_log.save_capture(provider, body)
+            events, virtual = config.events, config.virtual
+            if config.ode.on:
+                # Swap the model before trimming and routing, so the cache-event memory sees
+                # the real model and a GPT arm takes the LiteLLM route. Fail open.
+                try:
+                    swapped, applied = apply_arm(provider, body, config.ode, config.route)
+                    if swapped is not None:
+                        body = send_body = swapped
+                except Exception as exc:
+                    log.warning("ODE could not apply the arm; forwarding original", exc_info=True)
+                    record["ode"] = {"error": type(exc).__name__}
+                if applied is not None:
+                    record["ode"] = applied.log()
+                    if not applied.skipped:
+                        events, virtual = arm_settings(applied.arm, events, virtual)
+                    try:
+                        numbers = await asyncio.to_thread(
+                            task_numbers, body, config.router, config.trim.brief_threshold)
+                        if numbers is not None:
+                            record["ode"]["task_numbers"] = numbers
+                    except Exception as exc:
+                        log.warning("ODE task numbers failed", exc_info=True)
+                        record["ode"]["task_numbers_error"] = type(exc).__name__
+            req_session = (session[0], events) if session is not None else None
             if config.mode == "trim":
                 # Trim before sending. Any failure: send the original request (fail open).
                 try:
                     analysis, trimmed = await asyncio.to_thread(
-                        analyse, provider, path, body, config.trim, session, None, config.virtual,
+                        analyse, provider, path, body, config.trim, req_session, None, virtual,
                         config.router
                     )
                     record["analysis"] = analysis
@@ -236,7 +273,7 @@ def create_app(
                 # unchanged request is already on its way, so no latency is added.
                 analysis_task = asyncio.create_task(
                     asyncio.to_thread(
-                        analyse, provider, path, body, config.trim, session, None, config.virtual,
+                        analyse, provider, path, body, config.trim, req_session, None, virtual,
                         config.router
                     )
                 )
@@ -316,12 +353,25 @@ def create_app(
             upstream.headers.get("content-encoding", ""),
         )
 
+        restorer = None
+        if (applied is not None and config.ode.restore_model and applied.sent != applied.requested
+                and upstream.status_code == 200):
+            restorer = ModelNameRestorer(applied.sent, applied.requested, sniffer.streaming)
+
         async def relay():
             try:
                 async for chunk in upstream.aiter_raw():
-                    sniffer.feed(chunk)
-                    yield chunk
+                    sniffer.feed(chunk)  # usage is read from the provider's own bytes
+                    out = restorer.feed(chunk) if restorer is not None else chunk
+                    if out:
+                        yield out
+                if restorer is not None:
+                    tail = restorer.close()
+                    if tail:
+                        yield tail
             finally:
+                if restorer is not None and isinstance(record.get("ode"), dict):
+                    record["ode"]["model_restored"] = restorer.restored
                 await upstream.aclose()
                 await _finish(record, analysis_task, sniffer, started, request_log)
 
