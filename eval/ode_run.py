@@ -49,6 +49,7 @@ PORT = 8787
 TIMEOUT_S = 45 * 60
 MODEL_REQUESTED = "sonnet"  # what Claude Code asks for; the forced arm decides what is used
 EFFORT = "medium"
+START = "ode-start"  # tag on the agent copy's first commit: turns are graded on changes since it
 LIMIT_WORDS = ("usage limit", "limit reached", "rate limit", "rate_limit", "resets")
 # Gateway settings shared by every arm (the arm adds model + trim level). Task briefs and the
 # system note are off: they are not A/B tested yet, and ODE should learn about the arms alone.
@@ -121,6 +122,7 @@ def prepare_run_dir(work: Path, run_dir: Path, commit: str) -> None:
     T.git(run_dir, "init", "-q")
     T.git(run_dir, "config", "core.autocrlf", "false")  # diffs must apply to the grading copy
     commit_all(run_dir, "start")
+    T.git(run_dir, "tag", START)
 
 
 def commit_all(run_dir: Path, message: str) -> None:
@@ -293,14 +295,17 @@ def version_info(fake: bool) -> tuple[str, str]:
 def check_turn(n: int, row: dict, result: dict, run_dir: Path, args, gold: T.Gold,
                base: Path) -> dict:
     turn_type = T.TURN_TYPES[n - 1]
+    # Graded on everything the agent changed since the start, not only in this turn: an agent
+    # may edit a test file in turn 2 and again in turn 3 (seen live), and a turn-3-only diff
+    # then does not apply to the original code.
     if turn_type == "explain":
         res = T.explain_locates(result.get("result", "") or "", gold)
     elif turn_type == "bugfix":
-        diff = diff_since(run_dir, "HEAD")
+        diff = diff_since(run_dir, START)
         (base / "turn2.diff").write_text(diff, encoding="utf-8", newline="\n")
         res = T.grade_bugfix(row, diff, args.work, args.python)
     else:
-        diff = diff_since(run_dir, "HEAD")
+        diff = diff_since(run_dir, START)
         (base / "turn3.diff").write_text(diff, encoding="utf-8", newline="\n")
         res = T.grade_tests(row, diff, args.work, args.python)
     commit_all(run_dir, f"after turn {n}")

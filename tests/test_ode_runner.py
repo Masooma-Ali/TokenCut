@@ -184,6 +184,30 @@ def test_grading_worktree_keeps_committed_line_endings(task):
     assert T.grade_bugfix(row, row["patch"], crlf, PYTHON)["solved"]
 
 
+def test_turn_3_is_graded_on_all_test_changes_since_the_start(task, monkeypatch):
+    """Seen live: the agent edited the test file in turn 2 AND turn 3. A turn-3-only diff does
+    not apply to the original code, so grading uses everything changed since the start."""
+    row, _, work, tmp = task
+    monkeypatch.setattr(R, "PRIVATE", tmp / "private")
+    run = tmp / "run"
+    R.prepare_run_dir(work, run, row["base_commit"])
+    base = tmp / "private" / "x"
+    base.mkdir(parents=True)
+    args = argparse.Namespace(work=work, python=PYTHON)
+    gold = T.Gold(("calc.py",), ("add",))
+    # turn 2: the fix plus a first edit of the test file (official tests decide turn 2)
+    assert R.apply_patch(run, row["patch"])
+    write(run / "tests" / "test_calc.py",
+          "from calc import add, zero\n\n\ndef test_zero():\n    assert zero() == 0\n")
+    assert R.check_turn(2, row, {}, run, args, gold, base)["solved"] is True
+    # turn 3: the regression test, in the same file
+    write(run / "tests" / "test_calc.py",
+          "from calc import add, zero\n\n\ndef test_zero():\n    assert zero() == 0\n\n\n"
+          "def test_add():\n    assert add(2, 3) == 5\n")
+    res = R.check_turn(3, row, {}, run, args, gold, base)
+    assert res["solved"] and res["note"] == ""
+
+
 def test_fake_agent_runs_the_whole_session(task, monkeypatch):
     """Fresh copy, three turns, three checkers, three rows: the pipeline without any model."""
     row, repo, work, tmp = task
