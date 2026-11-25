@@ -158,6 +158,34 @@ def test_turn_numbers_sum_usage_price_it_and_take_the_task_numbers():
     assert out["input"] == 3005 and out["cache_write_1h"] == 1000
 
 
+def test_time_limit_kills_the_process_and_its_children(tmp_path):
+    """Pilot finding: a hung turn ran 87 minutes past its limit. The runner must stop the agent
+    AND the processes it started (here: a child that would outlive a plain kill)."""
+    import time
+
+    marker = tmp_path / "child_alive.txt"
+    child = f"import time, pathlib\nfor i in range(60):\n    pathlib.Path(r'{marker}').write_text(str(i))\n    time.sleep(0.2)\n"
+    parent = (f"import subprocess, sys, time\nsubprocess.Popen([sys.executable, '-c', {child!r}])\n"
+              "time.sleep(60)\n")
+    started = time.time()
+    with (tmp_path / "out.txt").open("w") as out:
+        code = R.run_until([PYTHON, "-c", parent], tmp_path, None, out, time.time() + 2,
+                           poll_s=0.2)
+    assert code is None and time.time() - started < 20  # stopped near the 2-second limit
+    time.sleep(1.0)
+    seen = marker.read_text()
+    time.sleep(1.0)
+    assert marker.read_text() == seen  # the child stopped writing: the whole tree is gone
+
+
+def test_run_until_returns_the_exit_code(tmp_path):
+    import time
+
+    with (tmp_path / "out.txt").open("w") as out:
+        assert R.run_until([PYTHON, "-c", "import sys; sys.exit(3)"], tmp_path, None, out,
+                           time.time() + 30, poll_s=0.1) == 3
+
+
 def test_arm_order_rotates_per_task():
     arms = ["a", "b", "c"]
     assert R.arm_order(arms, 0) == ["a", "b", "c"]

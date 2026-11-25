@@ -206,6 +206,40 @@ def last_result(path: Path) -> tuple[dict, str]:
     return result, raw[-3000:]
 
 
+def kill_tree(proc: subprocess.Popen) -> None:
+    """Stop a process and everything it started (Claude Code runs tools as child processes)."""
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True,
+                       check=False)
+    else:
+        try:
+            os.killpg(proc.pid, 9)
+        except OSError:
+            proc.kill()
+    try:
+        proc.wait(timeout=30)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+
+
+def run_until(cmd: list[str], cwd: Path, env: dict, out, deadline: float,
+              poll_s: float = 1.0) -> int | None:
+    """Run cmd until it ends (its exit code) or the deadline passes (None, process tree killed).
+
+    subprocess.run(timeout=...) did not stop Claude Code on Windows (seen in the pilot: a turn
+    ran 87 minutes past a 45-minute limit), so the clock is checked here and the whole process
+    tree is killed."""
+    kwargs = {"start_new_session": True} if os.name != "nt" else {}
+    proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=out, stderr=subprocess.STDOUT,
+                            **kwargs)
+    while proc.poll() is None:
+        if time.time() >= deadline:
+            kill_tree(proc)
+            return None
+        time.sleep(poll_s)
+    return proc.returncode
+
+
 def run_turn(n: int, prompt: str, session: str, run_dir: Path, base: Path, env: dict,
              deadline: float) -> tuple[str, dict]:
     """One typed turn: `claude -p`, the first with --session-id, later ones --resume."""
@@ -213,15 +247,12 @@ def run_turn(n: int, prompt: str, session: str, run_dir: Path, base: Path, env: 
     cmd = [claude_path(), "-p", prompt, *first, "--model", MODEL_REQUESTED, "--effort", EFFORT,
            "--output-format", "stream-json", "--verbose", "--permission-mode", "auto"]
     transcript = base / f"transcript_turn{n}.jsonl"
-    remaining = deadline - time.time()
-    if remaining <= 0:
+    if deadline - time.time() <= 0:
         return "timeout", {}
     with transcript.open("w", encoding="utf-8") as out:
-        try:
-            subprocess.run(cmd, cwd=run_dir, env=env, stdout=out, stderr=subprocess.STDOUT,
-                           timeout=remaining, check=False)
-        except subprocess.TimeoutExpired:
-            return "timeout", {}
+        if run_until(cmd, run_dir, env, out, deadline) is None:
+            result, _ = last_result(transcript)
+            return "timeout", result
     result, tail = last_result(transcript)
     if (result.get("is_error") or not result) and any(w in tail.lower() for w in LIMIT_WORDS):
         return "usage_limit", result

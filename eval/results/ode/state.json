@@ -1,5 +1,13 @@
 {
   "done": [
-    "sympy__sympy-24909/haiku-standard"
+    "sympy__sympy-24909/haiku-standard",
+    "sympy__sympy-24909/haiku-aggressive",
+    "sympy__sympy-21055/haiku-aggressive",
+    "sympy__sympy-21055/haiku-standard",
+    "sympy__sympy-24909/gpt-standard",
+    "sympy__sympy-24909/gpt-aggressive",
+    "sympy__sympy-21055/gpt-aggressive",
+    "sympy__sympy-21055/gpt-standard",
+    "sympy__sympy-24909/sonnet-standard"
   ]
 }
