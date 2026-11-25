@@ -156,6 +156,9 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_CLAUDE_VIA_LITELLM` | off | `1` = Claude models through LiteLLM too (the deployment default) |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_KEY` | — | if set, proxy requests must send it in `x-tokencut-key` (set by `tokencut` from `~/.tokencut/tokencut_key`; never forwarded) |
+| `TOKENCUT_ODE` | `off` | `force` = ODE hooks on: every agent request uses `TOKENCUT_ODE_FORCE_ARM` (for practice runs; ODE choosing itself comes in Phase 6) |
+| `TOKENCUT_ODE_FORCE_ARM` | — | arm name, e.g. `opus-standard`, `gpt-aggressive` (`tokencut/ode/arms.py`): model swapped before trimming and routing, trim level per request |
+| `TOKENCUT_ODE_RESTORE_MODEL` | off | `1` = the reply names the model the agent asked for, not the one that answered |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |
 | `TOKENCUT_LOG_DIR` | `logs/gateway` | numbers-only JSONL logs |
 | `TOKENCUT_{ANTHROPIC,OPENAI,GEMINI}_UPSTREAM` | official URLs | other compatible endpoints |

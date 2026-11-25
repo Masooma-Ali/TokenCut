@@ -15,12 +15,15 @@ from __future__ import annotations
 
 import math
 from collections.abc import Iterable
+from dataclasses import fields
 
 from tokencut.gateway.usage import Usage
 from tokencut.ode.arms import MODELS, Model
 
 LAMBDA = 0.5  # Phase 0 value: lambda x C_ref = the most we pay for one extra solved task
-DEFAULT_CACHE_TTL = "1h"  # Claude Code marks its cache "ttl": "1h" (CLAUDE.md, gateway notes)
+# Used only when the usage does not split cache writes by lifetime (usage.py reads the split
+# from Anthropic's `cache_creation`). Claude Code marks its cache "ttl": "1h" (CLAUDE.md).
+DEFAULT_CACHE_TTL = "1h"
 
 
 def model_for(model_id: str) -> Model:
@@ -35,15 +38,26 @@ def prompt_tokens(usage: Usage) -> int:
     return usage.input_tokens + usage.cache_read_tokens + usage.cache_write_tokens
 
 
+def usage_from_dict(data: dict) -> Usage:
+    """A Usage from a request log line's "usage" (unknown keys ignored, missing ones 0)."""
+    known = {f.name for f in fields(Usage)}
+    return Usage(**{k: int(v) for k, v in data.items() if k in known})
+
+
 def request_cost(model: Model, usage: Usage, ttl: str = DEFAULT_CACHE_TTL) -> float:
     """USD at list price for one request's billed usage."""
     for name, value in usage.as_dict().items():
         if value < 0:
             raise ValueError(f"{name} must be >= 0, got {value}")
     p = model.price_for(prompt_tokens(usage))
+    split = usage.cache_write_5m_tokens + usage.cache_write_1h_tokens
+    if split and split == usage.cache_write_tokens:  # the provider said which cache was written
+        writes = usage.cache_write_5m_tokens * p.cache_write_5m \
+            + usage.cache_write_1h_tokens * p.cache_write_1h
+    else:
+        writes = usage.cache_write_tokens * p.cache_write(ttl)
     return (usage.input_tokens * p.input + usage.cache_read_tokens * p.cache_read
-            + usage.cache_write_tokens * p.cache_write(ttl)
-            + usage.output_tokens * p.output) / 1e6
+            + writes + usage.output_tokens * p.output) / 1e6
 
 
 def task_cost(requests: Iterable[tuple[str, Usage]], ttl: str = DEFAULT_CACHE_TTL) -> float:
