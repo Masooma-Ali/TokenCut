@@ -23,6 +23,8 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+from unidiff import PatchSet
+
 from eval.loader import gold_from_patch
 from eval.stepd_validate import apply_patch, passed, run_tests, test_files
 from tokencut.contracts import ChunkKind
@@ -62,22 +64,39 @@ class Gold:
     functions: tuple[str, ...]  # their innermost changed functions / methods (short names)
 
 
+_DEF = re.compile(r"^\s*(?:async\s+)?(?:def|class)\s+([A-Za-z_]\w*)")
+
+
 def gold_locations(row: dict, work: Path) -> Gold:
-    """Files and functions the real fix touched, read at the task's base commit."""
-    files, lines = gold_from_patch(row["patch"])
+    """Files and functions the real fix touched, read at the task's base commit.
+
+    A function counts when the fix changes or removes a line inside it, or when the fix adds
+    it (`def name` in an added line). Code only added between functions does not make its
+    neighbours count (pilot: the fix for sympy 21055 adds `refine_arg`; the old rule credited
+    the two functions next to it and marked correct answers wrong)."""
+    files, _ = gold_from_patch(row["patch"])
     reset(work, row["base_commit"])
     parser = PythonParser()
     names: set[str] = set()
-    for path in files:
-        source = (work / path).read_bytes()
-        chunks = [c for c in parser.parse_file(path, source)
+    for patched in PatchSet(row["patch"]):
+        path = patched.path
+        if path not in files:
+            continue
+        chunks = [c for c in parser.parse_file(path, (work / path).read_bytes())
                   if c.kind in (ChunkKind.FUNCTION, ChunkKind.METHOD, ChunkKind.CLASS)]
-        for line in lines[path]:
-            around = [c for c in chunks if c.start_line <= line <= c.end_line]
-            funcs = [c for c in around if c.kind != ChunkKind.CLASS] or around
-            if funcs:
-                inner = min(funcs, key=lambda c: c.end_line - c.start_line)
-                names.add(inner.qualified_name.split(".")[-1])
+        for hunk in patched:
+            for line in hunk:
+                if line.is_added:
+                    m = _DEF.match(line.value)
+                    if m:
+                        names.add(m.group(1))
+                elif line.is_removed:
+                    around = [c for c in chunks
+                              if c.start_line <= line.source_line_no <= c.end_line]
+                    funcs = [c for c in around if c.kind != ChunkKind.CLASS] or around
+                    if funcs:
+                        inner = min(funcs, key=lambda c: c.end_line - c.start_line)
+                        names.add(inner.qualified_name.split(".")[-1])
     return Gold(tuple(files), tuple(sorted(names)))
 
 

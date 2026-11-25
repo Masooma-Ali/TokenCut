@@ -88,6 +88,19 @@ def test_gold_locations_read_the_real_fix(task):
     assert T.gold_locations(row, work) == T.Gold(("calc.py",), ("add",))
 
 
+def test_gold_counts_an_added_function_not_its_neighbours(task):
+    """Pilot (sympy 21055): the fix adds a new function between two old ones. The added one
+    counts; the neighbours, whose lines did not change, do not."""
+    row, _, work, _ = task
+    patch = ("diff --git a/calc.py b/calc.py\n--- a/calc.py\n+++ b/calc.py\n"
+             "@@ -2,4 +2,8 @@ def add(a, b):\n     return a - b\n \n \n+def mul(a, b):\n"
+             "+    return a * b\n+\n+\n def zero():\n     return 0\n")
+    gold = T.gold_locations({**row, "patch": patch}, work)
+    assert gold == T.Gold(("calc.py",), ("mul",))
+    assert T.explain_locates("calc.py needs a new mul function", gold)["solved"]
+    assert not T.explain_locates("calc.py, in add", gold)["solved"]
+
+
 # ---------- bugfix ----------
 
 def test_bugfix_solved_by_the_real_fix_only(task):

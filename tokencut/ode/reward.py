@@ -18,7 +18,7 @@ from collections.abc import Iterable
 from dataclasses import fields
 
 from tokencut.gateway.usage import Usage
-from tokencut.ode.arms import MODELS, Model
+from tokencut.ode.arms import MODELS, Model, Price
 
 LAMBDA = 0.5  # Phase 0 value: lambda x C_ref = the most we pay for one extra solved task
 # Used only when the usage does not split cache writes by lifetime (usage.py reads the split
@@ -26,9 +26,16 @@ LAMBDA = 0.5  # Phase 0 value: lambda x C_ref = the most we pay for one extra so
 DEFAULT_CACHE_TTL = "1h"
 
 
+# Models that are not arms but that agents still call for side requests (seen in the pilot:
+# Claude Code sent some side requests to Claude Sonnet 5). Same price page and date as arms.py.
+SIDE_MODELS = (
+    Model("sonnet5", "claude-sonnet-5", "anthropic", 1_000_000, Price(2.00, 2.50, 4.00, 0.20, 10.00)),
+)
+
+
 def model_for(model_id: str) -> Model:
     """The priced model for a request's `model` field (exact id, or a dated variant of it)."""
-    for m in MODELS:
+    for m in (*MODELS, *SIDE_MODELS):
         if model_id == m.model_id or model_id.startswith(m.model_id + "-"):
             return m
     raise ValueError(f"no price for model {model_id!r}")

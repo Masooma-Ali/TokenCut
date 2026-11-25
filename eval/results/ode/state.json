@@ -8,6 +8,13 @@
     "sympy__sympy-24909/gpt-aggressive",
     "sympy__sympy-21055/gpt-aggressive",
     "sympy__sympy-21055/gpt-standard",
-    "sympy__sympy-24909/sonnet-standard"
+    "sympy__sympy-24909/sonnet-standard",
+    "sympy__sympy-24909/sonnet-aggressive",
+    "sympy__sympy-21055/sonnet-aggressive",
+    "sympy__sympy-21055/sonnet-standard",
+    "sympy__sympy-24909/opus-standard",
+    "sympy__sympy-24909/opus-aggressive",
+    "sympy__sympy-21055/opus-aggressive",
+    "sympy__sympy-21055/opus-standard"
   ]
 }
