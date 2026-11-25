@@ -271,6 +271,11 @@ def test_turn_start_detection():
     assert starts_turn(agent_body())
     assert not starts_turn(agent_body(ending_with_tool_result=True))
     assert not starts_turn({"messages": []})
+    # Claude Code may append its own system message after the user's (seen live 2026-11-25).
+    with_system = agent_body()
+    with_system["messages"].append({"role": "system", "content": "context the agent adds"})
+    assert starts_turn(with_system)
+    assert not starts_turn({"messages": [{"role": "system", "content": "only system"}]})
 
 
 def test_task_numbers_only_at_the_start_of_a_typed_task():

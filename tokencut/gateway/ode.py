@@ -109,11 +109,17 @@ def apply_arm(provider: str, body: bytes, config: OdeConfig,
 
 
 def starts_turn(data: dict) -> bool:
-    """The request ends with a typed user message (no tool results): the agent's next turn."""
+    """The request ends with a typed user message (no tool results): the agent's next turn.
+
+    System messages the agent appends after it (Claude Code's mid-conversation `role: system`
+    context) are skipped: they are not the user's."""
     messages = data.get("messages")
-    if not isinstance(messages, list) or not messages:
+    if not isinstance(messages, list):
         return False
-    last = messages[-1]
+    rest = [m for m in messages if not (isinstance(m, dict) and m.get("role") == "system")]
+    if not rest:
+        return False
+    last = rest[-1]
     if not isinstance(last, dict) or last.get("role") != "user":
         return False
     content = last.get("content")
