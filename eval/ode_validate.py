@@ -12,10 +12,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import logging
 import os
 from pathlib import Path
-
-import logging
 
 from eval import ode_run as R
 from eval import ode_tasks as T
