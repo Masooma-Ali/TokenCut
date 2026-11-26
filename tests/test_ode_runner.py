@@ -132,6 +132,18 @@ def test_a_test_that_always_passes_does_not_count(task):
     assert not res["solved"] and res["fail_to_pass"] == 0
 
 
+def test_unicode_test_output_is_read(task):
+    """sympy 23191 prints Unicode in its tests; reading it with the Windows code page broke
+    grading. The runner decodes UTF-8."""
+    row, _, work, _ = task
+    T.reset(work, row["base_commit"])
+    write(work / "tests" / "test_uni.py",
+          "def test_pretty():\n    print('∂ ∫ √ ── π')\n    assert True\n")
+    outcomes, _ = T.run_tests(work, PYTHON, ["tests/test_uni.py"], 300)
+    T.reset(work, row["base_commit"])
+    assert outcomes == {"test_pretty": "PASSED"}
+
+
 def test_code_only_changes_are_not_regression_tests(task):
     row, _, work, _ = task
     res = T.grade_tests(row, row["patch"], work, PYTHON)

@@ -18,6 +18,7 @@ Checkers (each returns solved True / False and the numbers behind it):
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -26,7 +27,7 @@ from pathlib import Path
 from unidiff import PatchSet
 
 from eval.loader import gold_from_patch
-from eval.stepd_validate import apply_patch, passed, run_tests, test_files
+from eval.stepd_validate import _RESULT, apply_patch, passed, test_files
 from tokencut.contracts import ChunkKind
 from tokencut.ingestion.python_parser import PythonParser
 
@@ -49,6 +50,24 @@ def prompts(row: dict, python: str) -> list[str]:
 
 def git(work: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(["git", *args], cwd=work, capture_output=True, text=True, check=check)
+
+
+def run_tests(work: Path, python: str, files: list[str], timeout: int) -> tuple[dict[str, str], str]:
+    """{test name: outcome} from pytest -rA (as eval/stepd_validate.run_tests), but the output
+    is decoded as UTF-8: with Windows' default code page, sympy's Unicode test output (e.g.
+    sympy 23191) made the reader fail and the task look ungradable."""
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    try:
+        proc = subprocess.run([python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-rA", *files],
+                              cwd=work, capture_output=True, text=True, encoding="utf-8",
+                              errors="replace", timeout=timeout, check=False, env=env)
+        out = (proc.stdout or "") + (proc.stderr or "")
+    except subprocess.TimeoutExpired:
+        return {}, "timeout"
+    outcomes: dict[str, str] = {}
+    for status, node in _RESULT.findall(out):
+        outcomes[node.split("::")[-1]] = status
+    return outcomes, out[-2000:]
 
 
 def reset(work: Path, commit: str) -> None:
