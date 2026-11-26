@@ -106,11 +106,87 @@ def ensure_worktree(repo: Path, work: Path, commit: str) -> None:
         T.git(work, "reset", "-q", "--hard")
 
 
-def prepare_run_dir(work: Path, run_dir: Path, commit: str) -> None:
+SHELLS = ("bash.exe", "sh.exe")
+
+
+def leftover_roots(procs: list[dict], python: str, me: int | None = None) -> list[int]:
+    """Processes to stop: every process running the task's test Python, lifted to the topmost
+    bash shell around it (the agent's Bash tool), so the whole leftover tree can be killed.
+
+    `me` (this runner) and all its ancestors are never chosen: the runner's own command line
+    may name the test Python (--python ...)."""
+    def norm(s: str | None) -> str:
+        return (s or "").replace("/", "\\").lower()
+
+    key = norm(python)
+    by_pid = {p["ProcessId"]: p for p in procs}
+    protected: set[int] = set()
+    cur = by_pid.get(me)
+    while cur is not None and cur["ProcessId"] not in protected:
+        protected.add(cur["ProcessId"])
+        cur = by_pid.get(cur.get("ParentProcessId"))
+    if me is not None:
+        protected.add(me)
+    roots: set[int] = set()
+    for p in procs:
+        if p["ProcessId"] in protected:
+            continue
+        if key not in norm(p.get("CommandLine")) and key != norm(p.get("ExecutablePath")):
+            continue
+        top, seen = p, {p["ProcessId"]}
+        while True:
+            parent = by_pid.get(top.get("ParentProcessId"))
+            if parent is None or parent["ProcessId"] in seen or \
+                    parent["ProcessId"] in protected or norm(parent.get("Name")) not in SHELLS:
+                break
+            seen.add(parent["ProcessId"])
+            top = parent
+        roots.add(top["ProcessId"])
+    return sorted(roots)
+
+
+def stop_leftovers(python: str | None) -> list[int]:
+    """Kill test runs an agent left behind after its session ended (seen in phase 5a: a
+    background `pytest sympy/polys` outlived Claude Code, kept the run folder open, and the
+    next run could not delete it). Windows only; returns the killed root ids."""
+    if os.name != "nt" or not python:
+        return []
+    script = ("Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,Name,"
+              "ExecutablePath,CommandLine | ConvertTo-Json -Compress")
+    out = subprocess.run(["powershell", "-NoProfile", "-Command", script], capture_output=True,
+                         text=True, check=False).stdout
+    try:
+        procs = json.loads(out or "[]")
+    except json.JSONDecodeError:
+        return []
+    procs = [procs] if isinstance(procs, dict) else procs
+    roots = leftover_roots(procs, python, me=os.getpid())
+    for pid in roots:
+        subprocess.run(["taskkill", "/T", "/F", "/PID", str(pid)], capture_output=True,
+                       check=False)
+    return roots
+
+
+def remove_dir(path: Path, python: str | None = None, tries: int = 5) -> None:
+    """Delete a folder; if something still holds it, stop leftover test runs and retry."""
+    for attempt in range(1, tries + 1):
+        try:
+            shutil.rmtree(path, onerror=lambda f, p, _: (os.chmod(p, 0o700), f(p)))
+            return
+        except PermissionError:
+            if attempt == tries:
+                raise
+            stopped = stop_leftovers(python)
+            print(f"[{now()}] {path} in use; stopped leftover processes {stopped}, retrying",
+                  flush=True)
+            time.sleep(3 * attempt)
+
+
+def prepare_run_dir(work: Path, run_dir: Path, commit: str, python: str | None = None) -> None:
     """run_dir = the files of `commit` as a new one-commit git repo (no history to look up)."""
     T.reset(work, commit)
     if run_dir.exists():
-        shutil.rmtree(run_dir, onerror=lambda f, p, _: (os.chmod(p, 0o700), f(p)))
+        remove_dir(run_dir, python)
     run_dir.mkdir(parents=True)
     names = T.git(work, "ls-files", "-z").stdout.split("\0")
     for name in filter(None, names):
@@ -353,7 +429,7 @@ def run_one(row: dict, arm: str, args) -> list[dict]:
     ensure_commit(args.repo, row["base_commit"])
     ensure_worktree(args.repo, args.work, row["base_commit"])
     gold = T.gold_locations(row, args.work)
-    prepare_run_dir(args.work, args.run_dir, row["base_commit"])
+    prepare_run_dir(args.work, args.run_dir, row["base_commit"], args.python)
     claude_v, commit = version_info(args.fake_agent)
     settings = json.dumps({**GATEWAY_SETTINGS, "TOKENCUT_ODE_FORCE_ARM": arm,
                            "model_requested": MODEL_REQUESTED, "effort": EFFORT,
@@ -389,6 +465,10 @@ def run_one(row: dict, arm: str, args) -> list[dict]:
                 break  # later turns depend on this one
     finally:
         stop(processes)
+        if not args.fake_agent:
+            stopped = stop_leftovers(args.python)  # test runs the agent left in the background
+            if stopped:
+                print(f"[{now()}] {task}/{arm}: stopped leftover processes {stopped}", flush=True)
     return rows
 
 

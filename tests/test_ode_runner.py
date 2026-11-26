@@ -276,3 +276,72 @@ def test_fake_agent_runs_the_whole_session(task, monkeypatch):
     # the agent's copy has no history to look the fix up in
     assert git(tmp / "run", "rev-list", "--count", "HEAD").strip() == "4"  # start + 3 turns
     assert (tmp / "private" / "tiny__calc-1" / "haiku-standard" / "turn2.diff").exists()
+
+
+# ---------- leftover processes (phase 5a: a background pytest kept the run folder open) ----------
+
+VENV = "E:/envs/sympy/.venv/Scripts/python.exe"
+
+
+def proc(pid, parent, name, cmd="", exe=""):
+    return {"ProcessId": pid, "ParentProcessId": parent, "Name": name, "CommandLine": cmd,
+            "ExecutablePath": exe}
+
+
+def test_leftover_roots_lifts_test_python_to_topmost_shell():
+    procs = [
+        proc(1, 0, "explorer.exe"),
+        proc(10, 999, "bash.exe", "bash -c 'source snap.sh && pytest'"),  # parent gone
+        proc(11, 10, "bash.exe", "bash -c ..."),
+        proc(12, 11, "python.exe", r"E:\envs\sympy\.venv\Scripts\python.exe -m pytest sympy/polys"),
+        proc(13, 12, "python.exe", "C:/Python311/python.exe -m pytest sympy/polys"),
+    ]
+    assert R.leftover_roots(procs, VENV) == [10]
+
+
+def test_leftover_roots_matches_executable_path_and_stops_at_non_shell():
+    procs = [
+        proc(5, 1, "claude.exe", "claude -p"),
+        proc(6, 5, "python.exe", "python -m pytest", exe=r"E:\envs\sympy\.venv\Scripts\python.exe"),
+    ]
+    assert R.leftover_roots(procs, VENV) == [6]  # claude.exe is not a shell: not lifted to it
+
+
+def test_leftover_roots_ignores_unrelated_processes():
+    procs = [
+        proc(20, 1, "bash.exe", "bash -c 'git status'"),
+        proc(21, 20, "python.exe", "E:/FYP/iteration1/TokenCut/.venv/Scripts/python.exe -m pytest"),
+        proc(22, 1, "python.exe", "python -m tokencut.gateway"),
+    ]
+    assert R.leftover_roots(procs, VENV) == []
+
+
+def test_remove_dir_retries_after_stopping_leftovers(tmp_path, monkeypatch):
+    target = tmp_path / "run"
+    target.mkdir()
+    calls = {"rmtree": 0, "stopped": 0}
+    real = R.shutil.rmtree
+
+    def flaky(path, onerror=None):
+        calls["rmtree"] += 1
+        if calls["rmtree"] == 1:
+            raise PermissionError("in use")
+        real(path)
+
+    monkeypatch.setattr(R.shutil, "rmtree", flaky)
+    monkeypatch.setattr(R, "stop_leftovers", lambda py: calls.__setitem__("stopped", 1) or [7])
+    monkeypatch.setattr(R.time, "sleep", lambda s: None)
+    R.remove_dir(target, VENV)
+    assert not target.exists() and calls == {"rmtree": 2, "stopped": 1}
+
+
+def test_leftover_roots_never_picks_the_runner_or_its_ancestors():
+    # the runner was started as `python -m eval.ode_run --python <venv python>` from a shell
+    procs = [
+        proc(30, 1, "bash.exe", f"bash -c 'python -m eval.ode_run --python {VENV}'"),
+        proc(31, 30, "python.exe", f"python -m eval.ode_run --python {VENV}"),
+        proc(40, 999, "bash.exe", "bash -c pytest"),
+        proc(41, 40, "python.exe", f"{VENV} -m pytest"),
+    ]
+    assert R.leftover_roots(procs, VENV, me=31) == [40]
+    assert R.leftover_roots(procs, VENV) == [30, 40]  # without `me` both would be chosen
