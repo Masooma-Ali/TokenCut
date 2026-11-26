@@ -26,6 +26,7 @@ import numpy as np
 
 from tokencut.contracts import Segment, SegmentKind
 from tokencut.gateway.task_router import LABELS, NO_BRIEF, prepare, prior_correct
+from tokencut.ode import settings
 from tokencut.tokens import count_tokens
 
 CLASSES = ("bugfix", "feature", "refactor", "tests", "explain", "run_action")
@@ -110,8 +111,10 @@ def router_probs(router, text: str) -> dict[str, float]:
     return {label: float(p) for label, p in zip(LABELS, probs, strict=True)}
 
 
-def is_decision_point(probs: Mapping[str, float], threshold: float) -> bool:
-    """ODE decides only for a confident real task (Phase 0 rule; separate from R10)."""
+def is_decision_point(probs: Mapping[str, float],
+                      threshold: float = settings.DECISION_THRESHOLD) -> bool:
+    """ODE decides at a real task: the router's top label is not `no_brief` and reaches the
+    threshold (0 since the pilot: see settings.py). Separate from R10."""
     label = max(probs, key=probs.get)
     return label != NO_BRIEF and probs[label] >= threshold
 

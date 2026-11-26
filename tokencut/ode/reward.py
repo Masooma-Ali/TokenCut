@@ -18,9 +18,10 @@ from collections.abc import Iterable
 from dataclasses import fields
 
 from tokencut.gateway.usage import Usage
+from tokencut.ode import settings
 from tokencut.ode.arms import MODELS, Model, Price
 
-LAMBDA = 0.5  # Phase 0 value: lambda x C_ref = the most we pay for one extra solved task
+LAMBDA = settings.LAMBDA  # 0.4: OrcaRouter's cost weight on a [0,1]-clipped cost (settings.py)
 # Used only when the usage does not split cache writes by lifetime (usage.py reads the split
 # from Anthropic's `cache_creation`). Claude Code marks its cache "ttl": "1h" (CLAUDE.md).
 DEFAULT_CACHE_TTL = "1h"

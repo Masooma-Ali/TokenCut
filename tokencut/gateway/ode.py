@@ -129,7 +129,8 @@ def starts_turn(data: dict) -> bool:
         isinstance(b, dict) and b.get("type") == "tool_result" for b in content)
 
 
-def task_numbers(body: bytes, router, threshold: float) -> dict | None:
+def task_numbers(body: bytes, router,
+                 threshold: float = F.settings.DECISION_THRESHOLD) -> dict | None:
     """The 13 numbers when this request starts a typed task, else None. Numbers only."""
     data = json.loads(body)
     if router is None or not isinstance(data, dict) or not starts_turn(data):
