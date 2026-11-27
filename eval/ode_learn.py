@@ -40,7 +40,11 @@ from tokencut.ode import settings
 from tokencut.ode.arms import ARM_NAMES, OPUS, SONNET, arm_features
 from tokencut.ode.bandit import HybridLinUCB
 from tokencut.ode.features import N_FEATURES, SHARED, Standardizer
-from tokencut.ode.prior import load_prior, save_prior  # noqa: F401 (used by main, tests)
+from tokencut.ode.prior import (  # noqa: F401 (load_prior: used by tests)
+    PACKAGED_PRIOR,
+    load_prior,
+    save_prior,
+)
 from tokencut.ode.reward import reward
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -287,6 +291,18 @@ def report(turns: list[Turn], c_ref: float, lam: float, est: dict) -> tuple[str,
     return "\n".join(lines) + "\n", data
 
 
+def write_priors(out: Path, bandit: HybridLinUCB, std: Standardizer, c_ref: float, lam: float,
+                 rows: int, results: Path = RESULTS, packaged: Path = PACKAGED_PRIOR) -> list[Path]:
+    """Save the prior to the out folder; when that is the default results folder, also refresh the
+    copy that ships in the package (the gateway's default), so the two never drift apart."""
+    written = [out / "ode_prior.npz"]
+    if out.resolve() == results.resolve():
+        written.append(packaged)
+    for path in written:
+        save_prior(path, bandit, std, c_ref, lam, rows)
+    return written
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -302,7 +318,7 @@ def main(argv: list[str] | None = None) -> int:
     if not c_ref or not math.isfinite(c_ref):
         parser.error("no Opus turns: pass --c-ref")
     bandit, std = build_prior(turns, c_ref, args.lam)
-    save_prior(args.out / "ode_prior.npz", bandit, std, c_ref, args.lam, len(turns))
+    write_priors(args.out, bandit, std, c_ref, args.lam, len(turns))
     text, data = report(turns, c_ref, args.lam, est)
     (args.out / "prior_report.md").write_text(text, encoding="utf-8")
     (args.out / "prior_report.json").write_text(json.dumps(data, indent=2), encoding="utf-8")

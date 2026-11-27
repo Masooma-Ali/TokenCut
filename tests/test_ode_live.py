@@ -225,3 +225,16 @@ def test_machine_message_reads_the_last_user_text():
     assert machine_message(plain) == "prompt_suggestion"
     assert machine_message(agent_body("please add [SUGGESTION MODE: x] to the docs")) is None
     assert machine_message(agent_body("fix it", ending_with_tool_result=True)) is None
+
+
+def test_the_default_prior_ships_inside_the_package():
+    import filecmp
+    from pathlib import Path
+
+    import tokencut
+    from tokencut.gateway.ode import DEFAULT_PRIOR
+    package = Path(tokencut.__file__).resolve().parent
+    assert DEFAULT_PRIOR.is_relative_to(package) and DEFAULT_PRIOR.exists()
+    repo_copy = package.parent / "eval" / "results" / "ode" / "ode_prior.npz"
+    if repo_copy.exists():  # a repo checkout: the packaged prior is the phase 5b one
+        assert filecmp.cmp(DEFAULT_PRIOR, repo_copy, shallow=False)

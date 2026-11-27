@@ -6,7 +6,8 @@
                                         requests go out unchanged (phase 6, step 1)
     TOKENCUT_ODE=on                     ODE chooses and the task's requests use its arm (step 2)
     TOKENCUT_ODE_FORCE_ARM=opus-standard    the forced arm (names in tokencut/ode/arms.py)
-    TOKENCUT_ODE_PRIOR=path.npz         learned prior (default: eval/results/ode/ode_prior.npz)
+    TOKENCUT_ODE_PRIOR=path.npz         learned prior (default: the one in the package,
+                                        tokencut/ode/priors/ode_prior.npz)
     TOKENCUT_ODE_ARMS=a,b,...           arms ODE may choose (default: every arm except Opus,
                                         which had only 12 practice turns; GPT arms are left out
                                         when no LiteLLM route is set up)
@@ -58,10 +59,10 @@ from tokencut.ode import features as F
 from tokencut.ode import settings
 from tokencut.ode.arms import ARM_NAMES, Arm, arm
 from tokencut.ode.bandit import HybridLinUCB
-from tokencut.ode.prior import load_prior, prior_rows
+from tokencut.ode.prior import PACKAGED_PRIOR, load_prior, prior_rows
 
 MODES = ("off", "force", "shadow", "on")
-DEFAULT_PRIOR = Path(__file__).resolve().parents[2] / "eval" / "results" / "ode" / "ode_prior.npz"
+DEFAULT_PRIOR = PACKAGED_PRIOR  # shipped in the package, so installed TokenCut has it too
 # Opus is left out until it has practice data (team decision 2026-11-27: only 12 pilot turns,
 # so its unsure bonus made the prior pick it for every task type).
 DEFAULT_ARMS = tuple(a for a in ARM_NAMES if not a.startswith("opus"))

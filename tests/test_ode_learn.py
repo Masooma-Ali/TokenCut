@@ -146,3 +146,16 @@ def test_prior_file_round_trip(tmp_path):
     assert np.allclose(s2.transform(x_for("bugfix")), x)
     assert b2.choose(x).arm == bandit.choose(x).arm
     assert np.allclose(b2.beta(), bandit.beta())
+
+
+def test_retraining_refreshes_the_packaged_prior_only_from_the_default_folder(tmp_path):
+    results, packaged = tmp_path / "results", tmp_path / "pkg" / "ode_prior.npz"
+    bandit, std = L.build_prior(world(), 0.38, 0.4)
+    assert L.write_priors(results, bandit, std, 0.38, 0.4, 36, results, packaged) == [
+        results / "ode_prior.npz", packaged]
+    assert packaged.read_bytes() == (results / "ode_prior.npz").read_bytes()
+    packaged.unlink()
+    other = tmp_path / "experiment"
+    assert L.write_priors(other, bandit, std, 0.38, 0.4, 36, results, packaged) == [
+        other / "ode_prior.npz"]
+    assert not packaged.exists()

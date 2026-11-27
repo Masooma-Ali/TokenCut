@@ -2,6 +2,9 @@
 
 Written offline by eval/ode_learn.py (phase 5b) from graded practice turns; read by the gateway
 (TOKENCUT_ODE=shadow / on). Holds numbers only: matrices, means, the reward settings used.
+
+The gateway's prior ships inside the package (PACKAGED_PRIOR, listed in pyproject.toml
+package-data), so installed TokenCut has it too; eval/ode_learn.py refreshes that copy.
 """
 
 from __future__ import annotations
@@ -12,6 +15,8 @@ import numpy as np
 
 from tokencut.ode.bandit import HybridLinUCB
 from tokencut.ode.features import Standardizer
+
+PACKAGED_PRIOR = Path(__file__).resolve().parent / "priors" / "ode_prior.npz"
 
 
 def save_prior(path: Path, bandit: HybridLinUCB, std: Standardizer, c_ref: float, lam: float,
