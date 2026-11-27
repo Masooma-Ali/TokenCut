@@ -289,6 +289,18 @@ def test_task_numbers_only_at_the_start_of_a_typed_task():
     assert task_numbers(json.dumps(agent_body()).encode(), None, 0.87) is None
 
 
+def test_decision_point_uses_odes_own_threshold_not_the_brief_one(tmp_path):
+    """Pilot: at the task-brief threshold (0.87) only 'write a test' turns were decision points.
+    ODE now decides at any typed task the router does not call no_brief."""
+    router = FakeRouter(refactor=0.80, no_brief=0.20)  # how the pilot's bugfix turns were read
+    app, _ = gateway(tmp_path, OdeConfig("force", "opus-standard"), router=router)
+    with TestClient(app) as client:
+        post(client, agent_body("Now make the code change in the repository."))
+    numbers = last_record(app)["ode"]["task_numbers"]
+    assert numbers["task"] == "refactor" and numbers["decision_point"] is True
+    assert task_numbers(json.dumps(agent_body("yes")).encode(), router) == {"task": None}
+
+
 def test_gateway_logs_task_numbers_without_text(tmp_path):
     app, _ = gateway(tmp_path, OdeConfig("force", "opus-standard"))
     secret = "fix the bug in shop/cart.py PRIVATE-TEXT-123"

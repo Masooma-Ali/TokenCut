@@ -247,7 +247,7 @@ def create_app(
                         events, virtual = arm_settings(applied.arm, events, virtual)
                     try:
                         numbers = await asyncio.to_thread(
-                            task_numbers, body, config.router, config.trim.brief_threshold)
+                            task_numbers, body, config.router)  # ODE's own threshold
                         if numbers is not None:
                             record["ode"]["task_numbers"] = numbers
                     except Exception as exc:

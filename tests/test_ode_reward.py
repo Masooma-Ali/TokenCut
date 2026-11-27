@@ -54,6 +54,9 @@ def test_model_ids_and_dated_variants():
     assert model_for("gpt-6.1-sol") is A.GPT
     with pytest.raises(ValueError, match="claude-opus-5"):
         model_for("claude-opus-5")  # a different model, never priced as 5.5
+    # Claude Code's side requests to Sonnet 5 (pilot): priced, and never confused with 5.5
+    assert model_for("claude-sonnet-5").price.cache_read == 0.20
+    assert model_for("claude-sonnet-5-5") is A.SONNET
 
 
 def test_reward_formula_and_cap():

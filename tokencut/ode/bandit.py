@@ -28,6 +28,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from tokencut.ode import settings
+
 STATE_KIND = "hybrid_linucb"
 STATE_VERSION = 1
 
@@ -71,8 +73,9 @@ class Bandit(ABC):
 
 class HybridLinUCB(Bandit):
     def __init__(self, arms: Sequence[str], arm_features: Sequence[Sequence[float]], *,
-                 n_features: int, shared: Sequence[int], alpha: float = 1.0,
-                 ridge: float = 1.0, epsilon: float = 0.02, explore: float = 0.0,
+                 n_features: int, shared: Sequence[int], alpha: float = settings.ALPHA,
+                 ridge: float = settings.RIDGE, epsilon: float = settings.SWITCH_MARGIN,
+                 explore: float = 0.0,
                  seed: int | None = None):
         """
         arms: arm names, in a fixed order (ties go to the earlier arm).
@@ -80,7 +83,8 @@ class HybridLinUCB(Bandit):
         n_features: length d of every x.
         shared: indices of x that are combined with w_a into the shared features z.
         alpha: weight of the unsure bonus (exploration). ridge: prior strength on every weight.
-        epsilon: switch margin. explore: share of random tries (0 to 1).
+        epsilon: switch margin. explore: share of random tries (0 to 1; 0 here, the live
+        policy passes settings.EXPLORE). Defaults and their sources: tokencut/ode/settings.py.
         """
         self.arms = list(arms)
         if not self.arms or len(set(self.arms)) != len(self.arms):
