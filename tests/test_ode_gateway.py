@@ -128,7 +128,13 @@ def test_ode_is_off_by_default_and_validated():
     with pytest.raises(ValueError, match="opus-standrad"):
         OdeConfig(mode="force", force_arm="opus-standrad")
     with pytest.raises(ValueError):
-        OdeConfig(mode="on", force_arm="opus-standard")  # Phase 6, not yet
+        OdeConfig(mode="choose")
+    assert OdeConfig(mode="on").chooses and OdeConfig(mode="shadow").chooses
+    assert not OdeConfig(mode="force", force_arm="haiku-aggressive").chooses
+    with pytest.raises(ValueError):
+        OdeConfig(mode="on", arms=("haiku-aggresive",))
+    with pytest.raises(ValueError):
+        OdeConfig(mode="on", explore=1.5)
 
 
 def test_ode_settings_from_environment(monkeypatch):

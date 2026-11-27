@@ -156,7 +156,10 @@ agent ──► TokenCut gateway (python -m tokencut.gateway, 127.0.0.1:8787) �
 | `TOKENCUT_CLAUDE_VIA_LITELLM` | off | `1` = Claude models through LiteLLM too (the deployment default) |
 | `TOKENCUT_INDEX_DIR` | `~/.cache/tokencut/repoindex` | repo index cache (P1, `python -m tokencut.repoindex`) |
 | `TOKENCUT_KEY` | — | if set, proxy requests must send it in `x-tokencut-key` (set by `tokencut` from `~/.tokencut/tokencut_key`; never forwarded) |
-| `TOKENCUT_ODE` | `off` | `force` = ODE hooks on: every agent request uses `TOKENCUT_ODE_FORCE_ARM` (for practice runs; ODE choosing itself comes in Phase 6) |
+| `TOKENCUT_ODE` | `off` | `force` = every agent request uses `TOKENCUT_ODE_FORCE_ARM` (practice runs); `shadow` = ODE chooses an arm per typed task and only logs it; `on` = ODE chooses and the task's requests use that arm (Phase 6; fixed prior, no live learning yet) |
+| `TOKENCUT_ODE_PRIOR` | `eval/results/ode/ode_prior.npz` | learned prior for `shadow` / `on`; missing or broken = ODE does not choose (fail open) |
+| `TOKENCUT_ODE_ARMS` | all except Opus | arms ODE may choose (GPT arms dropped without a LiteLLM route) |
+| `TOKENCUT_ODE_EXPLORE` / `TOKENCUT_ODE_ALPHA` | `0.05` / `0` | random-try share (probability logged) / unsure bonus (0 while there is no live learning) |
 | `TOKENCUT_ODE_FORCE_ARM` | — | arm name, e.g. `opus-standard`, `gpt-aggressive` (`tokencut/ode/arms.py`): model swapped before trimming and routing, trim level per request |
 | `TOKENCUT_ODE_RESTORE_MODEL` | off | `1` = the reply names the model the agent asked for, not the one that answered |
 | `TOKENCUT_CAPTURE` | off | `1` = save full request bodies locally (private data!) |

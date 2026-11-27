@@ -49,6 +49,7 @@ include = ["tokencut*"]
 
 [tool.setuptools.package-data]
 "tokencut.gateway" = ["live.html"]
+"tokencut.ode" = ["priors/ode_prior.npz"]  # ODE's learned prior (38 KB, numbers only)
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
