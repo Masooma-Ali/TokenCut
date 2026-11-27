@@ -1,0 +1,356 @@
+{
+  "c_ref": 0.3812753499999999,
+  "lam": 0.4,
+  "c_ref_estimates": {
+    "opus_turns": 12,
+    "sonnet_turns": 174,
+    "opus_sonnet_price_ratio": 2.0,
+    "opus_p95": 0.3812753499999999,
+    "sonnet_p95_x_ratio": 0.3374969
+  },
+  "rows": 533,
+  "main": {
+    "ODE per turn (leave-one-task-out)": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 2.7823,
+      "mean_reward": 0.7916,
+      "arms": {
+        "haiku-aggressive": 41,
+        "haiku-standard": 20,
+        "gpt-aggressive": 16,
+        "gpt-standard": 5,
+        "sonnet-standard": 4
+      }
+    },
+    "ODE per session (leave-one-task-out)": {
+      "turns": 86,
+      "solved": 73,
+      "cost": 2.6827,
+      "mean_reward": 0.817,
+      "arms": {
+        "haiku-aggressive": 38,
+        "haiku-standard": 36,
+        "sonnet-standard": 12
+      }
+    },
+    "always haiku-standard": {
+      "turns": 86,
+      "solved": 66,
+      "cost": 1.6537,
+      "mean_reward": 0.7473,
+      "arms": {
+        "haiku-standard": 86
+      }
+    },
+    "always haiku-aggressive": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 1.4813,
+      "mean_reward": 0.8075,
+      "arms": {
+        "haiku-aggressive": 86
+      }
+    },
+    "always gpt-standard": {
+      "turns": 86,
+      "solved": 69,
+      "cost": 8.2173,
+      "mean_reward": 0.7035,
+      "arms": {
+        "gpt-standard": 86
+      }
+    },
+    "always gpt-aggressive": {
+      "turns": 86,
+      "solved": 70,
+      "cost": 6.4248,
+      "mean_reward": 0.7356,
+      "arms": {
+        "gpt-aggressive": 86
+      }
+    },
+    "always sonnet-standard": {
+      "turns": 86,
+      "solved": 70,
+      "cost": 8.1504,
+      "mean_reward": 0.7154,
+      "arms": {
+        "sonnet-standard": 86
+      }
+    },
+    "always sonnet-aggressive": {
+      "turns": 86,
+      "solved": 70,
+      "cost": 6.4349,
+      "mean_reward": 0.7355,
+      "arms": {
+        "sonnet-aggressive": 86
+      }
+    },
+    "best per turn (oracle)": {
+      "turns": 86,
+      "solved": 79,
+      "cost": 1.4939,
+      "mean_reward": 0.9004,
+      "arms": {
+        "haiku-aggressive": 56,
+        "haiku-standard": 24,
+        "sonnet-aggressive": 3,
+        "gpt-aggressive": 2,
+        "sonnet-standard": 1
+      }
+    },
+    "best per session (oracle)": {
+      "turns": 86,
+      "solved": 79,
+      "cost": 2.2319,
+      "mean_reward": 0.8914,
+      "arms": {
+        "haiku-aggressive": 62,
+        "haiku-standard": 12,
+        "sonnet-aggressive": 6,
+        "gpt-aggressive": 3,
+        "sonnet-standard": 3
+      }
+    },
+    "random arm (expected)": {
+      "turns": 86,
+      "solved": 69.3,
+      "cost": 5.3937,
+      "mean_reward": 0.7408,
+      "arms": {}
+    }
+  },
+  "lambda_sweep": {
+    "0.0": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 6.1648,
+      "mean_reward": 0.8256,
+      "arms": {
+        "gpt-standard": 36,
+        "haiku-aggressive": 17,
+        "gpt-aggressive": 13,
+        "sonnet-aggressive": 10,
+        "sonnet-standard": 7,
+        "haiku-standard": 3
+      }
+    },
+    "0.1": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 5.0712,
+      "mean_reward": 0.8105,
+      "arms": {
+        "gpt-standard": 34,
+        "haiku-aggressive": 23,
+        "gpt-aggressive": 13,
+        "haiku-standard": 11,
+        "sonnet-standard": 5
+      }
+    },
+    "0.2": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 3.9221,
+      "mean_reward": 0.8017,
+      "arms": {
+        "haiku-aggressive": 34,
+        "gpt-standard": 23,
+        "gpt-aggressive": 13,
+        "haiku-standard": 11,
+        "sonnet-standard": 5
+      }
+    },
+    "0.4": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 2.7823,
+      "mean_reward": 0.7916,
+      "arms": {
+        "haiku-aggressive": 41,
+        "haiku-standard": 20,
+        "gpt-aggressive": 16,
+        "gpt-standard": 5,
+        "sonnet-standard": 4
+      }
+    },
+    "0.6": {
+      "turns": 86,
+      "solved": 69,
+      "cost": 2.3923,
+      "mean_reward": 0.7585,
+      "arms": {
+        "haiku-aggressive": 46,
+        "haiku-standard": 23,
+        "gpt-aggressive": 12,
+        "sonnet-standard": 3,
+        "gpt-standard": 2
+      }
+    },
+    "0.8": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 2.1378,
+      "mean_reward": 0.7734,
+      "arms": {
+        "haiku-aggressive": 49,
+        "haiku-standard": 25,
+        "gpt-aggressive": 10,
+        "sonnet-standard": 2
+      }
+    },
+    "1.0": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 1.7034,
+      "mean_reward": 0.7736,
+      "arms": {
+        "haiku-aggressive": 55,
+        "haiku-standard": 28,
+        "sonnet-standard": 1,
+        "gpt-standard": 1,
+        "gpt-aggressive": 1
+      }
+    },
+    "2.0": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 1.6792,
+      "mean_reward": 0.7232,
+      "arms": {
+        "haiku-aggressive": 56,
+        "haiku-standard": 28,
+        "sonnet-aggressive": 1,
+        "gpt-standard": 1
+      }
+    }
+  },
+  "c_ref_sensitivity": {
+    "C_ref (Opus p95) = $0.381": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 2.7823,
+      "mean_reward": 0.7916,
+      "arms": {
+        "haiku-aggressive": 41,
+        "haiku-standard": 20,
+        "gpt-aggressive": 16,
+        "gpt-standard": 5,
+        "sonnet-standard": 4
+      }
+    },
+    "Sonnet p95 x 2 = $0.337": {
+      "turns": 86,
+      "solved": 70,
+      "cost": 2.6182,
+      "mean_reward": 0.7779,
+      "arms": {
+        "haiku-aggressive": 42,
+        "haiku-standard": 23,
+        "gpt-aggressive": 14,
+        "sonnet-standard": 4,
+        "gpt-standard": 3
+      }
+    },
+    "C_ref / 2 = $0.191": {
+      "turns": 86,
+      "solved": 69,
+      "cost": 2.2392,
+      "mean_reward": 0.748,
+      "arms": {
+        "haiku-aggressive": 49,
+        "haiku-standard": 23,
+        "gpt-aggressive": 11,
+        "sonnet-standard": 2,
+        "gpt-standard": 1
+      }
+    },
+    "C_ref x 2 = $0.763": {
+      "turns": 86,
+      "solved": 71,
+      "cost": 3.8551,
+      "mean_reward": 0.8021,
+      "arms": {
+        "haiku-aggressive": 35,
+        "gpt-standard": 22,
+        "gpt-aggressive": 13,
+        "haiku-standard": 11,
+        "sonnet-standard": 5
+      }
+    }
+  },
+  "prior_picks": {
+    "bugfix": {
+      "choice": "opus-aggressive",
+      "estimates": {
+        "haiku-standard": 0.616,
+        "haiku-aggressive": 0.736,
+        "sonnet-standard": 0.564,
+        "sonnet-aggressive": 0.483,
+        "opus-standard": 0.54,
+        "opus-aggressive": 0.729,
+        "gpt-standard": 0.671,
+        "gpt-aggressive": 0.619
+      },
+      "bonus": {
+        "haiku-standard": 0.187,
+        "haiku-aggressive": 0.186,
+        "sonnet-standard": 0.223,
+        "sonnet-aggressive": 0.242,
+        "opus-standard": 0.777,
+        "opus-aggressive": 0.777,
+        "gpt-standard": 0.204,
+        "gpt-aggressive": 0.2
+      }
+    },
+    "explain": {
+      "choice": "opus-aggressive",
+      "estimates": {
+        "haiku-standard": 0.944,
+        "haiku-aggressive": 0.95,
+        "sonnet-standard": 0.775,
+        "sonnet-aggressive": 0.866,
+        "opus-standard": 0.38,
+        "opus-aggressive": 0.741,
+        "gpt-standard": 0.824,
+        "gpt-aggressive": 0.852
+      },
+      "bonus": {
+        "haiku-standard": 0.185,
+        "haiku-aggressive": 0.185,
+        "sonnet-standard": 0.185,
+        "sonnet-aggressive": 0.185,
+        "opus-standard": 1.265,
+        "opus-aggressive": 1.283,
+        "gpt-standard": 0.185,
+        "gpt-aggressive": 0.185
+      }
+    },
+    "tests": {
+      "choice": "opus-standard",
+      "estimates": {
+        "haiku-standard": 0.767,
+        "haiku-aggressive": 0.763,
+        "sonnet-standard": 0.647,
+        "sonnet-aggressive": 0.59,
+        "opus-standard": 0.571,
+        "opus-aggressive": 0.349,
+        "gpt-standard": 0.796,
+        "gpt-aggressive": 0.817
+      },
+      "bonus": {
+        "haiku-standard": 0.193,
+        "haiku-aggressive": 0.192,
+        "sonnet-standard": 0.266,
+        "sonnet-aggressive": 0.334,
+        "opus-standard": 0.854,
+        "opus-aggressive": 0.814,
+        "gpt-standard": 0.231,
+        "gpt-aggressive": 0.22
+      }
+    }
+  },
+  "context_over_100k": 0
+}
