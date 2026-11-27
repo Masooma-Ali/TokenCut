@@ -1,10 +1,26 @@
-"""ODE hooks in the gateway (Phase 3): carry out an arm (model x trim level) for a request.
+"""ODE in the gateway: choose and carry out an arm (model x trim level) per task.
 
-ODE does not choose yet (Phase 6). Phase 3 adds what a choice needs, driven by a forced arm:
-
-    TOKENCUT_ODE=force                  ODE hooks on; every agent request uses the forced arm
-    TOKENCUT_ODE_FORCE_ARM=opus-standard    which arm (names in tokencut/ode/arms.py)
+    TOKENCUT_ODE=force                  every agent request uses TOKENCUT_ODE_FORCE_ARM (practice
+                                        runs, phases 3-5)
+    TOKENCUT_ODE=shadow                 ODE chooses at each new typed task and LOGS its choice;
+                                        requests go out unchanged (phase 6, step 1)
+    TOKENCUT_ODE=on                     ODE chooses and the task's requests use its arm (step 2)
+    TOKENCUT_ODE_FORCE_ARM=opus-standard    the forced arm (names in tokencut/ode/arms.py)
+    TOKENCUT_ODE_PRIOR=path.npz         learned prior (default: eval/results/ode/ode_prior.npz)
+    TOKENCUT_ODE_ARMS=a,b,...           arms ODE may choose (default: every arm except Opus,
+                                        which had only 12 practice turns; GPT arms are left out
+                                        when no LiteLLM route is set up)
+    TOKENCUT_ODE_EXPLORE=0.05           share of random tries (probability logged)
+    TOKENCUT_ODE_ALPHA=0                unsure bonus; 0 while there is no live learning
     TOKENCUT_ODE_RESTORE_MODEL=1        reply says the model the agent asked for (see below)
+
+Choosing (shadow / on): at a request that starts a typed task (the router does not call it a
+follow-up or a machine message), the 13 task numbers are scaled with the prior's standardizer
+and the bandit picks among the allowed arms, keeping the conversation's current arm unless
+another wins by more than the switch margin. Every later request of that task (tool loops)
+uses the same arm: a decision per task, never mid-task (team decision; a switch costs a cache
+rewrite). No learning live yet: the prior is fixed (a live reward is still to be designed and
+checked against graded runs). A missing or broken prior turns choosing off (fail open).
 
 For an agent request (Claude Code's main loop: Anthropic format, at least two client tools):
   1. the `model` field is swapped to the arm's model BEFORE trimming and routing, so the
@@ -27,17 +43,28 @@ import dataclasses
 import json
 import os
 import re
-from dataclasses import dataclass
+import threading
+from collections import Counter, OrderedDict
+from dataclasses import dataclass, field
+from pathlib import Path
 
 from tokencut.gateway.adapters import anthropic
 from tokencut.gateway.history import CacheEventConfig
 from tokencut.gateway.note import _is_agent_request
 from tokencut.gateway.routing import RouteConfig
+from tokencut.gateway.session import conversation_key
 from tokencut.gateway.virtual import VirtualConfig
 from tokencut.ode import features as F
-from tokencut.ode.arms import Arm, arm
+from tokencut.ode import settings
+from tokencut.ode.arms import ARM_NAMES, Arm, arm
+from tokencut.ode.bandit import HybridLinUCB
+from tokencut.ode.prior import load_prior, prior_rows
 
-MODES = ("off", "force")
+MODES = ("off", "force", "shadow", "on")
+DEFAULT_PRIOR = Path(__file__).resolve().parents[2] / "eval" / "results" / "ode" / "ode_prior.npz"
+# Opus is left out until it has practice data (team decision 2026-11-27: only 12 pilot turns,
+# so its unsure bonus made the prior pick it for every task type).
+DEFAULT_ARMS = tuple(a for a in ARM_NAMES if not a.startswith("opus"))
 
 
 @dataclass(frozen=True)
@@ -45,6 +72,14 @@ class OdeConfig:
     mode: str = "off"
     force_arm: str | None = None
     restore_model: bool = False
+    prior_path: str | None = None  # None: DEFAULT_PRIOR
+    arms: tuple[str, ...] = DEFAULT_ARMS  # arms ODE may choose (shadow / on)
+    explore: float = settings.EXPLORE
+    # Unsure bonus. 0 while ODE does not learn live: the bonus is for trying arms in order to
+    # learn from them; without updates it would only add cost, forever. 0 is also the policy
+    # the phase 5b leave-one-task-out check measured. Set settings.ALPHA (1) with live learning.
+    alpha: float = 0.0
+    seed: int | None = None  # random tries; fixed only in tests
 
     def __post_init__(self):
         if self.mode not in MODES:
@@ -53,16 +88,110 @@ class OdeConfig:
             if not self.force_arm:
                 raise ValueError("TOKENCUT_ODE=force needs TOKENCUT_ODE_FORCE_ARM")
             arm(self.force_arm)  # raises for an unknown arm name
+        for name in self.arms:
+            arm(name)
+        if not self.arms:
+            raise ValueError("TOKENCUT_ODE_ARMS needs at least one arm")
+        if self.alpha < 0:
+            raise ValueError(f"TOKENCUT_ODE_ALPHA must be >= 0, not {self.alpha}")
+        if not 0 <= self.explore <= 1:
+            raise ValueError(f"TOKENCUT_ODE_EXPLORE must be between 0 and 1, not {self.explore}")
 
     @property
     def on(self) -> bool:
         return self.mode != "off"
 
+    @property
+    def chooses(self) -> bool:
+        return self.mode in ("shadow", "on")
+
     @classmethod
     def from_env(cls) -> OdeConfig:
+        arms = tuple(a.strip() for a in os.environ.get("TOKENCUT_ODE_ARMS", "").split(",")
+                     if a.strip()) or DEFAULT_ARMS
+        explore = os.environ.get("TOKENCUT_ODE_EXPLORE", "").strip()
+        alpha = os.environ.get("TOKENCUT_ODE_ALPHA", "").strip()
         return cls(mode=os.environ.get("TOKENCUT_ODE", "off").strip() or "off",
                    force_arm=os.environ.get("TOKENCUT_ODE_FORCE_ARM", "").strip() or None,
-                   restore_model=os.environ.get("TOKENCUT_ODE_RESTORE_MODEL", "") == "1")
+                   restore_model=os.environ.get("TOKENCUT_ODE_RESTORE_MODEL", "") == "1",
+                   prior_path=os.environ.get("TOKENCUT_ODE_PRIOR", "").strip() or None,
+                   arms=arms, explore=float(explore) if explore else settings.EXPLORE,
+                   alpha=float(alpha) if alpha else 0.0)
+
+
+@dataclass
+class Chooser:
+    """ODE's live choices: the prior's bandit (fixed, no learning yet) and, per conversation,
+    the arm of the task in progress."""
+
+    bandit: HybridLinUCB
+    std: F.Standardizer
+    arms: tuple[str, ...]
+    prior: str = ""
+    rows: int = 0
+    max_conversations: int = 1000
+    current: OrderedDict = field(default_factory=OrderedDict)
+    counts: Counter = field(default_factory=Counter)
+    explored: int = 0
+    lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
+
+    @classmethod
+    def load(cls, config: OdeConfig, gpt_route: bool) -> Chooser:
+        path = Path(config.prior_path) if config.prior_path else DEFAULT_PRIOR
+        bandit, std, _, _ = load_prior(path, seed=config.seed)
+        bandit.explore, bandit.alpha = config.explore, config.alpha
+        arms = tuple(a for a in config.arms if a in bandit.arms
+                     and (gpt_route or arm(a).model.provider != "openai"))
+        if not arms:
+            raise ValueError(f"none of the arms {config.arms} can be used")
+        return cls(bandit, std, arms, prior=str(path), rows=prior_rows(path))
+
+    def decide(self, key: str | None, numbers: dict | None) -> tuple[str | None, dict]:
+        """(arm for this request or None, what happened). A new decision only where a typed
+        task starts; otherwise the conversation's current arm (None before its first task)."""
+        with self.lock:  # requests of different conversations run in parallel threads
+            return self._decide(key, numbers)
+
+    def _decide(self, key: str | None, numbers: dict | None) -> tuple[str | None, dict]:
+        current = self.current.get(key) if key else None
+        if (numbers is None or numbers.get("task") is None or not numbers.get("decision_point")
+                or "x" not in numbers):
+            return current, {"decided": False, "arm": current}
+        d = self.bandit.choose(self.std.transform(numbers["x"]), allowed=self.arms,
+                               current=current if current in self.arms else None)
+        if key:
+            self.current[key] = d.arm
+            self.current.move_to_end(key)
+            while len(self.current) > self.max_conversations:
+                self.current.popitem(last=False)
+        self.counts[d.arm] += 1
+        self.explored += d.explored
+        return d.arm, {
+            "decided": True, "arm": d.arm, "previous": current, "greedy": d.greedy,
+            "explored": d.explored, "probability": round(d.probability, 6),
+            "scores": {a: {"estimate": round(s.estimate, 4), "bonus": round(s.bonus, 4),
+                           "total": round(s.total, 4)} for a, s in d.scores.items()}}
+
+    def summary(self) -> dict:
+        return {"prior": self.prior, "prior_rows": self.rows, "arms": list(self.arms),
+                "decisions": sum(self.counts.values()),
+                "by_arm": dict(sorted(self.counts.items())),
+                "random_tries": self.explored, "conversations": len(self.current)}
+
+
+def choose(provider: str, body: bytes, chooser: Chooser,
+           router) -> tuple[str | None, dict | None, dict | None]:
+    """For an agent request: (arm or None, choice log, task numbers). (None, None, None) for
+    any other request (side requests are never touched). Runs the router: call in a thread."""
+    if provider != "anthropic":
+        return None, None, None
+    data = json.loads(body)
+    if not isinstance(data, dict) or not _is_agent_request(data):
+        return None, None, None
+    numbers = task_numbers(body, router)
+    key = conversation_key(provider, anthropic.parse(data))
+    name, choice = chooser.decide(key, numbers)
+    return name, choice, numbers
 
 
 def arm_settings(a: Arm, events: CacheEventConfig,
@@ -90,15 +219,16 @@ class Applied:
 
 
 def apply_arm(provider: str, body: bytes, config: OdeConfig,
-              route: RouteConfig) -> tuple[bytes | None, Applied | None]:
-    """(new body or None if unchanged, what was done or None if ODE does not touch it)."""
+              route: RouteConfig, name: str | None = None) -> tuple[bytes | None, Applied | None]:
+    """(new body or None if unchanged, what was done or None if ODE does not touch it).
+    `name`: the arm to use (default: the forced arm)."""
     if not config.on or provider != "anthropic":
         return None, None
     data = json.loads(body)
     if not isinstance(data, dict) or not _is_agent_request(data):
         return None, None  # side request (title, summary) or not a JSON object
     requested = str(data.get("model", ""))
-    chosen = arm(config.force_arm)
+    chosen = arm(name or config.force_arm)
     if chosen.model.provider == "openai" and not route.gpt_upstream:
         return None, Applied(chosen, requested, requested, skipped="gpt_route_not_set_up")
     if requested == chosen.model.model_id:

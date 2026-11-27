@@ -40,6 +40,7 @@ from tokencut.ode import settings
 from tokencut.ode.arms import ARM_NAMES, OPUS, SONNET, arm_features
 from tokencut.ode.bandit import HybridLinUCB
 from tokencut.ode.features import N_FEATURES, SHARED, Standardizer
+from tokencut.ode.prior import load_prior, save_prior  # noqa: F401 (used by main, tests)
 from tokencut.ode.reward import reward
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -121,20 +122,6 @@ def build_prior(turns: list[Turn], c_ref: float, lam: float,
     for t, r in zip(turns, rewards(turns, c_ref, lam), strict=True):
         bandit.update(std.transform(t.x), t.arm, r)
     return bandit, std
-
-
-def save_prior(path: Path, bandit: HybridLinUCB, std: Standardizer, c_ref: float, lam: float,
-               rows: int) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(path, **bandit.to_state(), **std.to_state(), c_ref=np.array(c_ref),
-             lam=np.array(lam), rows=np.array(rows))
-
-
-def load_prior(path: Path) -> tuple[HybridLinUCB, Standardizer, float, float]:
-    with np.load(path) as data:
-        state = {k: data[k] for k in data.files}
-    return (HybridLinUCB.from_state(state), Standardizer.from_state(state),
-            float(state["c_ref"]), float(state["lam"]))
 
 
 # ---------- 6. offline checks ----------

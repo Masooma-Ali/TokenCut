@@ -30,11 +30,15 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from tokencut.contracts import Tier
 from tokencut.gateway.history import CacheEventConfig
 from tokencut.gateway.ode import (
+    Chooser,
     ModelNameRestorer,
     OdeConfig,
     apply_arm,
     arm_settings,
     task_numbers,
+)
+from tokencut.gateway.ode import (
+    choose as choose_arm,
 )
 from tokencut.gateway.records import RequestLog, analyse, now_iso
 from tokencut.gateway.routing import (
@@ -167,6 +171,18 @@ def create_app(
     # Once, at start. None = no briefs and no ODE task numbers (both fail open).
     if (config.trim.prompt_brief or config.ode.on) and config.router is None:
         config.router = load_router(config.router_dir, config.router_repo)
+    # ODE choosing (shadow / on) needs the prior and the router; without either it stays off
+    # and requests go out unchanged (fail open).
+    chooser = None
+    if config.ode.chooses:
+        if config.router is None:
+            log.warning("ODE %s: no prompt router, so ODE does not choose", config.ode.mode)
+        else:
+            try:
+                chooser = Chooser.load(config.ode, gpt_route=bool(config.route.gpt_upstream))
+            except Exception:
+                log.warning("ODE %s: could not load the prior, so ODE does not choose",
+                            config.ode.mode, exc_info=True)
     timeout = httpx2.Timeout(connect=10.0, read=600.0, write=60.0, pool=10.0)
 
     @asynccontextmanager
@@ -192,11 +208,16 @@ def create_app(
             "gpt_upstream": config.route.gpt_upstream,
             "ode": config.ode.mode,
             "ode_force_arm": config.ode.force_arm,
+            "ode_choosing": chooser is not None,
+            "ode_arms": list(chooser.arms) if chooser is not None else [],
         }
 
     @app.get("/tokencut/stats")
     async def stats() -> dict:
-        return request_log.summary()
+        summary = request_log.summary()
+        if chooser is not None:
+            summary["ode_choices"] = chooser.summary()
+        return summary
 
     @app.get("/tokencut/recent")
     async def recent() -> list[dict]:
@@ -231,17 +252,34 @@ def create_app(
         if request.method == "POST" and _INFERENCE_PATHS[provider].search(path):
             request_log.save_capture(provider, body)
             events, virtual = config.events, config.virtual
-            if config.ode.on:
+            name, choice, chose_numbers = None, None, None
+            if chooser is not None:
+                # shadow / on: ODE picks at a new typed task, else keeps the task's arm.
+                try:
+                    name, choice, chose_numbers = await asyncio.to_thread(
+                        choose_arm, provider, body, chooser, config.router)
+                except Exception as exc:
+                    log.warning("ODE could not choose; forwarding original", exc_info=True)
+                    record["ode"] = {"mode": config.ode.mode, "error": type(exc).__name__}
+                if choice is not None:
+                    record["ode"] = {"mode": config.ode.mode, "choice": choice}
+                    if chose_numbers is not None:
+                        record["ode"]["task_numbers"] = chose_numbers
+            if config.ode.mode == "force" or (config.ode.mode == "on" and name is not None):
                 # Swap the model before trimming and routing, so the cache-event memory sees
                 # the real model and a GPT arm takes the LiteLLM route. Fail open.
                 try:
-                    swapped, applied = apply_arm(provider, body, config.ode, config.route)
+                    swapped, applied = apply_arm(provider, body, config.ode, config.route, name)
                     if swapped is not None:
                         body = send_body = swapped
                 except Exception as exc:
                     log.warning("ODE could not apply the arm; forwarding original", exc_info=True)
                     record["ode"] = {"error": type(exc).__name__}
-                if applied is not None:
+                if applied is not None and config.ode.mode == "on":
+                    record["ode"].update(applied.log())
+                    if not applied.skipped:
+                        events, virtual = arm_settings(applied.arm, events, virtual)
+                elif applied is not None:
                     record["ode"] = applied.log()
                     if not applied.skipped:
                         events, virtual = arm_settings(applied.arm, events, virtual)
