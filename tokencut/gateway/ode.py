@@ -259,12 +259,49 @@ def starts_turn(data: dict) -> bool:
         isinstance(b, dict) and b.get("type") == "tool_result" for b in content)
 
 
+# Requests Claude Code makes on its own that end with a "user" message and carry the main
+# loop's tools, so they look like a new typed task. Seen live (phase 6 demo, 2026-11-27): after
+# every answer Claude Code forks the conversation with its prompt-suggestion instruction (the
+# grey "what you might type next" hint); the text is in Claude Code's own program and starts
+# with this marker. Not a task: ODE keeps the conversation's arm (its cache is warm there).
+AGENT_MACHINE_PREFIXES = {
+    "[SUGGESTION MODE:": "prompt_suggestion",
+}
+
+
+def last_user_text(data: dict) -> str:
+    """Text of the request's last non-system message, if it is a user message."""
+    messages = [m for m in data.get("messages") or []
+                if not (isinstance(m, dict) and m.get("role") == "system")]
+    if not messages or not isinstance(messages[-1], dict) or messages[-1].get("role") != "user":
+        return ""
+    content = messages[-1].get("content")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "\n".join(b.get("text", "") for b in content
+                         if isinstance(b, dict) and b.get("type") == "text")
+    return ""
+
+
+def machine_message(data: dict) -> str | None:
+    """Which agent-made message this is (see AGENT_MACHINE_PREFIXES), or None."""
+    text = last_user_text(data).lstrip()
+    for prefix, name in AGENT_MACHINE_PREFIXES.items():
+        if text.startswith(prefix):
+            return name
+    return None
+
+
 def task_numbers(body: bytes, router,
                  threshold: float = F.settings.DECISION_THRESHOLD) -> dict | None:
     """The 13 numbers when this request starts a typed task, else None. Numbers only."""
     data = json.loads(body)
     if router is None or not isinstance(data, dict) or not starts_turn(data):
         return None
+    machine = machine_message(data)
+    if machine is not None:
+        return {"task": None, "machine": machine}  # not the user's: the same task goes on
     out = F.request_features(anthropic.parse(data), router)
     if out is None:
         return {"task": None}  # a follow-up ("yes") or a machine message: same task goes on

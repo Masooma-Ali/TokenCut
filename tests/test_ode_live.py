@@ -190,3 +190,38 @@ def test_no_unsure_bonus_without_live_learning(tmp_path, monkeypatch):
     assert OdeConfig.from_env().alpha == 1.0
     with pytest.raises(ValueError):
         OdeConfig("on", alpha=-1)
+
+
+SUGGESTION = ("[SUGGESTION MODE: Suggest what the user might naturally type next into Claude "
+              "Code.]\n\nFIRST: Look at the user's recent messages and original request.")
+
+
+def suggestion_body(text="fix the bug in shop/cart.py"):
+    body = agent_body(text)
+    body["messages"] += [{"role": "assistant", "content": [{"type": "text", "text": "Fixed."}]},
+                         {"role": "user", "content": [{"type": "text", "text": SUGGESTION}]}]
+    return body
+
+
+def test_claude_code_prompt_suggestions_are_not_tasks(tmp_path):
+    """Seen live: after every answer Claude Code forks the conversation with its
+    prompt-suggestion instruction; ODE counted it as a new feature task."""
+    app, upstream = live(tmp_path)
+    with TestClient(app) as client:
+        post(client, agent_body("fix the bug in shop/cart.py"))
+        post(client, suggestion_body())
+        record = last_record(app)["ode"]
+        stats = client.get("/tokencut/stats").json()["ode_choices"]
+    assert record["task_numbers"] == {"task": None, "machine": "prompt_suggestion"}
+    assert not record["choice"]["decided"] and record["choice"]["arm"] == "haiku-aggressive"
+    assert upstream.sent()["model"] == A.HAIKU.model_id  # the task's model, its cache is warm
+    assert stats["decisions"] == 1
+
+
+def test_machine_message_reads_the_last_user_text():
+    from tokencut.gateway.ode import machine_message
+    assert machine_message(suggestion_body()) == "prompt_suggestion"
+    plain = {"messages": [{"role": "user", "content": "  " + SUGGESTION}]}
+    assert machine_message(plain) == "prompt_suggestion"
+    assert machine_message(agent_body("please add [SUGGESTION MODE: x] to the docs")) is None
+    assert machine_message(agent_body("fix it", ending_with_tool_result=True)) is None

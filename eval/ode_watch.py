@@ -99,6 +99,8 @@ class View:
                 print(self.c(MAGENTA, "          (shadow mode: logged only, request unchanged)"))
         where = f"-> {self.c(CYAN, short(model)):6}" if self.color else f"-> {short(model):6}"
         step = "task request" if choice.get("decided") else "agent step  "
+        if (ode.get("task_numbers") or {}).get("machine") == "prompt_suggestion":
+            step = "next-prompt hint"  # Claude Code's own request, not a task: arm kept
         print(f"{clock}  {step}  arm {choice.get('arm') or '-':18} {where}  {money}")
 
     def footer(self) -> None:
