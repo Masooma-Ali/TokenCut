@@ -44,6 +44,22 @@ from tokencut.ode.reward import model_for, request_cost, usage_from_dict
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "eval" / "results" / "ode"
+TASKS2 = ROOT / "eval" / "ode_tasks2.json"  # task set 2: features and refactors
+RUN_DIR = Path(os.environ.get("ODE_RUN_DIR", "E:/FYP/swebench-envs/ode-run/repo"))
+# Per repository: git clone, grading worktree, Python with its test dependencies. Override
+# with ODE_<ENV>_REPO / _WORK / _PYTHON. The requests and flask Pythons load the package from
+# RUN_DIR/src (a .pth file), so tests always see the agent's copy.
+ENVS = {
+    "sympy": {"repo": ROOT / "swebench_repos" / "sympy__sympy",
+              "work": Path("E:/FYP/swebench-envs/sympy-work"),
+              "python": "E:/FYP/swebench-envs/sympy/.venv/Scripts/python.exe"},
+    "requests": {"repo": Path("E:/FYP/ode-tasks/repos/requests"),
+                 "work": Path("E:/FYP/swebench-envs/requests-work"),
+                 "python": "E:/FYP/swebench-envs/requests-rb/.venv/Scripts/python.exe"},
+    "flask": {"repo": Path("E:/FYP/ode-tasks/repos/flask"),
+              "work": Path("E:/FYP/swebench-envs/flask-work"),
+              "python": "E:/FYP/swebench-envs/flask-rb/.venv/Scripts/python.exe"},
+}
 PRIVATE = ROOT / "logs" / "ode"
 PORT = 8787
 TIMEOUT_S = 45 * 60
@@ -64,6 +80,27 @@ TURN_FIELDS = [
     "decision_point", "x", "wall_s", "num_turns", "claude_version", "tokencut_commit",
     "started", "settings",
 ]
+
+
+def env_paths(env: str) -> dict:
+    paths = dict(ENVS[env])
+    for key in ("repo", "work", "python"):
+        value = os.environ.get(f"ODE_{env.upper()}_{key.upper()}")
+        if value:
+            paths[key] = value if key == "python" else Path(value)
+    return paths
+
+
+def load_tasks(ids: list[str]) -> dict[str, dict]:
+    """SWE-bench Lite bug tasks (kind bugfix) and task set 2 (features, refactors)."""
+    rows = {k: {**r, "kind": "bugfix", "env": "sympy"} for k, r in load_rows(ids).items()}
+    if TASKS2.exists():
+        data = json.loads(TASKS2.read_text(encoding="utf-8"))
+        for row in data["tasks"]:
+            if row["instance_id"] in ids:
+                rows[row["instance_id"]] = {**row,
+                                            "baseline": data["baselines"].get(row["env"], [])}
+    return rows
 
 
 def now() -> str:
@@ -197,6 +234,11 @@ def prepare_run_dir(work: Path, run_dir: Path, commit: str, python: str | None =
             shutil.copy2(src, dst)
     T.git(run_dir, "init", "-q")
     T.git(run_dir, "config", "core.autocrlf", "false")  # diffs must apply to the grading copy
+    T.git(run_dir, "config", "user.name", "ode")  # the agent's own commits (refactor turn 3)
+    T.git(run_dir, "config", "user.email", "ode@local")
+    (run_dir / ".git" / "info").mkdir(parents=True, exist_ok=True)
+    (run_dir / ".git" / "info" / "exclude").write_text("__pycache__/\n*.pyc\n.pytest_cache/\n",
+                                                      encoding="utf-8")
     commit_all(run_dir, "start")
     T.git(run_dir, "tag", START)
 
@@ -337,12 +379,21 @@ def run_turn(n: int, prompt: str, session: str, run_dir: Path, base: Path, env: 
     return "completed", result
 
 
-def fake_turn(n: int, row: dict, run_dir: Path, gold: T.Gold) -> tuple[str, dict]:
-    """A pretend agent that does each turn right (pipeline check, no model calls): names the
-    real fix's location, applies the real fix, adds the official tests."""
+def fake_turn(n: int, row: dict, run_dir: Path, gold: T.Gold,
+              python: str = "") -> tuple[str, dict]:
+    """A pretend agent that does each turn right where it can (pipeline check, no model
+    calls): names the real change's location, applies the real change, adds the official
+    tests. Refactors have no published solution: turn 2 changes nothing (graded unsolved),
+    turn 3 commits and reports the hash."""
     if n == 1:
         text = f"It is handled in {', '.join(gold.files)}, in {', '.join(gold.functions)}."
         return "completed", {"result": text, "num_turns": 1}
+    if row.get("kind") == "refactor":
+        if n == 3:
+            commit_all(run_dir, T.COMMIT_MESSAGE)
+            head = T.git(run_dir, "rev-parse", "--short", "HEAD").stdout.strip()
+            return "completed", {"result": f"Committed.\nCOMMIT: {head}", "num_turns": 1}
+        return "completed", {"result": "done", "num_turns": 1}
     patch = row["patch"] if n == 2 else row["test_patch"]
     ok = apply_patch(run_dir, patch)
     return ("completed" if ok else "agent_error"), {"result": "done", "num_turns": 1}
@@ -401,13 +452,21 @@ def version_info(fake: bool) -> tuple[str, str]:
 
 def check_turn(n: int, row: dict, result: dict, run_dir: Path, args, gold: T.Gold,
                base: Path) -> dict:
-    turn_type = T.TURN_TYPES[n - 1]
+    turn_type = T.turn_types(row)[n - 1]
     # Graded on everything the agent changed since the start, not only in this turn: an agent
     # may edit a test file in turn 2 and again in turn 3 (seen live), and a turn-3-only diff
     # then does not apply to the original code.
     if turn_type == "explain":
         res = T.explain_locates(result.get("result", "") or "", gold)
-    elif turn_type == "bugfix":
+    elif turn_type == "refactor":
+        (base / "turn2.diff").write_text(diff_since(run_dir, START), encoding="utf-8",
+                                         newline="\n")
+        res = T.grade_refactor(row, run_dir, args.python, row.get("baseline", []))
+        (base / "turn2.tree").write_text(T.staged_tree(run_dir), encoding="utf-8")
+    elif turn_type == "run_action":
+        expected = (base / "turn2.tree").read_text(encoding="utf-8").strip()
+        res = T.grade_run_action(result.get("result", "") or "", run_dir, expected)
+    elif turn_type in ("bugfix", "feature"):
         diff = diff_since(run_dir, START)
         (base / "turn2.diff").write_text(diff, encoding="utf-8", newline="\n")
         res = T.grade_bugfix(row, diff, args.work, args.python)
@@ -415,12 +474,26 @@ def check_turn(n: int, row: dict, result: dict, run_dir: Path, args, gold: T.Gol
         diff = diff_since(run_dir, START)
         (base / "turn3.diff").write_text(diff, encoding="utf-8", newline="\n")
         res = T.grade_tests(row, diff, args.work, args.python)
-    commit_all(run_dir, f"after turn {n}")
+    if row.get("kind") != "refactor":  # refactor turn 3 asks the agent to commit its changes
+        commit_all(run_dir, f"after turn {n}")
     return res
+
+
+def task_gold(row: dict, work: Path) -> T.Gold:
+    kind = row.get("kind", "bugfix")
+    if kind == "feature":
+        return T.feature_gold(row, work)
+    if kind == "refactor":
+        return T.Gold(tuple(row["gold_files"]), tuple(row["gold_functions"]))
+    return T.gold_locations(row, work)
 
 
 def run_one(row: dict, arm: str, args) -> list[dict]:
     task = row["instance_id"]
+    if row.get("env", "sympy") != "sympy":  # task set 2 repositories (sympy keeps the flags)
+        paths = env_paths(row["env"])
+        args = argparse.Namespace(**{**vars(args), "repo": paths["repo"], "work": paths["work"],
+                                     "python": paths["python"]})
     base = PRIVATE / task / arm
     if base.exists():
         shutil.rmtree(base)  # a previous interrupted attempt
@@ -428,7 +501,7 @@ def run_one(row: dict, arm: str, args) -> list[dict]:
     log_dir.mkdir(parents=True)
     ensure_commit(args.repo, row["base_commit"])
     ensure_worktree(args.repo, args.work, row["base_commit"])
-    gold = T.gold_locations(row, args.work)
+    gold = task_gold(row, args.work)
     prepare_run_dir(args.work, args.run_dir, row["base_commit"], args.python)
     claude_v, commit = version_info(args.fake_agent)
     settings = json.dumps({**GATEWAY_SETTINGS, "TOKENCUT_ODE_FORCE_ARM": arm,
@@ -443,12 +516,12 @@ def run_one(row: dict, arm: str, args) -> list[dict]:
             seen = len(log_lines(log_dir))
             started = time.time()
             if args.fake_agent:
-                status, result = fake_turn(n, row, args.run_dir, gold)
+                status, result = fake_turn(n, row, args.run_dir, gold, args.python)
             else:
                 status, result = run_turn(n, prompt, session, args.run_dir, base, env, deadline)
             wall = round(time.time() - started)
             numbers = turn_numbers(log_lines(log_dir)[seen:])
-            turn_type = T.TURN_TYPES[n - 1]
+            turn_type = T.turn_types(row)[n - 1]
             check = (check_turn(n, row, result, args.run_dir, args, gold, base)
                      if status == "completed" else {})
             rows.append({
@@ -487,14 +560,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--arms", default=",".join(ARM_NAMES),
                         help="comma-separated arm names (default: all 8)")
     parser.add_argument("--repo", type=Path,
-                        default=Path(os.environ.get("ODE_REPO", ROOT / "swebench_repos" /
-                                                    "sympy__sympy")))
+                        default=Path(os.environ.get("ODE_REPO", ENVS["sympy"]["repo"])))
     parser.add_argument("--work", type=Path, default=Path(os.environ.get(
-        "ODE_WORK", "E:/FYP/swebench-envs/sympy-work")))
-    parser.add_argument("--run-dir", type=Path, default=Path(os.environ.get(
-        "ODE_RUN_DIR", "E:/FYP/swebench-envs/ode-run/repo")))
-    parser.add_argument("--python", default=os.environ.get(
-        "ODE_PYTHON", "E:/FYP/swebench-envs/sympy/.venv/Scripts/python.exe"))
+        "ODE_WORK", ENVS["sympy"]["work"])))
+    parser.add_argument("--run-dir", type=Path, default=RUN_DIR)
+    parser.add_argument("--python", default=os.environ.get("ODE_PYTHON",
+                                                         ENVS["sympy"]["python"]))
     parser.add_argument("--fake-agent", action="store_true",
                         help="pretend agent that solves every turn: checks the pipeline for free")
     parser.add_argument("--results", type=Path, default=None,
@@ -511,10 +582,10 @@ def main(argv: list[str] | None = None) -> int:
     state_path = args.results / "state.json"
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() \
         else {"done": []}
-    rows = load_rows(args.tasks)
+    rows = load_tasks(args.tasks)
     for i, task in enumerate(args.tasks):
         if task not in rows:
-            print(f"{task}: not in the SWE-bench Lite cache", flush=True)
+            print(f"{task}: not in the SWE-bench Lite cache or {TASKS2.name}", flush=True)
             continue
         for arm in arm_order(arms, i):
             key = f"{task}/{arm}" + ("/fake" if args.fake_agent else "")
