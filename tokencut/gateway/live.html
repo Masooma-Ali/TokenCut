@@ -110,6 +110,8 @@ const PLANS = { pro: "Claude Pro", max: "Claude Max", team: "Claude Team", enter
 let SYSTEM = null;
 
 const after = r => r.tokens - (r.applied ? r.tokens_saved : 0);
+// tokens_saved > 0: removed; < 0: TokenCut added more than it removed (brief, note, tool catalog)
+const change = n => !n ? "0" : n > 0 ? "−" + fmt(n) : "+" + fmt(-n);
 const time = r => (r.ts || "").slice(11, 19);
 
 function stack(entries) {
@@ -130,7 +132,7 @@ function kpis(stats, feed) {
   return [
     k(fmt(stats.requests), "requests (recent window)", row("analysis errors", fmt(stats.analysis_errors))),
     k(`${fmt(total)} → ${fmt(total - applied)}`, "tokens: before → sent",
-      row("removed", `<span class="saved">${fmt(applied)} (${pct(applied, total)}%)</span>`) +
+      row(applied >= 0 ? "removed" : "added (net)", `<span class="${applied > 0 ? "saved" : "muted"}">${fmt(Math.abs(applied))} (${pct(Math.abs(applied), total)}%)</span>`) +
       row("possible (shadow)", fmt(t.tokens_saved_possible))),
     k(fmt(input), "billed input tokens", row("cache reads", pct(u.cache_read_tokens, input) + "%") +
       row("output", fmt(u.output_tokens))),
@@ -253,11 +255,12 @@ function requestRow(r) {
   const ev = r.cache_event ? ` <span class="muted">[${esc(r.cache_event)}]</span>` : "";
   const u = r.usage || {};
   const bad = r.error || (r.status_code && r.status_code >= 400);
-  const arm = r.ode ? `${esc(r.ode.arm || "")}${r.ode.skipped ? " ✗" : ""}` : '<span class="muted">–</span>';
+  const arm = r.ode ? `${esc(r.ode.arm || "")}${r.ode.skipped ? " ✗" : ""}`
+    : `<span class="muted">${r.by_kind && !r.by_kind.tools ? "side (no tools)" : "–"}</span>`;
   return `<tr><td class="muted">${time(r)}</td>
     <td><span class="tag ${route}">${esc(r.route)}</span> <span class="muted">${esc(r.via || "")}</span></td>
     <td>${esc(r.model)}</td><td>${arm}</td><td>${fmt(r.tokens)}</td><td>${fmt(after(r))}</td>
-    <td class="${r.tokens_saved ? "saved" : "muted"}">${r.tokens_saved ? "−" + fmt(r.tokens_saved) : "0"}${r.applied || !r.tokens_saved ? "" : " (shadow)"}</td>
+    <td class="${r.tokens_saved > 0 ? "saved" : "muted"}">${change(r.tokens_saved)}${r.applied || !r.tokens_saved ? "" : " (shadow)"}</td>
     <td>${fmt(u.cache_read_tokens)}</td><td>${fmt((u.input_tokens || 0) + (u.cache_write_tokens || 0))} / ${fmt(u.output_tokens)}</td>
     <td>${usd(r.cost_usd)}</td><td>${trims || '<span class="muted">—</span>'}${ev}</td>
     <td class="muted">${r.trim_ms ?? ""}</td><td class="muted">${r.latency_ms != null ? Math.round(r.latency_ms) + " ms" : ""}</td>
