@@ -2,6 +2,8 @@
 
     tokencut [claude args...]   open Claude Code through TokenCut (runs setup the first time)
     tokencut setup              logins and one-time installs (--chatgpt / --no-chatgpt)
+    tokencut ode [off|shadow|on]  show or set ODE (model per task; on by default)
+    tokencut dashboard          open the live page (savings, requests) in the browser
     tokencut status             is it running, what did it save
     tokencut logs [gateway|connector] [-n LINES]
     tokencut gateway            the gateway alone, in the foreground
@@ -18,7 +20,7 @@ from importlib.metadata import PackageNotFoundError, version
 
 from tokencut import userconfig
 
-COMMANDS = ("setup", "status", "logs", "gateway", "code")
+COMMANDS = ("setup", "status", "dashboard", "ode", "logs", "gateway", "code")
 
 
 def _version() -> str:
@@ -65,6 +67,15 @@ def status_text(health: dict | None, stats: dict | None, gateway: str) -> str:
         lines.append(f"  billed: input {billed['input_tokens']:,}, cache read "
                      f"{billed['cache_read_tokens']:,}, cache write "
                      f"{billed['cache_write_tokens']:,}, output {billed['output_tokens']:,}")
+    if health.get("ode", "off") != "off":
+        if health.get("ode_choosing"):
+            by_arm = ((stats or {}).get("ode_choices") or {}).get("by_arm") or {}
+            picks = ", ".join(f"{name} x{n}" for name, n in by_arm.items()) or "no task yet"
+            lines.append(f"  ODE {health['ode']}: {len(health['ode_arms'])} arms "
+                         f"({', '.join(health['ode_arms'])}); chosen: {picks}")
+        else:
+            lines.append(f"  ODE {health['ode']}: NOT choosing (prompt model or prior "
+                         "unavailable; see `tokencut logs`)")
     lines.append(f"  live page: {gateway}/tokencut/")
     return "\n".join(lines)
 
@@ -75,6 +86,31 @@ def _status() -> int:
     health = _get(f"{gateway}/tokencut/health")
     print(status_text(health, _get(f"{gateway}/tokencut/stats") if health else None, gateway))
     return 0 if health else 1
+
+
+def _dashboard() -> int:
+    port = os.environ.get("TOKENCUT_PORT", str(userconfig.load()["gateway"]["port"]))
+    page = f"http://127.0.0.1:{port}/tokencut/"
+    if _get(f"http://127.0.0.1:{port}/tokencut/health") is None:
+        print(f"TokenCut is not running ({page}). Start it with `tokencut`, then run this again.")
+        return 1
+    import webbrowser
+
+    opened = webbrowser.open(page)
+    print(f"Live page: {page}" + ("" if opened else "  (open it in your browser)"))
+    return 0
+
+
+def _ode(mode: str | None) -> int:
+    config = userconfig.load()
+    if mode is None:
+        print(f"ODE is {config['ode']['mode']} (set with `tokencut ode off|shadow|on`)")
+        return 0
+    config["ode"]["mode"] = mode
+    userconfig.save(config)
+    print(f"ODE set to {mode}. It applies the next time TokenCut starts "
+          "(stop a running one first).")
+    return 0
 
 
 def _logs(which: str, lines: int) -> int:
@@ -102,6 +138,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="add the ChatGPT plan without asking")
     choice.add_argument("--no-chatgpt", dest="chatgpt", action="store_false",
                         help="Claude only, without asking")
+    ode = commands.add_parser("ode", help="show or set ODE: off, shadow (log only) or on")
+    ode.add_argument("mode", nargs="?", choices=userconfig.ODE_MODES)
+    commands.add_parser("dashboard", help="open the live page in the browser")
     commands.add_parser("status", help="is it running, what did it save")
     logs = commands.add_parser("logs", help="last lines of a process log")
     logs.add_argument("which", nargs="?", default="gateway", choices=("gateway", "connector"))
@@ -113,6 +152,10 @@ def main(argv: list[str] | None = None) -> int:
         from tokencut.wizard import run_setup
 
         return run_setup(chatgpt=args.chatgpt)
+    if args.command == "ode":
+        return _ode(args.mode)
+    if args.command == "dashboard":
+        return _dashboard()
     if args.command == "status":
         return _status()
     if args.command == "logs":

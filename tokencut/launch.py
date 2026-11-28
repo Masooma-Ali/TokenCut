@@ -10,6 +10,7 @@ Every TOKENCUT_* variable already set in the environment overrides the config.
 Live page: http://127.0.0.1:8787/tokencut/   Processes started here stop when Claude Code exits.
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -27,6 +28,28 @@ def _up(url: str) -> bool:
             return response.status < 500
     except OSError:
         return False
+
+
+def _health(gateway: str) -> dict | None:
+    try:
+        with urllib.request.urlopen(f"{gateway}/tokencut/health", timeout=2) as response:
+            return json.loads(response.read())
+    except (OSError, ValueError):
+        return None
+
+
+def _ode_line(config: dict, health: dict | None) -> str:
+    """One line on ODE for the start message (what the running gateway really does)."""
+    wanted = config.get("ode", {}).get("mode", "on")
+    if health is None or "ode" not in health:
+        return f"ODE {wanted}"
+    if health["ode"] == "off":
+        return "ODE off" + (" (the running gateway was started without it; stop it and run "
+                            "`tokencut` again)" if wanted != "off" else "")
+    if not health.get("ode_choosing"):
+        return (f"ODE {health['ode']} but NOT choosing (prompt model or prior unavailable; "
+                "see `tokencut logs`)")
+    return f"ODE {health['ode']} ({len(health['ode_arms'])} arms)"
 
 
 def _wait(url: str, what: str, seconds: int) -> None:
@@ -75,12 +98,14 @@ def main(argv: list[str]) -> int:
     env = dict(os.environ)
     try:
         connector = _start_connector(config, env, started)
-        genv = userconfig.gateway_env(config, connector, env)
+        gpt_ready = bool(connector and config["chatgpt"]["enabled"]
+                         and litellm_proxy.chatgpt_logged_in())
+        genv = userconfig.gateway_env(config, connector, env, gpt_ready=gpt_ready)
         # Run this package's gateway code, also from a checkout without an install.
         genv["PYTHONPATH"] = os.pathsep.join(
             filter(None, [str(Path(__file__).resolve().parents[1]), env.get("PYTHONPATH")]))
         gateway = f"http://127.0.0.1:{genv['TOKENCUT_PORT']}"
-        if _up(f"{gateway}/tokencut/health"):
+        if _health(gateway) is not None:
             print(f"tokencut: already running on {gateway} (its own settings apply)")
         else:
             print("tokencut: starting ...")
@@ -88,7 +113,8 @@ def main(argv: list[str]) -> int:
                                   "gateway.log"))
             _wait(f"{gateway}/tokencut/health", "gateway", 180)  # first start loads the router
         models = "Claude" + (" + GPT (/model " + config["chatgpt"]["models"][0] + ")"
-                             if connector and config["chatgpt"]["enabled"] else "")
+                             if gpt_ready else "")
+        models += "; " + _ode_line(config, _health(gateway))
         print(f"tokencut: ready - {models}; savings at {gateway}/tokencut/\n")
         return subprocess.call([claude, *argv[1:]], env=userconfig.agent_env(config, env))
     finally:

@@ -59,3 +59,42 @@ def test_logs(tmp_path, monkeypatch, capsys):
     (tmp_path / "gateway.log").write_text("".join(f"line {i}\n" for i in range(100)))
     assert cli.main(["logs", "-n", "2"]) == 0
     assert capsys.readouterr().out.endswith("line 98\nline 99\n")
+
+
+def test_status_shows_ode():
+    gateway = "http://127.0.0.1:8787"
+    health = {"mode": "trim", "tier": "moderate", "ode": "on", "ode_choosing": True,
+              "ode_arms": ["haiku-standard", "sonnet-standard"]}
+    text = cli.status_text(health, {"requests": 0, "tokens_total": 0,
+                                    "trimming": {"tokens_saved_applied": 0,
+                                                 "tokens_saved_possible": 0},
+                                    "billed_usage": {"input_tokens": 0, "cache_read_tokens": 0,
+                                                     "cache_write_tokens": 0, "output_tokens": 0},
+                                    "ode_choices": {"by_arm": {"haiku-standard": 2}}}, gateway)
+    assert "ODE on: 2 arms" in text and "haiku-standard x2" in text
+    health["ode_choosing"] = False
+    assert "NOT choosing" in cli.status_text(health, None, gateway)
+    assert "ODE" not in cli.status_text({**health, "ode": "off"}, None, gateway)
+
+
+def test_ode_command_shows_and_sets_the_mode(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("TOKENCUT_HOME", str(tmp_path))
+    assert cli.main(["ode"]) == 0 and "ODE is on" in capsys.readouterr().out
+    assert cli.main(["ode", "shadow"]) == 0
+    assert cli.main(["ode"]) == 0 and "ODE is shadow" in capsys.readouterr().out
+    with pytest.raises(SystemExit):
+        cli.main(["ode", "maybe"])
+
+
+def test_dashboard_opens_the_live_page_only_when_running(tmp_path, monkeypatch, capsys):
+    import webbrowser
+
+    monkeypatch.setenv("TOKENCUT_HOME", str(tmp_path))
+    opened = []
+    monkeypatch.setattr(webbrowser, "open", lambda url: opened.append(url) or True)
+    monkeypatch.setattr(cli, "_get", lambda url: None)
+    assert cli.main(["dashboard"]) == 1 and not opened
+    assert "not running" in capsys.readouterr().out
+    monkeypatch.setattr(cli, "_get", lambda url: {"status": "ok"})
+    assert cli.main(["dashboard"]) == 0
+    assert opened == ["http://127.0.0.1:8787/tokencut/"]

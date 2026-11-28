@@ -76,9 +76,15 @@ def run_setup(
     elif chatgpt:
         out("GPT models need the model connector; they stay off for now.")
 
-    if config["gateway"]["prompt_brief"] and not download_router(out):
-        out("Prompt model unavailable; task briefs are off (everything else works).")
-        config["gateway"]["prompt_brief"] = False
+    # The prompt model serves task briefs and ODE (it reads each new task).
+    ode_on = config["ode"]["mode"] != "off"
+    if (config["gateway"]["prompt_brief"] or ode_on) and not download_router(out):
+        if config["gateway"]["prompt_brief"]:
+            out("Prompt model unavailable; task briefs are off (everything else works).")
+            config["gateway"]["prompt_brief"] = False
+        if ode_on:
+            out("Prompt model unavailable; ODE starts choosing once it downloads "
+                "(retried at every start).")
 
     if ready:
         litellm_proxy.write_config(config)
@@ -90,5 +96,9 @@ def run_setup(
     out(f"  Trimming: {config['gateway']['mode']} ({config['gateway']['tier']}), "
         f"system note: {'on' if config['gateway']['system_note'] else 'off'}, "
         f"task briefs: {'on' if config['gateway']['prompt_brief'] else 'off'}")
+    out(f"  ODE (model per task): {config['ode']['mode']}"
+        + ("" if config["chatgpt"]["enabled"] or config["ode"]["mode"] == "off"
+           else " - Claude models only (no ChatGPT)")
+        + "   change with `tokencut ode off|shadow|on`")
     out("Run `tokencut` in your project folder to open Claude Code through TokenCut.")
     return 0

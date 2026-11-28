@@ -20,9 +20,13 @@ DEFAULTS: dict = {
         "system_note": True,
         "prompt_brief": True,
     },
+    # ODE: picks the model (and trim level) per task. "on" = switches, "shadow" = only logs its
+    # choice, "off" = never. restore_model: replies name the model Claude Code asked for.
+    "ode": {"mode": "on", "restore_model": False},
     "litellm": {"enabled": False, "port": 8788},  # model connector; Claude + GPT go through it
     "chatgpt": {"enabled": False, "models": ["gpt-6.1-sol", "gpt-6-luna", "gpt-6-astra"]},
 }
+ODE_MODES = ("off", "shadow", "on")
 KEY_FILES = {"tokencut": "tokencut_key", "litellm": "litellm_master_key"}
 
 
@@ -72,9 +76,27 @@ def key(name: str, create: bool = True) -> str | None:
     return value
 
 
-def gateway_env(config: dict, litellm_url: str | None, environ: dict[str, str]) -> dict[str, str]:
-    """Environment for the gateway process: config values, never overriding the user's own."""
+def ode_arms(config: dict, gpt_ready: bool) -> list[str] | None:
+    """The arms ODE may choose, or None for the gateway's default (every arm but Opus).
+
+    GPT arms need a running connector, a ChatGPT login and the arm's model in the user's
+    ChatGPT model list; without one of them they are left out (a GPT request would fail)."""
+    from tokencut.ode.arms import ARM_NAMES, GPT, arm
+
+    gpt_ok = gpt_ready and GPT.model_id in config["chatgpt"]["models"]
+    if gpt_ok:
+        return None
+    return [a for a in ARM_NAMES if not a.startswith("opus") and arm(a).model.provider != "openai"]
+
+
+def gateway_env(config: dict, litellm_url: str | None, environ: dict[str, str],
+                gpt_ready: bool | None = None) -> dict[str, str]:
+    """Environment for the gateway process: config values, never overriding the user's own.
+
+    gpt_ready: ChatGPT is usable (default: connector running and ChatGPT enabled in the config)."""
     gw = config["gateway"]
+    if gpt_ready is None:
+        gpt_ready = bool(litellm_url and config["chatgpt"]["enabled"])
     wanted = {
         "TOKENCUT_PORT": str(gw["port"]),
         "TOKENCUT_MODE": gw["mode"],
@@ -83,6 +105,15 @@ def gateway_env(config: dict, litellm_url: str | None, environ: dict[str, str]) 
         "TOKENCUT_PROMPT_BRIEF": "1" if gw["prompt_brief"] else "0",
         "TOKENCUT_LOG_DIR": str(home() / "logs"),
     }
+    ode = config.get("ode", {})
+    mode = ode.get("mode", "on")
+    wanted["TOKENCUT_ODE"] = mode if mode in ODE_MODES else "off"  # a typo never stops the gateway
+    if wanted["TOKENCUT_ODE"] != "off":
+        arms = ode_arms(config, gpt_ready)
+        if arms is not None:
+            wanted["TOKENCUT_ODE_ARMS"] = ",".join(arms)
+        if ode.get("restore_model"):
+            wanted["TOKENCUT_ODE_RESTORE_MODEL"] = "1"
     tokencut_key = key("tokencut", create=False)
     if tokencut_key:
         wanted["TOKENCUT_KEY"] = tokencut_key

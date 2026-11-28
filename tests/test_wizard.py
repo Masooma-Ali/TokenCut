@@ -61,3 +61,18 @@ def test_failures_leave_a_working_claude_setup(home):
     assert not config["litellm"]["enabled"] and not config["chatgpt"]["enabled"]
     assert config["gateway"]["prompt_brief"] is False
     assert "Claude will connect directly" in text
+
+
+def test_prompt_model_is_downloaded_for_ode_even_without_briefs(home):
+    config = userconfig.load()
+    config["gateway"]["prompt_brief"] = False
+    userconfig.save(config)
+    asked = []
+    code, text = setup(chatgpt=False, download_router=lambda out: asked.append(1) or True)
+    assert code == 0 and asked and "ODE (model per task): on - Claude models only" in text
+
+
+def test_ode_survives_a_failed_prompt_model_download(home):
+    code, text = setup(chatgpt=False, download_router=lambda out: False)
+    assert code == 0 and userconfig.load()["ode"]["mode"] == "on"
+    assert "ODE starts choosing once it downloads" in text
