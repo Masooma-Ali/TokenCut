@@ -30,6 +30,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from tokencut.contracts import Tier
 from tokencut.gateway import panel
 from tokencut.gateway.history import CacheEventConfig
+from tokencut.gateway.inline import CombinedUsage, InlineRetrieve
 from tokencut.gateway.ode import (
     Chooser,
     ModelNameRestorer,
@@ -258,9 +259,11 @@ def create_app(
         analysis_task = None
         send_body = body
         applied = None  # what ODE did to this request (None: not an ODE request)
+        req_virtual = config.virtual  # this request's CCR / lazy-tools settings (an arm may change them)
         if request.method == "POST" and _INFERENCE_PATHS[provider].search(path):
             request_log.save_capture(provider, body)
             events, virtual = config.events, config.virtual
+            req_virtual = virtual
             name, choice, chose_numbers = None, None, None
             if chooser is not None:
                 # shadow / on: ODE picks at a new typed task, else keeps the task's arm.
@@ -300,6 +303,7 @@ def create_app(
                     except Exception as exc:
                         log.warning("ODE task numbers failed", exc_info=True)
                         record["ode"]["task_numbers_error"] = type(exc).__name__
+            req_virtual = virtual  # after the arm's settings
             req_session = (session[0], events) if session is not None else None
             if config.mode == "trim":
                 # Trim before sending. Any failure: send the original request (fail open).
@@ -405,10 +409,45 @@ def create_app(
                 and upstream.status_code == 200):
             restorer = ModelNameRestorer(applied.sent, applied.requested, sniffer.streaming)
 
-        async def relay():
-            try:
+        inline = None
+        usage_source = sniffer
+        if (provider == "anthropic" and upstream.status_code == 200 and sniffer.streaming
+                and req_virtual.ccr):
+            # tokencut_retrieve answered in the reply stream (inline.py): no "unknown tool"
+            # error in the agent. The continuation goes where this request went.
+            async def send_more(extra: list[dict]):
+                try:
+                    data = json.loads(send_body)
+                    data["messages"] = [*data["messages"], *extra]
+                    follow = await client.send(client.build_request(
+                        request.method, url, headers=headers,
+                        content=json.dumps(data, ensure_ascii=False,
+                                           separators=(",", ":")).encode()), stream=True)
+                except (httpx2.RequestError, ValueError, KeyError, TypeError):
+                    log.warning("inline retrieve: continuation failed", exc_info=True)
+                    return None
+                if follow.status_code != 200:
+                    await follow.aclose()
+                    return None
+                return follow
+
+            usage_source = CombinedUsage()
+            inline = InlineRetrieve(req_virtual.store, send_more, usage_source)
+
+        async def upstream_chunks():
+            if inline is None:
                 async for chunk in upstream.aiter_raw():
                     sniffer.feed(chunk)  # usage is read from the provider's own bytes
+                    yield chunk
+            else:
+                async for chunk in inline.stream(upstream):
+                    yield chunk
+                if inline.answered:
+                    record["inline_retrievals"] = inline.answered
+
+        async def relay():
+            try:
+                async for chunk in upstream_chunks():
                     out = restorer.feed(chunk) if restorer is not None else chunk
                     if out:
                         yield out
@@ -420,7 +459,7 @@ def create_app(
                 if restorer is not None and isinstance(record.get("ode"), dict):
                     record["ode"]["model_restored"] = restorer.restored
                 await upstream.aclose()
-                await _finish(record, analysis_task, sniffer, started, request_log)
+                await _finish(record, analysis_task, usage_source, started, request_log)
 
         response_headers = {
             k: v for k, v in upstream.headers.items() if k.lower() not in _DROP_RESPONSE_HEADERS
