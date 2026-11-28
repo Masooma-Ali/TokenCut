@@ -28,6 +28,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
 from tokencut.contracts import Tier
+from tokencut.gateway import panel
 from tokencut.gateway.history import CacheEventConfig
 from tokencut.gateway.ode import (
     Chooser,
@@ -183,6 +184,7 @@ def create_app(
             except Exception:
                 log.warning("ODE %s: could not load the prior, so ODE does not choose",
                             config.ode.mode, exc_info=True)
+    started_at = time.time()
     timeout = httpx2.Timeout(connect=10.0, read=600.0, write=60.0, pool=10.0)
 
     @asynccontextmanager
@@ -220,8 +222,13 @@ def create_app(
         return summary
 
     @app.get("/tokencut/recent")
-    async def recent() -> list[dict]:
-        return request_log.recent_feed()
+    async def recent(limit: int = 40) -> list[dict]:
+        return request_log.recent_feed(max(1, min(limit, 500)))
+
+    @app.get("/tokencut/system")
+    async def system() -> dict:
+        # Checks touch files and the connector's port: keep them off the event loop.
+        return await asyncio.to_thread(panel.system_info, config, chooser, started_at)
 
     @app.get("/tokencut/", response_class=HTMLResponse)
     async def live_page() -> str:
@@ -243,6 +250,8 @@ def create_app(
             "provider": provider,
             "method": request.method,
             "path": path,
+            "auth": ("bearer" if request.headers.get("authorization")
+                     else "api_key" if request.headers.get("x-api-key") else None),
             "analysis": None,
         }
 

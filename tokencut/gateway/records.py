@@ -21,6 +21,7 @@ from tokencut.gateway.brief import add_task_briefs
 from tokencut.gateway.history import CacheEventConfig, trim_with_cache_events
 from tokencut.gateway.media import adjust_images, split_pdfs, with_media_tokens
 from tokencut.gateway.note import add_system_note
+from tokencut.gateway.panel import request_extras
 from tokencut.gateway.session import SessionStore
 from tokencut.gateway.trimmer import TrimConfig, trim_request
 from tokencut.gateway.virtual import VirtualConfig, finish_tools, offers_tools, resolve
@@ -269,6 +270,8 @@ class RequestLog:
                     for d in trim.get("details", [])
                 ],
                 "usage": r.get("usage"),
+                "status_code": r.get("status"),
+                **request_extras(r),
             })
         return feed
 

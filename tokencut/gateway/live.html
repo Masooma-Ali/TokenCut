@@ -3,133 +3,302 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TokenCut Live</title>
+<title>TokenCut Panel</title>
 <style>
   :root {
     --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e4e4df;
-    --claude: #c96442; --gpt: #10a37f; --good: #2f7d32; --warn: #b26a00;
+    --claude: #c96442; --gpt: #10a37f; --good: #2f7d32; --warn: #b26a00; --bad: #b3261e;
+    --c1: #4c78a8; --c2: #f58518; --c3: #54a24b; --c4: #b279a2; --c5: #9d755d; --c6: #79706e;
+    --c7: #e45756; --c8: #72b7b2;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #161615; --card: #1f1f1d; --ink: #ecece8; --muted: #9b9b94; --line: #2e2e2b; }
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
-  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 20px; }
-  h1 { font-size: 22px; margin: 0; }
+         font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1280px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-bottom: 14px; }
+  h1 { font-size: 21px; margin: 0; }
+  h3 { font-size: 13px; margin: 26px 0 8px; text-transform: uppercase; letter-spacing: .04em;
+       color: var(--muted); }
   .sub { color: var(--muted); font-size: 13px; }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--good);
          margin-right: 6px; vertical-align: middle; }
-  .dot.off { background: var(--warn); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
-  .card h2 { margin: 0 0 2px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .dot.off { background: var(--bad); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px; }
+  .card h2 { margin: 0 0 8px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .swatch { width: 10px; height: 10px; border-radius: 3px; }
-  .plan { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
-  .big { font-size: 30px; font-weight: 650; font-variant-numeric: tabular-nums; }
-  .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);
+  .kpi .big { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .kpi .lbl { color: var(--muted); font-size: 12px; }
+  .row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted);
          font-variant-numeric: tabular-nums; padding: 2px 0; }
-  .row b { color: var(--ink); font-weight: 600; }
-  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 8px 0 10px; }
-  .bar span { display: block; height: 100%; background: var(--good); width: 0; transition: width .4s; }
-  h3 { font-size: 14px; margin: 28px 0 8px; }
-  .feed { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
-  th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .row b { color: var(--ink); font-weight: 600; text-align: right; }
+  .pill { display: inline-block; padding: 0 8px; border-radius: 9px; font-size: 12px; font-weight: 600;
+          color: #fff; background: var(--muted); }
+  .pill.ok { background: var(--good); } .pill.bad { background: var(--bad); }
+  .pill.warn { background: var(--warn); }
+  .bar { height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 6px 0; display: flex; }
+  .bar span { display: block; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+  .tbl { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   th { color: var(--muted); font-weight: 500; }
   tr:last-child td { border-bottom: 0; }
-  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; color: #fff; font-size: 12px; }
+  .tag { display: inline-block; padding: 0 8px; border-radius: 9px; color: #fff; font-size: 12px; }
   .claude { background: var(--claude); } .gpt { background: var(--gpt); } .other { background: var(--muted); }
   .saved { color: var(--good); font-weight: 600; }
-  .muted { color: var(--muted); }
-  .empty { padding: 20px; color: var(--muted); text-align: center; }
+  .muted { color: var(--muted); } .badtxt { color: var(--bad); font-weight: 600; }
+  .empty { padding: 18px; color: var(--muted); text-align: center; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+  .scores { font-size: 11.5px; color: var(--muted); }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1>TokenCut Live</h1>
+    <h1>TokenCut Panel</h1>
     <span class="sub"><span id="dot" class="dot"></span><span id="status">connecting…</span></span>
+    <span class="sub" id="proc"></span>
   </header>
 
-  <section class="cards" id="cards"></section>
+  <section class="grid kpi" id="kpis"></section>
+
+  <h3>Setup</h3>
+  <section class="grid" id="setup"></section>
+
+  <h3>Routes and plans</h3>
+  <section class="grid" id="routes"></section>
+
+  <h3>ODE (model and trim level per task)</h3>
+  <section class="two">
+    <div class="card" id="ode-state"></div>
+    <div class="card" id="ode-arms"></div>
+  </section>
+  <div class="tbl" style="margin-top:12px"><table>
+    <thead><tr><th>Time</th><th>Task (router)</th><th>Chosen arm</th><th>Before</th>
+      <th>Model asked → sent</th><th>How</th><th>Scores (top 3)</th></tr></thead>
+    <tbody id="ode-rows"></tbody></table></div>
+
+  <h3>Context and trimming</h3>
+  <section class="two">
+    <div class="card" id="ctx"></div>
+    <div class="card" id="removed"></div>
+  </section>
 
   <h3>Latest requests</h3>
-  <div class="feed">
-    <table>
-      <thead><tr><th>Time</th><th>Plan</th><th>Model</th><th>Tokens</th><th>Removed</th>
-        <th>Cache read</th><th>What was trimmed</th><th>Latency</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="8" class="empty">Waiting for the agent's first request…</td></tr></tbody>
-    </table>
-  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Time</th><th>Route</th><th>Model</th><th>ODE arm</th><th>Before</th><th>After</th>
+      <th>Removed</th><th>Cache read</th><th>Billed in/out</th><th>Cost</th><th>What was trimmed</th>
+      <th>Trim ms</th><th>Latency</th><th>Status</th></tr></thead>
+    <tbody id="rows"></tbody></table></div>
 </main>
 <script>
-const ROUTES = {
-  claude: { name: "Claude", plan: "Claude Pro plan · via Anthropic", css: "claude", color: "var(--claude)" },
-  gpt: { name: "GPT / Codex", plan: "ChatGPT plan · via LiteLLM", css: "gpt", color: "var(--gpt)" },
-};
+const PALETTE = ["--c1", "--c2", "--c3", "--c4", "--c5", "--c6", "--c7", "--c8"];
 const fmt = n => (n ?? 0).toLocaleString();
 const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
+const usd = n => n == null ? "–" : "$" + (n < 0.01 ? n.toFixed(4) : n.toFixed(2));
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pill = (ok, yes, no) => `<span class="pill ${ok ? "ok" : "bad"}">${esc(ok ? yes : no)}</span>`;
+const row = (k, v) => `<div class="row"><span>${esc(k)}</span><b>${v}</b></div>`;
+const onoff = v => v ? `<span class="pill ok">on</span>` : `<span class="pill">off</span>`;
+const PLANS = { pro: "Claude Pro", max: "Claude Max", team: "Claude Team", enterprise: "Claude Enterprise",
+                free: "Claude Free", api_key: "Anthropic API key" };
+let SYSTEM = null;
 
-function card(route, d) {
-  const r = ROUTES[route] || { name: route, plan: "", css: "other", color: "var(--muted)" };
-  const u = d.billed_usage || {};
-  const input = (u.input_tokens || 0) + (u.cache_read_tokens || 0) + (u.cache_write_tokens || 0);
-  const p = pct(d.tokens_saved, d.tokens);
-  return `<div class="card">
-    <h2><span class="swatch" style="background:${r.color}"></span>${esc(r.name)}</h2>
-    <div class="plan">${esc(r.plan)}</div>
-    <div class="big">${p}%</div>
-    <div class="muted" style="font-size:12px">of request tokens removed</div>
-    <div class="bar"><span style="width:${Math.min(p, 100)}%"></span></div>
-    <div class="row"><span>Requests</span><b>${fmt(d.requests)}</b></div>
-    <div class="row"><span>Tokens removed</span><b>${fmt(d.tokens_saved)} / ${fmt(d.tokens)}</b></div>
-    <div class="row"><span>Billed input</span><b>${fmt(input)}</b></div>
-    <div class="row"><span>Cache reads</span><b>${pct(u.cache_read_tokens, input)}%</b></div>
-  </div>`;
+const after = r => r.tokens - (r.applied ? r.tokens_saved : 0);
+const time = r => (r.ts || "").slice(11, 19);
+
+function stack(entries) {
+  const total = entries.reduce((a, [, v]) => a + v, 0);
+  const bars = entries.map(([k, v], i) => total && v
+    ? `<span style="width:${100 * v / total}%;background:var(${PALETTE[i % 8]})" title="${esc(k)} ${fmt(v)}"></span>` : "").join("");
+  const legend = entries.map(([k, v], i) =>
+    `<span><i style="background:var(${PALETTE[i % 8]})"></i>${esc(k)} ${fmt(v)} (${pct(v, total)}%)</span>`).join("");
+  return `<div class="bar" style="height:12px">${bars}</div><div class="legend">${legend}</div>`;
 }
 
-function row(r) {
-  const route = ROUTES[r.route] ? r.route : "other";
-  const label = ROUTES[r.route]?.name || r.route;
-  const trims = (r.trims || []).filter(t => t.before > t.after)
-    .map(t => `${esc(t.how)} ${fmt(t.before)}→${fmt(t.after)}`).join(", ");
+function kpis(stats, feed) {
+  const t = stats.trimming, total = stats.tokens_total, applied = t.tokens_saved_applied;
+  const u = stats.billed_usage, input = u.input_tokens + u.cache_read_tokens + u.cache_write_tokens;
+  const cost = feed.reduce((a, r) => a + (r.cost_usd || 0), 0);
+  const errors = feed.filter(r => r.error || (r.status_code && r.status_code >= 400)).length;
+  const k = (big, lbl, extra = "") => `<div class="card"><div class="big">${big}</div><div class="lbl">${lbl}</div>${extra}</div>`;
+  return [
+    k(fmt(stats.requests), "requests (recent window)", row("analysis errors", fmt(stats.analysis_errors))),
+    k(`${fmt(total)} → ${fmt(total - applied)}`, "tokens: before → sent",
+      row("removed", `<span class="saved">${fmt(applied)} (${pct(applied, total)}%)</span>`) +
+      row("possible (shadow)", fmt(t.tokens_saved_possible))),
+    k(fmt(input), "billed input tokens", row("cache reads", pct(u.cache_read_tokens, input) + "%") +
+      row("output", fmt(u.output_tokens))),
+    k(usd(cost), `list-price cost, last ${feed.length} requests`),
+    k(fmt(errors), "errors / non-200 in feed", errors ? row("see Status column", "") : ""),
+  ].join("");
+}
+
+function setup(sys) {
+  if (!sys) return "";
+  const L = sys.logins || {}, I = sys.installs || {}, R = sys.routing || {}, G = sys.gateway || {};
+  const cl = L.claude || {}, gp = L.chatgpt || {};
+  const card = (title, body) => `<div class="card"><h2>${title}</h2>${body}</div>`;
+  return [
+    card("Logins", row("Claude Code", cl.logged_in ? `${pill(true, "logged in", "")} ${esc(PLANS[cl.plan] || cl.plan)}` : pill(false, "", "no login found")) +
+      row("ChatGPT", gp.logged_in ? pill(true, "logged in", "") : pill(false, "", "no login")) +
+      row("ChatGPT in config", onoff(gp.enabled_in_config)) +
+      row("ChatGPT models", esc((gp.models || []).join(", "))) +
+      row("TokenCut key", onoff(L.tokencut_key))),
+    card("Installs", row("tokencut", esc(I.tokencut || "?")) + row("setup done (config.json)", onoff(I.config_file)) +
+      row("Claude Code on PATH", onoff(I.claude_code_on_path)) +
+      row("connector installed", onoff(I.connector_installed)) + row("connector version", esc(I.connector_version || "")) +
+      row("connector reachable", I.connector_reachable == null ? "–" : pill(I.connector_reachable, "yes", "no")) +
+      row("prompt model loaded", pill(I.prompt_model_loaded, "yes", "no")) +
+      row("ODE prior loaded", pill(I.ode_prior_loaded, "yes", "no"))),
+    card("Routing", row("Anthropic upstream", esc((R.upstreams || {}).anthropic || "")) +
+      row("GPT upstream (LiteLLM)", esc(R.gpt_upstream || "none")) +
+      row("Claude via LiteLLM", onoff(R.claude_via_litellm)) +
+      row("GPT model prefixes", esc((R.gpt_prefixes || []).join(", ")))),
+    card("Trimming settings", row("mode / tier", `${esc(G.mode)} / ${esc(G.tier)}`) +
+      row("min tokens to trim", fmt(G.min_trim_tokens)) + row("cache events", onoff(G.cache_events)) +
+      row("cache TTL", fmt(G.cache_ttl_s) + " s") + row("task masking", onoff(G.task_masking)) +
+      row("lazy tools / prune tools / CCR", `${onoff(G.lazy_tools)} ${onoff(G.prune_tools)} ${onoff(G.ccr)}`) +
+      row("system note / task briefs", `${onoff(G.system_note)} ${onoff(G.prompt_brief)}`) +
+      row("key required", onoff(G.key_required)) + row("capture (private data)", onoff(G.capture))),
+  ].join("");
+}
+
+function routes(stats, sys) {
+  const L = (sys && sys.logins) || {}, byRoute = stats.by_route || {};
+  const defs = {
+    claude: { name: "Claude", color: "var(--claude)",
+      plan: L.claude && L.claude.logged_in ? `${PLANS[L.claude.plan] || L.claude.plan || "unknown plan"} · Claude Code login` : "no Claude login found" },
+    gpt: { name: "GPT / ChatGPT", color: "var(--gpt)",
+      plan: L.chatgpt && L.chatgpt.logged_in ? "ChatGPT plan · via LiteLLM" : "ChatGPT not logged in" },
+  };
+  const names = Object.keys({ claude: 1, ...(SYSTEM && SYSTEM.routing && SYSTEM.routing.gpt_upstream ? { gpt: 1 } : {}), ...byRoute });
+  return names.map(n => {
+    const d = defs[n] || { name: n, color: "var(--muted)", plan: "" };
+    const v = byRoute[n] || { requests: 0, tokens: 0, tokens_saved: 0, billed_usage: {} };
+    const u = v.billed_usage || {}, input = (u.input_tokens || 0) + (u.cache_read_tokens || 0) + (u.cache_write_tokens || 0);
+    return `<div class="card"><h2><span class="swatch" style="background:${d.color}"></span>${esc(d.name)}</h2>
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(d.plan)}</div>` +
+      row("requests", fmt(v.requests)) + row("tokens removed", `${fmt(v.tokens_saved)} / ${fmt(v.tokens)} (${pct(v.tokens_saved, v.tokens)}%)`) +
+      row("billed input", fmt(input)) + row("cache reads", pct(u.cache_read_tokens, input) + "%") + `</div>`;
+  }).join("");
+}
+
+function odeState(sys, stats) {
+  const O = (sys && sys.ode) || {};
+  const c = stats.ode_choices || {};
+  const state = O.mode === "off" ? `<span class="pill">off</span>`
+    : O.choosing ? `<span class="pill ok">${esc(O.mode)} · choosing</span>`
+    : O.mode === "force" ? `<span class="pill warn">force ${esc(O.force_arm)}</span>`
+    : `<span class="pill bad">${esc(O.mode)} · NOT choosing</span>`;
+  return `<h2>State</h2>` + row("mode", state) + row("decisions", fmt(c.decisions || 0)) +
+    row("random tries", `${fmt(c.random_tries || 0)} (explore ${O.explore ?? "–"})`) +
+    row("unsure bonus α", O.alpha ?? "–") + row("conversations", fmt(c.conversations || 0)) +
+    row("prior", `${esc(O.prior || "–")} (${fmt(O.prior_rows || 0)} rows)`) +
+    row("GPT route set up", onoff(O.gpt_route)) + row("restore model name", onoff(O.restore_model));
+}
+
+function odeArms(sys, stats) {
+  const O = (sys && sys.ode) || {}, by = (stats.ode_choices || {}).by_arm || {};
+  const allowed = O.arms || O.configured_arms || [];
+  const entries = allowed.map(a => [a, by[a] || 0]);
+  return `<h2>Arms and choices so far</h2>` + (entries.some(e => e[1]) ? stack(entries)
+    : `<div class="muted">no decision yet</div><div class="legend">${allowed.map(esc).join(" · ")}</div>`);
+}
+
+function odeRows(feed) {
+  const rows = feed.filter(r => r.ode && r.ode.decided).map(r => {
+    const o = r.ode;
+    const scores = Object.entries(o.scores || {}).sort((a, b) => b[1] - a[1]).slice(0, 3)
+      .map(([a, s]) => `${esc(a)} ${Number(s).toFixed(2)}`).join(" · ");
+    const how = [o.explored ? "random try" : "greedy", o.previous && o.previous !== o.arm ? `switch from ${esc(o.previous)}` : "",
+      o.skipped ? `<span class="badtxt">skipped: ${esc(o.skipped)}</span>` : "", o.mode === "shadow" ? "shadow (not applied)" : ""]
+      .filter(Boolean).join(", ");
+    return `<tr><td class="muted">${time(r)}</td><td>${esc(o.task)} ${o.p ? `<span class="muted">${Number(o.p).toFixed(2)}</span>` : ""}</td>
+      <td><b>${esc(o.arm)}</b></td><td>${fmt(r.tokens)}</td>
+      <td>${esc(o.requested || "")} → ${esc(o.sent || "")}</td><td>${how}</td><td class="scores">${scores}</td></tr>`;
+  });
+  return rows.length ? rows.join("") : `<tr><td colspan="7" class="empty">No task decided yet</td></tr>`;
+}
+
+function context(stats) {
+  const kinds = Object.entries(stats.tokens_by_kind || {}).filter(([, v]) => v).sort((a, b) => b[1] - a[1]);
+  const res = Object.entries(stats.tool_result_tokens || {}).filter(([, v]) => v).sort((a, b) => b[1] - a[1]);
+  return `<h2>What the requests contain (before trimming)</h2>${stack(kinds)}
+    <div class="muted" style="margin:10px 0 2px;font-size:12px">tool results by type</div>${res.length ? stack(res) : '<div class="muted">none</div>'}`;
+}
+
+function removed(stats) {
+  const t = stats.trimming, by = Object.entries(t.saved_by || {}).filter(([, v]) => v !== 0).sort((a, b) => b[1] - a[1]);
+  const ev = Object.entries(t.cache_events || {});
+  const task = stats.tasks || {};
+  return `<h2>What was removed or added, by method</h2>` + (by.length
+    ? by.map(([k, v]) => row(k, `<span class="${v > 0 ? "saved" : "muted"}">${v > 0 ? "−" : "+"}${fmt(Math.abs(v))}</span>`)).join("")
+    : '<div class="muted">nothing yet</div>') +
+    `<div class="muted" style="margin:10px 0 2px;font-size:12px">cache events</div>` +
+    (ev.length ? ev.map(([k, v]) => row(k, fmt(v))).join("") : '<div class="muted">none</div>') +
+    `<div class="muted" style="margin:10px 0 2px;font-size:12px">task types seen by the router</div>` +
+    (Object.keys(task.by_label || {}).length ? Object.entries(task.by_label).map(([k, v]) => row(k, fmt(v))).join("") : '<div class="muted">none</div>') +
+    row("briefs added", fmt(task.briefed || 0));
+}
+
+function requestRow(r) {
+  const route = ["claude", "gpt"].includes(r.route) ? r.route : "other";
+  const trims = (r.trims || []).filter(t => t.before !== t.after).map(t => `${esc(t.how)} ${fmt(t.before)}→${fmt(t.after)}`).join(", ");
   const ev = r.cache_event ? ` <span class="muted">[${esc(r.cache_event)}]</span>` : "";
-  const time = (r.ts || "").slice(11, 19);
   const u = r.usage || {};
-  return `<tr><td class="muted">${time}</td>
-    <td><span class="tag ${route}">${esc(label)}</span></td>
-    <td>${esc(r.model)}</td><td>${fmt(r.tokens)}</td>
+  const bad = r.error || (r.status_code && r.status_code >= 400);
+  const arm = r.ode ? `${esc(r.ode.arm || "")}${r.ode.skipped ? " ✗" : ""}` : '<span class="muted">–</span>';
+  return `<tr><td class="muted">${time(r)}</td>
+    <td><span class="tag ${route}">${esc(r.route)}</span> <span class="muted">${esc(r.via || "")}</span></td>
+    <td>${esc(r.model)}</td><td>${arm}</td><td>${fmt(r.tokens)}</td><td>${fmt(after(r))}</td>
     <td class="${r.tokens_saved ? "saved" : "muted"}">${r.tokens_saved ? "−" + fmt(r.tokens_saved) : "0"}${r.applied || !r.tokens_saved ? "" : " (shadow)"}</td>
-    <td>${fmt(u.cache_read_tokens)}</td>
-    <td>${trims || '<span class="muted">—</span>'}${ev}</td>
-    <td class="muted">${r.latency_ms != null ? Math.round(r.latency_ms) + " ms" : ""}</td></tr>`;
+    <td>${fmt(u.cache_read_tokens)}</td><td>${fmt((u.input_tokens || 0) + (u.cache_write_tokens || 0))} / ${fmt(u.output_tokens)}</td>
+    <td>${usd(r.cost_usd)}</td><td>${trims || '<span class="muted">—</span>'}${ev}</td>
+    <td class="muted">${r.trim_ms ?? ""}</td><td class="muted">${r.latency_ms != null ? Math.round(r.latency_ms) + " ms" : ""}</td>
+    <td class="${bad ? "badtxt" : "muted"}">${esc(r.error || r.status_code || "")}</td></tr>`;
 }
+
+async function getJson(path) { return (await fetch(`/tokencut/${path}`)).json(); }
 
 async function refresh() {
   try {
-    const [stats, recent, health] = await Promise.all(
-      ["stats", "recent", "health"].map(p => fetch(`/tokencut/${p}`).then(x => x.json())));
-    const routes = { claude: { requests: 0, tokens: 0, tokens_saved: 0, billed_usage: {} },
-                     ...(health.gpt_upstream ? { gpt: { requests: 0, tokens: 0, tokens_saved: 0, billed_usage: {} } } : {}),
-                     ...stats.by_route };
-    document.getElementById("cards").innerHTML =
-      Object.entries(routes).map(([k, v]) => card(k, v)).join("");
-    document.getElementById("rows").innerHTML = recent.length
-      ? recent.map(row).join("")
-      : '<tr><td colspan="8" class="empty">Waiting for the agent\'s first request…</td></tr>';
+    const [stats, feed, health] = await Promise.all([getJson("stats"), getJson("recent?limit=200"), getJson("health")]);
+    document.getElementById("kpis").innerHTML = kpis(stats, feed);
+    document.getElementById("routes").innerHTML = routes(stats, SYSTEM);
+    document.getElementById("ode-state").innerHTML = odeState(SYSTEM, stats);
+    document.getElementById("ode-arms").innerHTML = odeArms(SYSTEM, stats);
+    document.getElementById("ode-rows").innerHTML = odeRows(feed);
+    document.getElementById("ctx").innerHTML = context(stats);
+    document.getElementById("removed").innerHTML = removed(stats);
+    document.getElementById("rows").innerHTML = feed.length ? feed.slice(0, 60).map(requestRow).join("")
+      : `<tr><td colspan="14" class="empty">Waiting for the agent's first request…</td></tr>`;
     document.getElementById("dot").className = "dot";
     document.getElementById("status").textContent =
-      `mode ${health.mode} · tier ${health.tier} · GPT route ${health.gpt_upstream ? "on" : "off"}`;
+      `running · mode ${health.mode} · tier ${health.tier} · ODE ${health.ode}${health.ode_choosing ? "" : " (not choosing)"}`;
   } catch (e) {
     document.getElementById("dot").className = "dot off";
     document.getElementById("status").textContent = "gateway not reachable";
   }
 }
-refresh();
+
+async function refreshSystem() {
+  try {
+    SYSTEM = await getJson("system");
+    document.getElementById("setup").innerHTML = setup(SYSTEM);
+    const p = SYSTEM.process || {};
+    document.getElementById("proc").textContent = p.version ? `v${p.version} · python ${p.python} · up ${Math.floor(p.uptime_s / 60)} min · pid ${p.pid}` : "";
+  } catch (e) { /* the gateway status line shows the problem */ }
+}
+
+refreshSystem().then(refresh);
 setInterval(refresh, 2000);
+setInterval(refreshSystem, 10000);
 </script>
 </body>
 </html>
